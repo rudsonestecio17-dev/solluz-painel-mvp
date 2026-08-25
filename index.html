@@ -220,17 +220,17 @@
         <div class="bg-zinc-900 text-white px-5 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-2">
                 <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                <span class="font-medium text-sm">Copiloto Solluz</span>
+                <span class="font-medium text-sm">Copiloto Solluz (IA)</span>
             </div>
             <button onclick="toggleChat()" class="text-zinc-400 hover:text-white text-sm">✕</button>
         </div>
         <div id="chat-messages" class="p-4 h-80 overflow-y-auto space-y-3 text-xs bg-zinc-50 flex flex-col">
             <div class="bg-white border border-zinc-200 text-zinc-700 p-3 rounded-xl max-w-[85%] self-start shadow-sm">
-                Olá! Digite comandos como "listar projetos" para consultar sua operação por aqui.
+                Olá! Sou o Copiloto Solluz integrado com IA. Como posso ajudar com sua produção hoje?
             </div>
         </div>
         <div class="p-3 bg-white border-t border-zinc-200 flex gap-2">
-            <input type="text" id="chat-input" placeholder="Digite um comando..." class="flex-1 bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-xs text-zinc-900 focus:outline-none">
+            <input type="text" id="chat-input" placeholder="Pergunte algo à IA..." onkeypress="if(event.key === 'Enter') sendMessage()" class="flex-1 bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-xs text-zinc-900 focus:outline-none">
             <button onclick="sendMessage()" class="bg-zinc-900 hover:bg-zinc-800 text-white px-3 py-2 rounded-lg text-xs font-medium transition">Enviar</button>
         </div>
     </div>
@@ -239,6 +239,9 @@
     <script>
         const SUPABASE_URL = 'https://wiktemdsjwhvzmpnbxmg.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_Uod7U-Su7MYBcwjWb4dr7w_dzeg2TfY';
+        
+        // Chave obtida de forma segura via navegador (localStorage) para evitar exposição no GitHub
+        let OPENAI_API_KEY = localStorage.getItem('solluz_openai_key') || '';
 
         let supabaseClient = null;
 
@@ -405,8 +408,6 @@
 
             if (fileInput.files.length > 0) {
                 const file = fileInput.files[0];
-                
-                // Limpa acentos, espaços e parênteses para evitar erro de chave inválida no Storage
                 const safeName = file.name
                     .normalize('NFD').replace(/[\u0300-\u036f]/g, "")
                     .replace(/[^a-zA-Z0-9.-]/g, '_');
@@ -448,45 +449,89 @@
             }
         }
 
-        // --- CHAT / COPILOTO ---
+        // --- CHAT / COPILOTO INTELIGENTE (OPENAI) ---
         function toggleChat() {
             const chat = document.getElementById('chat-window');
             chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
         }
 
         async function sendMessage() {
+            // Verifica se a chave foi inserida. Caso contrário, pede uma única vez ao usuário.
+            if (!OPENAI_API_KEY) {
+                const userKey = prompt("Insira sua OpenAI API Key para ativar o Copiloto (ela ficará salva apenas no seu navegador):");
+                if (userKey) {
+                    OPENAI_API_KEY = userKey.trim();
+                    localStorage.setItem('solluz_openai_key', OPENAI_API_KEY);
+                } else {
+                    return;
+                }
+            }
+
             const input = document.getElementById('chat-input');
             const messages = document.getElementById('chat-messages');
             const text = input.value.trim();
             if (!text) return;
 
+            // Exibe mensagem do usuário
             messages.innerHTML += `<div class="bg-zinc-900 text-white p-2.5 rounded-xl max-w-[85%] self-end">${text}</div>`;
             input.value = '';
             messages.scrollTop = messages.scrollHeight;
 
-            const query = text.toLowerCase();
-            let respostaBot = "Comando processado.";
+            // Indicador de "pensando..."
+            const loadingId = 'loading-' + Date.now();
+            messages.innerHTML += `<div id="${loadingId}" class="bg-white border border-zinc-200 text-zinc-400 p-2.5 rounded-xl max-w-[85%] self-start shadow-sm">IA pensando...</div>`;
+            messages.scrollTop = messages.scrollHeight;
 
             try {
-                if (query.includes('listar') || query.includes('projetos') || query.includes('campanhas')) {
-                    const { data } = await supabaseClient.from('projects').select('title, status');
-                    if (!data || data.length === 0) {
-                        respostaBot = "Não há projetos cadastrados.";
-                    } else {
-                        respostaBot = "Projetos encontrados:\n" + data.map(p => `• ${p.title} [Status: ${p.status}]`).join('\n');
+                // 1. Pega os dados atuais dos projetos do banco para dar contexto ao ChatGPT
+                const { data: projetos } = await supabaseClient.from('projects').select('title, description, status, clients(name)');
+                const contextoProjetos = JSON.stringify(projetos || []);
+
+                // 2. Requisição para a API da OpenAI (ChatGPT)
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${OPENAI_API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-4o-mini',
+                        messages: [
+                            {
+                                role: 'system',
+                                content: `Você é o Copiloto Solluz, um assistente inteligente de gestão de produção de vídeo e marketing. 
+                                Aqui estão os projetos atuais cadastrados no banco de dados da empresa: ${contextoProjetos}. 
+                                Responda de forma prestativa, direta e objetiva em português.`
+                            },
+                            { role: 'user', content: text }
+                        ],
+                        temperature: 0.7
+                    })
+                });
+
+                const data = await response.json();
+                document.getElementById(loadingId).remove();
+
+                if (data.choices && data.choices.length > 0) {
+                    const respostaIA = data.choices[0].message.content;
+                    messages.innerHTML += `<div class="bg-white border border-zinc-200 text-zinc-700 p-2.5 rounded-xl max-w-[85%] self-start shadow-sm whitespace-pre-line">${respostaIA}</div>`;
+                } else if (data.error) {
+                    // Se a chave for inválida, limpa do localStorage para pedir novamente
+                    if (data.error.code === 'invalid_api_key') {
+                        localStorage.removeItem('solluz_openai_key');
+                        OPENAI_API_KEY = '';
                     }
+                    messages.innerHTML += `<div class="bg-white border border-zinc-200 text-rose-600 p-2.5 rounded-xl max-w-[85%] self-start shadow-sm">Erro da OpenAI: ${data.error.message}</div>`;
                 } else {
-                    respostaBot = `Comando recebido: "${text}". Utilize os botões do painel para editar registros ou subir arquivos nas campanhas.`;
+                    messages.innerHTML += `<div class="bg-white border border-zinc-200 text-rose-600 p-2.5 rounded-xl max-w-[85%] self-start shadow-sm">Erro ao obter resposta da IA.</div>`;
                 }
             } catch (err) {
-                respostaBot = "Erro ao executar consulta no banco.";
+                document.getElementById(loadingId).remove();
+                messages.innerHTML += `<div class="bg-white border border-zinc-200 text-rose-600 p-2.5 rounded-xl max-w-[85%] self-start shadow-sm">Erro de conexão com a OpenAI.</div>`;
             }
 
-            setTimeout(() => {
-                messages.innerHTML += `<div class="bg-white border border-zinc-200 text-zinc-700 p-2.5 rounded-xl max-w-[85%] self-start shadow-sm whitespace-pre-line">${respostaBot}</div>`;
-                messages.scrollTop = messages.scrollHeight;
-                carregarDados();
-            }, 600);
+            messages.scrollTop = messages.scrollHeight;
+            carregarDados();
         }
     </script>
 </body>
