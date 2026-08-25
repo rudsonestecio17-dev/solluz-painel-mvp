@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solluz - Gestão Inteligente para Produtoras</title>
+    <!-- Tailwind CSS para estilização moderna e rápida -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Supabase JS Client para conectar direto ao banco -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Header / Navegação -->
+    <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+                <h1 class="font-bold text-lg tracking-wide">SOLLUZ <span class="text-indigo-400">AGÊNCIA / PRODUTORA</span></h1>
+            </div>
+            <div class="text-sm text-slate-400">
+                Status do Banco: <span id="db-status" class="text-amber-400 font-medium">Conectando...</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="max-w-7xl mx-auto px-4 py-8 flex-1 grid grid-cols-1 lg:grid-cols-3 gap-8 w-full">
+        
+        <!-- Coluna da Esquerda: Gestão de Projetos e Peças -->
+        <section class="lg:col-span-2 space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl">
+                <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                    📁 Projetos e Peças em Andamento
+                </h2>
+                <p class="text-sm text-slate-400 mb-6">
+                    Estes dados vêm diretamente das tabelas <code>projects</code> e <code>content_pieces</code> que você criou no Supabase.
+                </p>
+
+                <!-- Tabela de Listagem -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-slate-300">
+                        <thead class="bg-slate-800/60 text-slate-400 uppercase text-xs">
+                            <tr>
+                                <th class="p-3 rounded-l-lg">Projeto</th>
+                                <th class="p-3">Peça / Plataforma</th>
+                                <th class="p-3">Status</th>
+                                <th class="p-3 rounded-r-lg text-right">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="projects-table-body" class="divide-y divide-slate-800">
+                            <!-- Preenchido via JavaScript -->
+                            <tr>
+                                <td colspan="4" class="p-4 text-center text-slate-500">Carregando dados do Supabase...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Coluna da Direita: Copiloto / Chat Interno (Fase 2) -->
+        <section class="flex flex-col bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl h-[600px]">
+            <h2 class="text-xl font-semibold mb-2 flex items-center gap-2">
+                🤖 Copiloto Interno (IA)
+            </h2>
+            <p class="text-xs text-slate-400 mb-4">Consulte o status das campanhas por linguagem natural.</p>
+
+            <!-- Caixa de Mensagens do Chat -->
+            <div id="chat-messages" class="flex-1 overflow-y-auto space-y-3 pr-2 mb-4 text-sm flex flex-col">
+                <div class="bg-slate-800 text-slate-200 p-3 rounded-lg max-w-[85%] self-start">
+                    Olá! Sou seu assistente interno. Digite algo como *"Como estão os projetos ativos?"* para eu consultar o banco.
+                </div>
+            </div>
+
+            <!-- Input de Envio -->
+            <div class="flex gap-2">
+                <input type="text" id="chat-input" placeholder="Pergunte ao copiloto..." class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500">
+                <button onclick="sendMessage()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition">Enviar</button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Script de Conexão com Supabase e Lógica da Tela -->
+    <script>
+        // Substitua pelas suas credenciais reais do projeto Supabase (Configurações > API)
+        const SUPABASE_URL = 'SUA_SUPABASE_URL_AQUI';
+        const SUPABASE_ANON_KEY = 'SUA_SUPABASE_ANON_KEY_AQUI';
+
+        let supabaseClient = null;
+
+        try {
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            document.getElementById('db-status').innerText = 'Conectado';
+            document.getElementById('db-status').className = 'text-emerald-400 font-medium';
+            carregarDadosProjetos();
+        } catch (e) {
+            document.getElementById('db-status').innerText = 'Erro na Conexão';
+            document.getElementById('db-status').className = 'text-rose-400 font-medium';
+        }
+
+        // Função para buscar dados reais do banco criado
+        async function carregarDadosProjetos() {
+            const tbody = document.getElementById('projects-table-body');
+            
+            // Se as chaves não foram preenchidas ainda, mostra aviso amigável
+            if (SUPABASE_URL.includes('SUA_SUPABASE')) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-amber-400">Insira suas chaves do Supabase no código JavaScript para ver os dados reais.</td></tr>`;
+                return;
+            }
+
+            const { data, error } = await supabaseClient
+                .from('projects')
+                .select(`
+                    id,
+                    title,
+                    status,
+                    clients ( name ),
+                    content_pieces ( title, platform )
+                `);
+
+            if (error) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-rose-400">Erro ao carregar: ${error.message}</td></tr>`;
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-500">Nenhum projeto cadastrado no banco ainda.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = '';
+            data.forEach(proj => {
+                const clientName = proj.clients?.name || 'Cliente Geral';
+                const piecesText = proj.content_pieces?.map(p => `${p.title} (${p.platform})`).join(', ') || 'Nenhuma peça vinculada';
+                
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/40 transition">
+                        <td class="p-3 font-medium text-white">${proj.title}<br><span class="text-xs text-slate-400">${clientName}</span></td>
+                        <td class="p-3 text-slate-300 text-xs">${piecesText}</td>
+                        <td class="p-3"><span class="px-2 py-1 rounded-full text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">${proj.status}</span></td>
+                        <td class="p-3 text-right"><button class="text-indigo-400 hover:underline text-xs">Gerenciar</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Simulação básica do chat interno da IA (Fase 2)
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const chatMessages = document.getElementById('chat-messages');
+            const text = input.value.trim();
+
+            if (!text) return;
+
+            // Mensagem do usuário
+            chatMessages.innerHTML += `<div class="bg-indigo-600/30 border border-indigo-500/30 text-slate-100 p-3 rounded-lg max-w-[85%] self-end">${text}</div>`;
+            input.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Resposta simulada do Copiloto (futuramente integrada à API da OpenAI/Gemini conectada ao Supabase)
+            setTimeout(() => {
+                chatMessages.innerHTML += `<div class="bg-slate-800 text-slate-200 p-3 rounded-lg max-w-[85%] self-start">Análise recebida! No momento estou rodando em modo visualização de interface, mas já consigo ler as tabelas do seu Supabase assim que as credenciais forem inseridas.</div>`;
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
