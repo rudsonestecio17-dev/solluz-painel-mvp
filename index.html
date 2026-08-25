@@ -34,11 +34,11 @@
     <!-- Conteúdo Principal -->
     <main class="max-w-6xl mx-auto px-6 py-10 flex-1 w-full space-y-8">
         
-        <!-- Topo com Ações de Cadastro -->
+        <!-- Topo com Ações -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
                 <h2 class="text-2xl font-semibold tracking-tight text-zinc-900">Painel de Operações</h2>
-                <p class="text-sm text-zinc-500 mt-1">Gerencie clientes, projetos e entregas em tempo real.</p>
+                <p class="text-sm text-zinc-500 mt-1">Gerencie clientes, projetos e arquivos de campanhas em tempo real.</p>
             </div>
             <div class="flex items-center gap-3">
                 <button onclick="openModal('client-modal')" class="inline-flex items-center justify-center px-4 py-2 text-xs font-medium text-zinc-700 bg-white border border-zinc-200 rounded-lg shadow-sm hover:bg-zinc-50 transition">
@@ -138,6 +138,74 @@
         </div>
     </div>
 
+    <!-- MODAL: Editar Projeto -->
+    <div id="edit-project-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white border border-zinc-200 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="font-semibold text-lg text-zinc-900">Editar Projeto</h3>
+                <button onclick="closeModal('edit-project-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm">✕</button>
+            </div>
+            <input type="hidden" id="edit-project-id">
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-medium text-zinc-600 mb-1">Título do Projeto</label>
+                    <input type="text" id="edit-project-title" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-600 mb-1">Descrição</label>
+                    <textarea id="edit-project-desc" rows="2" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400"></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-600 mb-1">Status</label>
+                    <select id="edit-project-status" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400">
+                        <option value="ativo">Ativo</option>
+                        <option value="em andamento">Em Andamento</option>
+                        <option value="concluido">Concluído</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeModal('edit-project-modal')" class="px-4 py-2 text-xs font-medium text-zinc-600 hover:bg-zinc-100 rounded-lg transition">Cancelar</button>
+                <button onclick="atualizarProjeto()" class="px-4 py-2 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-lg transition">Salvar Alterações</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Gerenciar Arquivos / Peças -->
+    <div id="files-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white border border-zinc-200 rounded-2xl w-full max-w-xl p-6 shadow-2xl space-y-5">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h3 class="font-semibold text-lg text-zinc-900">Arquivos da Campanha</h3>
+                    <p id="files-project-title" class="text-xs text-zinc-500">Projeto selecionado</p>
+                </div>
+                <button onclick="closeModal('files-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm">✕</button>
+            </div>
+            <input type="hidden" id="current-file-project-id">
+
+            <!-- Formulário de Upload -->
+            <div class="bg-zinc-50 p-4 rounded-xl border border-zinc-200 space-y-3">
+                <h4 class="text-xs font-semibold uppercase tracking-wider text-zinc-700">Enviar Nova Peça / Arquivo</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <input type="text" id="piece-title" placeholder="Nome da peça (ex: Reels 01)" class="bg-white border border-zinc-200 rounded-lg px-3 py-2 text-xs text-zinc-900 focus:outline-none">
+                    <input type="text" id="piece-platform" placeholder="Plataforma (ex: Instagram)" class="bg-white border border-zinc-200 rounded-lg px-3 py-2 text-xs text-zinc-900 focus:outline-none">
+                </div>
+                <div>
+                    <input type="file" id="piece-file" class="w-full text-xs text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-zinc-900 file:text-white hover:file:bg-zinc-800 cursor-pointer">
+                </div>
+                <button onclick="uploadArquivoCampanha()" class="w-full py-2 bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium rounded-lg transition">Fazer Upload e Cadastrar Peça</button>
+            </div>
+
+            <!-- Lista de Arquivos do Projeto -->
+            <div class="space-y-2">
+                <h4 class="text-xs font-semibold uppercase tracking-wider text-zinc-700">Peças Cadastradas</h4>
+                <div id="pieces-list-container" class="max-h-48 overflow-y-auto space-y-2 text-xs divide-y divide-zinc-100">
+                    <p class="text-zinc-400 text-center py-4">Selecione um projeto para ver os arquivos.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Botão Flutuante do Robô (Copiloto) -->
     <div class="fixed bottom-6 right-6 z-50">
         <button onclick="toggleChat()" class="w-14 h-14 bg-zinc-900 hover:bg-zinc-800 text-white rounded-full shadow-xl flex items-center justify-center transition transform hover:scale-105 focus:outline-none">
@@ -158,16 +226,16 @@
         </div>
         <div id="chat-messages" class="p-4 h-80 overflow-y-auto space-y-3 text-xs bg-zinc-50 flex flex-col">
             <div class="bg-white border border-zinc-200 text-zinc-700 p-3 rounded-xl max-w-[85%] self-start shadow-sm">
-                Olá! Gerencie seus projetos por aqui ou pergunte sobre o status das entregas.
+                Olá! Gerencie seus projetos e arquivos por aqui.
             </div>
         </div>
         <div class="p-3 bg-white border-t border-zinc-200 flex gap-2">
-            <input type="text" id="chat-input" placeholder="Digite sua consulta..." class="flex-1 bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-xs text-zinc-900 focus:outline-none focus:border-zinc-400">
+            <input type="text" id="chat-input" placeholder="Digite sua consulta..." class="flex-1 bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-xs text-zinc-900 focus:outline-none">
             <button onclick="sendMessage()" class="bg-zinc-900 hover:bg-zinc-800 text-white px-3 py-2 rounded-lg text-xs font-medium transition">Enviar</button>
         </div>
     </div>
 
-    <!-- Script de Integração e Supabase -->
+    <!-- Script de Integração -->
     <script>
         const SUPABASE_URL = 'https://wiktemdsjwhvzmpnbxmg.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_Uod7U-Su7MYBcwjWb4dr7w_dzeg2TfY';
@@ -184,7 +252,6 @@
             document.getElementById('db-status').className = 'px-2 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200 font-medium';
         }
 
-        // Funções de Modal
         function openModal(modalId) {
             document.getElementById(modalId).style.display = 'flex';
             if (modalId === 'project-modal') carregarSelectClientes();
@@ -194,7 +261,6 @@
             document.getElementById(modalId).style.display = 'none';
         }
 
-        // Carregar dados na tabela principal
         async function carregarDados() {
             const tbody = document.getElementById('projects-table-body');
             const { data, error } = await supabaseClient.from('projects').select('*');
@@ -216,7 +282,9 @@
                         <td class="p-4 pl-6 font-medium text-zinc-900">${proj.title}</td>
                         <td class="p-4 text-zinc-500 text-xs">${proj.description || 'Sem descrição'}</td>
                         <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">${proj.status}</span></td>
-                        <td class="p-4 pr-6 text-right">
+                        <td class="p-4 pr-6 text-right space-x-2">
+                            <button onclick="abrirGerenciarArquivos('${proj.id}', '${proj.title}')" class="text-indigo-600 hover:text-indigo-900 text-xs font-medium">Arquivos</button>
+                            <button onclick="abrirEditarProjeto('${proj.id}', '${proj.title}', '${proj.description || ''}', '${proj.status}')" class="text-zinc-600 hover:text-zinc-900 text-xs font-medium">Editar</button>
                             <button onclick="deletarProjeto('${proj.id}')" class="text-rose-500 hover:text-rose-700 text-xs font-medium">Excluir</button>
                         </td>
                     </tr>
@@ -224,75 +292,159 @@
             });
         }
 
-        // Carregar clientes no Select do modal de projeto
         async function carregarSelectClientes() {
             const select = document.getElementById('project-client-select');
             const { data } = await supabaseClient.from('clients').select('*');
-            
-            if (!data || data.length === 0) {
-                select.innerHTML = '<option value="">Cadastre um cliente primeiro</option>';
-                return;
-            }
-
+            if (!data) return;
             select.innerHTML = '<option value="">Selecione um cliente...</option>';
             data.forEach(client => {
                 select.innerHTML += `<option value="${client.id}">${client.name}</option>`;
             });
         }
 
-        // Salvar Novo Cliente
         async function salvarCliente() {
             const name = document.getElementById('client-name').value;
             const documentVal = document.getElementById('client-doc').value;
-
-            if (!name) {
-                alert('Informe o nome do cliente.');
-                return;
-            }
+            if (!name) return alert('Informe o nome.');
 
             const { error } = await supabaseClient.from('clients').insert([{ name, document: documentVal }]);
-            if (error) {
-                alert('Erro ao cadastrar cliente: ' + error.message);
-            } else {
-                alert('Cliente cadastrado com sucesso!');
+            if (error) alert('Erro: ' + error.message);
+            else {
+                alert('Cliente cadastrado!');
                 document.getElementById('client-name').value = '';
                 document.getElementById('client-doc').value = '';
                 closeModal('client-modal');
             }
         }
 
-        // Salvar Novo Projeto
         async function salvarProjeto() {
             const client_id = document.getElementById('project-client-select').value;
             const title = document.getElementById('project-title').value;
             const description = document.getElementById('project-desc').value;
             const status = document.getElementById('project-status').value;
-
-            if (!client_id || !title) {
-                alert('Selecione um cliente e informe o título do projeto.');
-                return;
-            }
+            if (!client_id || !title) return alert('Preencha os campos obrigatórios.');
 
             const { error } = await supabaseClient.from('projects').insert([{ client_id, title, description, status }]);
-            if (error) {
-                alert('Erro ao criar projeto: ' + error.message);
-            } else {
-                alert('Projeto criado com sucesso!');
-                document.getElementById('project-title').value = '';
-                document.getElementById('project-desc').value = '';
+            if (error) alert('Erro: ' + error.message);
+            else {
+                alert('Projeto criado!');
                 closeModal('project-modal');
                 carregarDados();
             }
         }
 
-        // Deletar Projeto
+        function abrirEditarProjeto(id, title, description, status) {
+            document.getElementById('edit-project-id').value = id;
+            document.getElementById('edit-project-title').value = title;
+            document.getElementById('edit-project-desc').value = description === 'null' ? '' : description;
+            document.getElementById('edit-project-status').value = status;
+            openModal('edit-project-modal');
+        }
+
+        async function atualizarProjeto() {
+            const id = document.getElementById('edit-project-id').value;
+            const title = document.getElementById('edit-project-title').value;
+            const description = document.getElementById('edit-project-desc').value;
+            const status = document.getElementById('edit-project-status').value;
+
+            const { error } = await supabaseClient.from('projects').update({ title, description, status }).eq('id', id);
+            if (error) alert('Erro ao atualizar: ' + error.message);
+            else {
+                alert('Projeto atualizado com sucesso!');
+                closeModal('edit-project-modal');
+                carregarDados();
+            }
+        }
+
         async function deletarProjeto(id) {
-            if (!confirm('Deseja realmente excluir este projeto?')) return;
+            if (!confirm('Deseja excluir este projeto?')) return;
             const { error } = await supabaseClient.from('projects').delete().eq('id', id);
             if (!error) carregarDados();
         }
 
-        // Controle do Chat
+        // --- GESTÃO DE ARQUIVOS / PEÇAS ---
+        function abrirGerenciarArquivos(projectId, projectTitle) {
+            document.getElementById('current-file-project-id').value = projectId;
+            document.getElementById('files-project-title').innerText = `Projeto: ${projectTitle}`;
+            carregarPecas(projectId);
+            openModal('files-modal');
+        }
+
+        async function carregarPecas(projectId) {
+            const container = document.getElementById('pieces-list-container');
+            const { data, error } = await supabaseClient.from('content_pieces').select('*').eq('project_id', projectId);
+
+            if (!data || data.length === 0) {
+                container.innerHTML = `<p class="text-zinc-400 text-center py-4">Nenhuma peça ou arquivo enviado ainda.</p>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            data.forEach(piece => {
+                container.innerHTML += `
+                    <div class="py-2 flex items-center justify-between">
+                        <div>
+                            <span class="font-medium text-zinc-900">${piece.title}</span> <span class="text-zinc-400">(${piece.platform})</span>
+                        </div>
+                        ${piece.media_url ? `<a href="${piece.media_url}" target="_blank" class="text-indigo-600 hover:underline">Ver Arquivo</a>` : '<span class="text-zinc-400">Sem anexo</span>'}
+                    </div>
+                `;
+            });
+        }
+
+        async function uploadArquivoCampanha() {
+            const projectId = document.getElementById('current-file-project-id').value;
+            const title = document.getElementById('piece-title').value;
+            const platform = document.getElementById('piece-platform').value;
+            const fileInput = document.getElementById('piece-file');
+
+            if (!title || !platform) return alert('Informe o nome e a plataforma da peça.');
+
+            let mediaUrl = null;
+
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const fileName = `${Date.now()}_${file.name}`;
+                
+                // Upload para o bucket "campaign-files"
+                const { data: uploadData, error: uploadError } = await supabaseClient.storage
+                    .from('campaign-files')
+                    .upload(fileName, file);
+
+                if (uploadError) {
+                    alert('Erro no upload do arquivo: ' + uploadError.message);
+                    return;
+                }
+
+                // Obter URL pública do arquivo
+                const { data: publicUrlData } = supabaseClient.storage
+                    .from('campaign-files')
+                    .getPublicUrl(fileName);
+
+                mediaUrl = publicUrlData.publicUrl;
+            }
+
+            // Inserir registro na tabela content_pieces
+            const { error: insertError } = await supabaseClient.from('content_pieces').insert([{
+                project_id: projectId,
+                title,
+                platform,
+                media_url: mediaUrl,
+                scheduled_date: new Date().toISOString().split('T')[0]
+            }]);
+
+            if (insertError) {
+                alert('Erro ao registrar peça: ' + insertError.message);
+            } else {
+                alert('Peça e arquivo cadastrados com sucesso!');
+                document.getElementById('piece-title').value = '';
+                document.getElementById('piece-platform').value = '';
+                fileInput.value = '';
+                carregarPecas(projectId);
+            }
+        }
+
+        // Chat
         function toggleChat() {
             const chat = document.getElementById('chat-window');
             chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
@@ -309,7 +461,7 @@
             messages.scrollTop = messages.scrollHeight;
 
             setTimeout(() => {
-                messages.innerHTML += `<div class="bg-white border border-zinc-200 text-zinc-700 p-2.5 rounded-xl max-w-[85%] self-start shadow-sm">Processado! Seus dados estão sincronizados com o Supabase.</div>`;
+                messages.innerHTML += `<div class="bg-white border border-zinc-200 text-zinc-700 p-2.5 rounded-xl max-w-[85%] self-start shadow-sm">Comando processado com sucesso!</div>`;
                 messages.scrollTop = messages.scrollHeight;
             }, 800);
         }
