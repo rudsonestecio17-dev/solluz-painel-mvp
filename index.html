@@ -86,7 +86,7 @@
             <div class="space-y-3">
                 <div>
                     <label class="block text-xs font-medium text-zinc-600 mb-1">Nome da Empresa / Cliente</label>
-                    <input type="text" id="client-name" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400" placeholder="Ex: C-Metal">
+                    <input type="text" id="client-name" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400" placeholder="Ex: C-METAL">
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-zinc-600 mb-1">Documento (CNPJ / CPF)</label>
@@ -215,7 +215,7 @@
         </button>
     </div>
 
-    <!-- Janela Pop-up do Chat -->
+    <!-- Janela Pop-up do Chat / Copiloto -->
     <div id="chat-window" class="fixed bottom-24 right-6 w-96 bg-white border border-zinc-200 rounded-2xl shadow-2xl z-50 hidden flex-col overflow-hidden">
         <div class="bg-zinc-900 text-white px-5 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-2">
@@ -226,11 +226,11 @@
         </div>
         <div id="chat-messages" class="p-4 h-80 overflow-y-auto space-y-3 text-xs bg-zinc-50 flex flex-col">
             <div class="bg-white border border-zinc-200 text-zinc-700 p-3 rounded-xl max-w-[85%] self-start shadow-sm">
-                Olá! Gerencie seus projetos e arquivos por aqui.
+                Olá! Digite comandos como "listar projetos" para consultar sua operação por aqui.
             </div>
         </div>
         <div class="p-3 bg-white border-t border-zinc-200 flex gap-2">
-            <input type="text" id="chat-input" placeholder="Digite sua consulta..." class="flex-1 bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-xs text-zinc-900 focus:outline-none">
+            <input type="text" id="chat-input" placeholder="Digite um comando..." class="flex-1 bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-xs text-zinc-900 focus:outline-none">
             <button onclick="sendMessage()" class="bg-zinc-900 hover:bg-zinc-800 text-white px-3 py-2 rounded-lg text-xs font-medium transition">Enviar</button>
         </div>
     </div>
@@ -263,7 +263,7 @@
 
         async function carregarDados() {
             const tbody = document.getElementById('projects-table-body');
-            const { data, error } = await supabaseClient.from('projects').select('*');
+            const { data, error } = await supabaseClient.from('projects').select('*, clients(name)');
 
             if (error) {
                 tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-rose-600">Erro: ${error.message}</td></tr>`;
@@ -277,9 +277,10 @@
 
             tbody.innerHTML = '';
             data.forEach(proj => {
+                const clienteNome = proj.clients ? proj.clients.name : 'Geral';
                 tbody.innerHTML += `
                     <tr class="hover:bg-zinc-50/80 transition">
-                        <td class="p-4 pl-6 font-medium text-zinc-900">${proj.title}</td>
+                        <td class="p-4 pl-6 font-medium text-zinc-900">${proj.title} <span class="block text-xs font-normal text-zinc-400">Cliente: ${clienteNome}</span></td>
                         <td class="p-4 text-zinc-500 text-xs">${proj.description || 'Sem descrição'}</td>
                         <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">${proj.status}</span></td>
                         <td class="p-4 pr-6 text-right space-x-2">
@@ -372,7 +373,7 @@
 
         async function carregarPecas(projectId) {
             const container = document.getElementById('pieces-list-container');
-            const { data, error } = await supabaseClient.from('content_pieces').select('*').eq('project_id', projectId);
+            const { data } = await supabaseClient.from('content_pieces').select('*').eq('project_id', projectId);
 
             if (!data || data.length === 0) {
                 container.innerHTML = `<p class="text-zinc-400 text-center py-4">Nenhuma peça ou arquivo enviado ainda.</p>`;
@@ -406,17 +407,15 @@
                 const file = fileInput.files[0];
                 const fileName = `${Date.now()}_${file.name}`;
                 
-                // Upload para o bucket "campaign-files"
-                const { data: uploadData, error: uploadError } = await supabaseClient.storage
+                const { error: uploadError } = await supabaseClient.storage
                     .from('campaign-files')
                     .upload(fileName, file);
 
                 if (uploadError) {
-                    alert('Erro no upload do arquivo: ' + uploadError.message);
+                    alert('Erro no upload: ' + uploadError.message);
                     return;
                 }
 
-                // Obter URL pública do arquivo
                 const { data: publicUrlData } = supabaseClient.storage
                     .from('campaign-files')
                     .getPublicUrl(fileName);
@@ -424,7 +423,6 @@
                 mediaUrl = publicUrlData.publicUrl;
             }
 
-            // Inserir registro na tabela content_pieces
             const { error: insertError } = await supabaseClient.from('content_pieces').insert([{
                 project_id: projectId,
                 title,
@@ -436,7 +434,7 @@
             if (insertError) {
                 alert('Erro ao registrar peça: ' + insertError.message);
             } else {
-                alert('Peça e arquivo cadastrados com sucesso!');
+                alert('Peça e arquivo cadastrados!');
                 document.getElementById('piece-title').value = '';
                 document.getElementById('piece-platform').value = '';
                 fileInput.value = '';
@@ -444,13 +442,13 @@
             }
         }
 
-        // Chat
+        // --- CHAT / COPILOTO ---
         function toggleChat() {
             const chat = document.getElementById('chat-window');
             chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
         }
 
-        function sendMessage() {
+        async function sendMessage() {
             const input = document.getElementById('chat-input');
             const messages = document.getElementById('chat-messages');
             const text = input.value.trim();
@@ -460,10 +458,29 @@
             input.value = '';
             messages.scrollTop = messages.scrollHeight;
 
+            const query = text.toLowerCase();
+            let respostaBot = "Comando processado.";
+
+            try {
+                if (query.includes('listar') || query.includes('projetos') || query.includes('campanhas')) {
+                    const { data } = await supabaseClient.from('projects').select('title, status');
+                    if (!data || data.length === 0) {
+                        respostaBot = "Não há projetos cadastrados.";
+                    } else {
+                        respostaBot = "Projetos encontrados:\n" + data.map(p => `• ${p.title} [Status: ${p.status}]`).join('\n');
+                    }
+                } else {
+                    respostaBot = `Comando recebido: "${text}". Utilize os botões do painel para editar registros ou subir arquivos nas campanhas.`;
+                }
+            } catch (err) {
+                respostaBot = "Erro ao executar consulta no banco.";
+            }
+
             setTimeout(() => {
-                messages.innerHTML += `<div class="bg-white border border-zinc-200 text-zinc-700 p-2.5 rounded-xl max-w-[85%] self-start shadow-sm">Comando processado com sucesso!</div>`;
+                messages.innerHTML += `<div class="bg-white border border-zinc-200 text-zinc-700 p-2.5 rounded-xl max-w-[85%] self-start shadow-sm whitespace-pre-line">${respostaBot}</div>`;
                 messages.scrollTop = messages.scrollHeight;
-            }, 800);
+                carregarDados();
+            }, 600);
         }
     </script>
 </body>
