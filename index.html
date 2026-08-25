@@ -405,7 +405,13 @@
 
             if (fileInput.files.length > 0) {
                 const file = fileInput.files[0];
-                const fileName = `${Date.now()}_${file.name}`;
+                
+                // Limpa acentos, espaços e parênteses para evitar erro de chave inválida no Storage
+                const safeName = file.name
+                    .normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+                    .replace(/[^a-zA-Z0-9.-]/g, '_');
+
+                const fileName = `${Date.now()}_${safeName}`;
                 
                 const { error: uploadError } = await supabaseClient.storage
                     .from('campaign-files')
