@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Google Fonts Inter para um visual limpo e profissional -->
+    <!-- Google Fonts Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
@@ -16,16 +16,17 @@
 </head>
 <body class="bg-zinc-50 text-zinc-900 antialiased min-h-screen flex flex-col">
 
-    <!-- Header Minimalista e Profissional -->
+    <!-- Header Minimalista -->
     <header class="border-b border-zinc-200 bg-white sticky top-0 z-40">
         <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
                 <h1 class="font-semibold text-base tracking-tight text-zinc-900">SOLLUZ <span class="text-zinc-400 font-normal">| Produção</span></h1>
             </div>
-            <div class="flex items-center space-x-2 text-xs text-zinc-500 font-medium">
-                <span>Status do Banco:</span>
-                <span id="db-status" class="px-2 py-0.5 rounded bg-zinc-100 text-zinc-700 border border-zinc-200">Conectando...</span>
+            <div class="flex items-center space-x-4">
+                <div class="text-xs text-zinc-500 font-medium hidden sm:block">
+                    Status: <span id="db-status" class="px-2 py-0.5 rounded bg-zinc-100 text-zinc-700 border border-zinc-200">Conectando...</span>
+                </div>
             </div>
         </div>
     </header>
@@ -33,32 +34,41 @@
     <!-- Conteúdo Principal -->
     <main class="max-w-6xl mx-auto px-6 py-10 flex-1 w-full space-y-8">
         
-        <!-- Seção de Cabeçalho da Página -->
+        <!-- Topo com Ações de Cadastro -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-                <h2 class="text-2xl font-semibold tracking-tight text-zinc-900">Projetos Ativos</h2>
-                <p class="text-sm text-zinc-500 mt-1">Acompanhe o andamento das campanhas e entregas em tempo real.</p>
+                <h2 class="text-2xl font-semibold tracking-tight text-zinc-900">Painel de Operações</h2>
+                <p class="text-sm text-zinc-500 mt-1">Gerencie clientes, projetos e entregas em tempo real.</p>
             </div>
-            <button onclick="carregarDadosProjetos()" class="inline-flex items-center justify-center px-4 py-2 text-xs font-medium text-zinc-700 bg-white border border-zinc-200 rounded-lg shadow-sm hover:bg-zinc-50 transition">
-                Atualizar Dados
-            </button>
+            <div class="flex items-center gap-3">
+                <button onclick="openModal('client-modal')" class="inline-flex items-center justify-center px-4 py-2 text-xs font-medium text-zinc-700 bg-white border border-zinc-200 rounded-lg shadow-sm hover:bg-zinc-50 transition">
+                    + Novo Cliente
+                </button>
+                <button onclick="openModal('project-modal')" class="inline-flex items-center justify-center px-4 py-2 text-xs font-medium text-white bg-zinc-900 rounded-lg shadow-sm hover:bg-zinc-800 transition">
+                    + Novo Projeto
+                </button>
+            </div>
         </div>
 
-        <!-- Tabela Minimalista -->
+        <!-- Tabela de Projetos -->
         <div class="bg-white border border-zinc-200 rounded-xl shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b border-zinc-200 flex items-center justify-between bg-zinc-50/50">
+                <h3 class="font-medium text-sm text-zinc-800">Projetos Ativos & Campanhas</h3>
+                <button onclick="carregarDados()" class="text-xs text-zinc-500 hover:text-zinc-900">Atualizar</button>
+            </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-sm">
-                    <thead class="bg-zinc-50 border-b border-zinc-200 text-zinc-500 font-medium text-xs uppercase tracking-wider">
+                    <thead class="bg-zinc-50/80 border-b border-zinc-200 text-zinc-500 font-medium text-xs uppercase tracking-wider">
                         <tr>
                             <th class="p-4 pl-6">Projeto</th>
-                            <th class="p-4">Detalhes</th>
+                            <th class="p-4">Descrição</th>
                             <th class="p-4">Status</th>
                             <th class="p-4 pr-6 text-right">Ações</th>
                         </tr>
                     </thead>
                     <tbody id="projects-table-body" class="divide-y divide-zinc-100 text-zinc-700">
                         <tr>
-                            <td colspan="4" class="p-6 text-center text-zinc-400">Carregando dados do Supabase...</td>
+                            <td colspan="4" class="p-6 text-center text-zinc-400">Carregando dados...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -66,42 +76,98 @@
         </div>
     </main>
 
+    <!-- MODAL: Novo Cliente -->
+    <div id="client-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white border border-zinc-200 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="font-semibold text-lg text-zinc-900">Cadastrar Novo Cliente</h3>
+                <button onclick="closeModal('client-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm">✕</button>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-medium text-zinc-600 mb-1">Nome da Empresa / Cliente</label>
+                    <input type="text" id="client-name" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400" placeholder="Ex: C-Metal">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-600 mb-1">Documento (CNPJ / CPF)</label>
+                    <input type="text" id="client-doc" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400" placeholder="00.000.000/0001-00">
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeModal('client-modal')" class="px-4 py-2 text-xs font-medium text-zinc-600 hover:bg-zinc-100 rounded-lg transition">Cancelar</button>
+                <button onclick="salvarCliente()" class="px-4 py-2 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-lg transition">Salvar Cliente</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Novo Projeto -->
+    <div id="project-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white border border-zinc-200 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="font-semibold text-lg text-zinc-900">Cadastrar Novo Projeto</h3>
+                <button onclick="closeModal('project-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm">✕</button>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-medium text-zinc-600 mb-1">Cliente</label>
+                    <select id="project-client-select" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400">
+                        <option value="">Carregando clientes...</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-600 mb-1">Título do Projeto</label>
+                    <input type="text" id="project-title" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400" placeholder="Ex: Cobertura FEIMEC 2026">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-600 mb-1">Descrição / Escopo</label>
+                    <textarea id="project-desc" rows="2" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400" placeholder="Detalhes da produção..."></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-600 mb-1">Status</label>
+                    <select id="project-status" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400">
+                        <option value="ativo">Ativo</option>
+                        <option value="em andamento">Em Andamento</option>
+                        <option value="concluido">Concluído</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeModal('project-modal')" class="px-4 py-2 text-xs font-medium text-zinc-600 hover:bg-zinc-100 rounded-lg transition">Cancelar</button>
+                <button onclick="salvarProjeto()" class="px-4 py-2 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-lg transition">Criar Projeto</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Botão Flutuante do Robô (Copiloto) -->
     <div class="fixed bottom-6 right-6 z-50">
-        <button onclick="toggleChat()" class="w-14 h-14 bg-zinc-900 hover:bg-zinc-800 text-white rounded-full shadow-xl flex items-center justify-center transition transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-zinc-900">
-            <!-- Ícone de Robô Minimalista SVG -->
+        <button onclick="toggleChat()" class="w-14 h-14 bg-zinc-900 hover:bg-zinc-800 text-white rounded-full shadow-xl flex items-center justify-center transition transform hover:scale-105 focus:outline-none">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-1.072 1.922L6.75 11.85m7.5-8.746v5.714a2.25 2.25 0 001.072 1.922l1.928 1.11M12 15.75v3.75m-4.5-9h9M7.5 12h9a2.25 2.25 0 012.25 2.25v4.5A2.25 2.25 0 0116.5 21h-9a2.25 2.25 0 01-2.25-2.25v-4.5A2.25 2.25 0 017.5 12z" />
             </svg>
         </button>
     </div>
 
-    <!-- Janela Pop-up do Chat / Copiloto -->
-    <div id="chat-window" class="fixed bottom-24 right-6 w-96 bg-white border border-zinc-200 rounded-2xl shadow-2xl z-50 hidden flex-col overflow-hidden transition-all">
-        <!-- Header do Chat -->
+    <!-- Janela Pop-up do Chat -->
+    <div id="chat-window" class="fixed bottom-24 right-6 w-96 bg-white border border-zinc-200 rounded-2xl shadow-2xl z-50 hidden flex-col overflow-hidden">
         <div class="bg-zinc-900 text-white px-5 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-2">
                 <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
                 <span class="font-medium text-sm">Copiloto Solluz</span>
             </div>
-            <button onclick="toggleChat()" class="text-zinc-400 hover:text-white text-sm font-medium">✕</button>
+            <button onclick="toggleChat()" class="text-zinc-400 hover:text-white text-sm">✕</button>
         </div>
-
-        <!-- Mensagens -->
-        <div id="chat-messages" class="p-4 h-80 overflow-y-auto space-y-3 text-xs bg-zinc-50/50 flex flex-col">
+        <div id="chat-messages" class="p-4 h-80 overflow-y-auto space-y-3 text-xs bg-zinc-50 flex flex-col">
             <div class="bg-white border border-zinc-200 text-zinc-700 p-3 rounded-xl max-w-[85%] self-start shadow-sm">
-                Olá! Como posso ajudar você a consultar os projetos hoje?
+                Olá! Gerencie seus projetos por aqui ou pergunte sobre o status das entregas.
             </div>
         </div>
-
-        <!-- Input -->
         <div class="p-3 bg-white border-t border-zinc-200 flex gap-2">
-            <input type="text" id="chat-input" placeholder="Digite sua pergunta..." class="flex-1 bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-xs text-zinc-900 focus:outline-none focus:border-zinc-400">
+            <input type="text" id="chat-input" placeholder="Digite sua consulta..." class="flex-1 bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-xs text-zinc-900 focus:outline-none focus:border-zinc-400">
             <button onclick="sendMessage()" class="bg-zinc-900 hover:bg-zinc-800 text-white px-3 py-2 rounded-lg text-xs font-medium transition">Enviar</button>
         </div>
     </div>
 
-    <!-- Script de Conexão e Lógica -->
+    <!-- Script de Integração e Supabase -->
     <script>
         const SUPABASE_URL = 'https://wiktemdsjwhvzmpnbxmg.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_Uod7U-Su7MYBcwjWb4dr7w_dzeg2TfY';
@@ -110,30 +176,36 @@
 
         try {
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            const statusEl = document.getElementById('db-status');
-            statusEl.innerText = 'Conectado';
-            statusEl.className = 'px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-medium';
-            carregarDadosProjetos();
+            document.getElementById('db-status').innerText = 'Conectado';
+            document.getElementById('db-status').className = 'px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-medium';
+            carregarDados();
         } catch (e) {
-            const statusEl = document.getElementById('db-status');
-            statusEl.innerText = 'Erro';
-            statusEl.className = 'px-2 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200 font-medium';
+            document.getElementById('db-status').innerText = 'Erro';
+            document.getElementById('db-status').className = 'px-2 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200 font-medium';
         }
 
-        async function carregarDadosProjetos() {
-            const tbody = document.getElementById('projects-table-body');
+        // Funções de Modal
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+            if (modalId === 'project-modal') carregarSelectClientes();
+        }
 
-            const { data, error } = await supabaseClient
-                .from('projects')
-                .select('*');
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Carregar dados na tabela principal
+        async function carregarDados() {
+            const tbody = document.getElementById('projects-table-body');
+            const { data, error } = await supabaseClient.from('projects').select('*');
 
             if (error) {
-                tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-rose-600">Erro ao carregar: ${error.message}</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-rose-600">Erro: ${error.message}</td></tr>`;
                 return;
             }
 
             if (!data || data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-zinc-400">Nenhum projeto cadastrado no banco ainda.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-zinc-400">Nenhum projeto cadastrado.</td></tr>`;
                 return;
             }
 
@@ -141,41 +213,104 @@
             data.forEach(proj => {
                 tbody.innerHTML += `
                     <tr class="hover:bg-zinc-50/80 transition">
-                        <td class="p-4 pl-6 font-medium text-zinc-900">${proj.title}<br><span class="text-xs text-zinc-400 font-normal">${proj.description || 'Sem descrição'}</span></td>
-                        <td class="p-4 text-zinc-500 text-xs">Campanha Principal</td>
+                        <td class="p-4 pl-6 font-medium text-zinc-900">${proj.title}</td>
+                        <td class="p-4 text-zinc-500 text-xs">${proj.description || 'Sem descrição'}</td>
                         <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">${proj.status}</span></td>
-                        <td class="p-4 pr-6 text-right"><button class="text-zinc-600 hover:text-zinc-900 font-medium text-xs">Gerenciar</button></td>
+                        <td class="p-4 pr-6 text-right">
+                            <button onclick="deletarProjeto('${proj.id}')" class="text-rose-500 hover:text-rose-700 text-xs font-medium">Excluir</button>
+                        </td>
                     </tr>
                 `;
             });
         }
 
-        // Função para abrir/fechar a janela do chat flutuante
-        function toggleChat() {
-            const windowChat = document.getElementById('chat-window');
-            if (windowChat.style.display === 'flex') {
-                windowChat.style.display = 'none';
+        // Carregar clientes no Select do modal de projeto
+        async function carregarSelectClientes() {
+            const select = document.getElementById('project-client-select');
+            const { data } = await supabaseClient.from('clients').select('*');
+            
+            if (!data || data.length === 0) {
+                select.innerHTML = '<option value="">Cadastre um cliente primeiro</option>';
+                return;
+            }
+
+            select.innerHTML = '<option value="">Selecione um cliente...</option>';
+            data.forEach(client => {
+                select.innerHTML += `<option value="${client.id}">${client.name}</option>`;
+            });
+        }
+
+        // Salvar Novo Cliente
+        async function salvarCliente() {
+            const name = document.getElementById('client-name').value;
+            const documentVal = document.getElementById('client-doc').value;
+
+            if (!name) {
+                alert('Informe o nome do cliente.');
+                return;
+            }
+
+            const { error } = await supabaseClient.from('clients').insert([{ name, document: documentVal }]);
+            if (error) {
+                alert('Erro ao cadastrar cliente: ' + error.message);
             } else {
-                windowChat.style.display = 'flex';
-                document.getElementById('chat-input').focus();
+                alert('Cliente cadastrado com sucesso!');
+                document.getElementById('client-name').value = '';
+                document.getElementById('client-doc').value = '';
+                closeModal('client-modal');
             }
         }
 
-        // Simulação do Chat
+        // Salvar Novo Projeto
+        async function salvarProjeto() {
+            const client_id = document.getElementById('project-client-select').value;
+            const title = document.getElementById('project-title').value;
+            const description = document.getElementById('project-desc').value;
+            const status = document.getElementById('project-status').value;
+
+            if (!client_id || !title) {
+                alert('Selecione um cliente e informe o título do projeto.');
+                return;
+            }
+
+            const { error } = await supabaseClient.from('projects').insert([{ client_id, title, description, status }]);
+            if (error) {
+                alert('Erro ao criar projeto: ' + error.message);
+            } else {
+                alert('Projeto criado com sucesso!');
+                document.getElementById('project-title').value = '';
+                document.getElementById('project-desc').value = '';
+                closeModal('project-modal');
+                carregarDados();
+            }
+        }
+
+        // Deletar Projeto
+        async function deletarProjeto(id) {
+            if (!confirm('Deseja realmente excluir este projeto?')) return;
+            const { error } = await supabaseClient.from('projects').delete().eq('id', id);
+            if (!error) carregarDados();
+        }
+
+        // Controle do Chat
+        function toggleChat() {
+            const chat = document.getElementById('chat-window');
+            chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
+        }
+
         function sendMessage() {
             const input = document.getElementById('chat-input');
-            const chatMessages = document.getElementById('chat-messages');
+            const messages = document.getElementById('chat-messages');
             const text = input.value.trim();
-
             if (!text) return;
 
-            chatMessages.innerHTML += `<div class="bg-zinc-900 text-white p-2.5 rounded-xl max-w-[85%] self-end">${text}</div>`;
+            messages.innerHTML += `<div class="bg-zinc-900 text-white p-2.5 rounded-xl max-w-[85%] self-end">${text}</div>`;
             input.value = '';
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            messages.scrollTop = messages.scrollHeight;
 
             setTimeout(() => {
-                chatMessages.innerHTML += `<div class="bg-white border border-zinc-200 text-zinc-700 p-2.5 rounded-xl max-w-[85%] self-start shadow-sm">Entendido! Estou analisando os registros no Supabase para esta solicitação.</div>`;
-                chatMessages.scrollTop = chatMessages.scrollHeight;
+                messages.innerHTML += `<div class="bg-white border border-zinc-200 text-zinc-700 p-2.5 rounded-xl max-w-[85%] self-start shadow-sm">Processado! Seus dados estão sincronizados com o Supabase.</div>`;
+                messages.scrollTop = messages.scrollHeight;
             }, 800);
         }
     </script>
