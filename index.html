@@ -84,8 +84,8 @@
 
     <!-- Script de Conexão com Supabase e Lógica da Tela -->
     <script>
-        // Credenciais integradas do seu projeto Supabase
-        const SUPABASE_URL = 'https://wiktemdsjwhvzmpnbxmg.supabase.co/rest/v1/';
+        // Credenciais oficiais do seu projeto Supabase
+        const SUPABASE_URL = 'https://wiktemdsjwhvzmpnbxmg.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_Uod7U-Su7MYBcwjWb4dr7w_dzeg2TfY';
 
         let supabaseClient = null;
@@ -100,7 +100,7 @@
             document.getElementById('db-status').className = 'text-rose-400 font-medium';
         }
 
-        // Função para buscar dados do Supabase
+        // Função segura para buscar dados da tabela projects
         async function carregarDadosProjetos() {
             const tbody = document.getElementById('projects-table-body');
 
@@ -122,7 +122,7 @@
             data.forEach(proj => {
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-800/40 transition">
-                        <td class="p-3 font-medium text-white">${proj.title}<br><span class="text-xs text-slate-400">${proj.description || ''}</span></td>
+                        <td class="p-3 font-medium text-white">${proj.title}<br><span class="text-xs text-slate-400">${proj.description || 'Sem descrição'}</span></td>
                         <td class="p-3 text-slate-300 text-xs">Campanha Principal</td>
                         <td class="p-3"><span class="px-2 py-1 rounded-full text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">${proj.status}</span></td>
                         <td class="p-3 text-right"><button class="text-indigo-400 hover:underline text-xs">Gerenciar</button></td>
