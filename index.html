@@ -226,7 +226,7 @@
         </div>
         <div id="chat-messages" class="p-4 h-80 overflow-y-auto space-y-3 text-xs bg-zinc-50 flex flex-col">
             <div class="bg-white border border-zinc-200 text-zinc-700 p-3 rounded-xl max-w-[85%] self-start shadow-sm">
-                Olá! Sou o Copiloto Solluz integrado com IA. Como posso ajudar com sua produção hoje?
+                Olá! Sou o Copiloto Solluz. Posso consultar, criar e editar clientes e projetos pra você. Como posso ajudar hoje?
             </div>
         </div>
         <div class="p-3 bg-white border-t border-zinc-200 flex gap-2">
@@ -239,9 +239,13 @@
     <script>
         const SUPABASE_URL = 'https://wiktemdsjwhvzmpnbxmg.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_Uod7U-Su7MYBcwjWb4dr7w_dzeg2TfY';
-        
-        // Chave obtida de forma segura via navegador (localStorage) para evitar exposição no GitHub
-        let OPENAI_API_KEY = localStorage.getItem('solluz_openai_key') || '';
+
+        // URL da Edge Function que roda o Copiloto (Gemini + acesso ao banco).
+        // A chave do Gemini e a service role key ficam só no servidor, nunca aqui.
+        const COPILOTO_FUNCTION_URL = `${SUPABASE_URL}/functions/v1/copiloto-ia`;
+
+        // Histórico da conversa em memória (reiniciado ao recarregar a página).
+        let chatHistory = [];
 
         let supabaseClient = null;
 
@@ -413,7 +417,7 @@
                     .replace(/[^a-zA-Z0-9.-]/g, '_');
 
                 const fileName = `${Date.now()}_${safeName}`;
-                
+
                 const { error: uploadError } = await supabaseClient.storage
                     .from('campaign-files')
                     .upload(fileName, file);
@@ -449,24 +453,13 @@
             }
         }
 
-        // --- CHAT / COPILOTO INTELIGENTE (OPENAI) ---
+        // --- CHAT / COPILOTO INTELIGENTE (via Edge Function + Gemini) ---
         function toggleChat() {
             const chat = document.getElementById('chat-window');
             chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
         }
 
         async function sendMessage() {
-            // Verifica se a chave foi inserida. Caso contrário, pede uma única vez ao usuário.
-            if (!OPENAI_API_KEY) {
-                const userKey = prompt("Insira sua OpenAI API Key para ativar o Copiloto (ela ficará salva apenas no seu navegador):");
-                if (userKey) {
-                    OPENAI_API_KEY = userKey.trim();
-                    localStorage.setItem('solluz_openai_key', OPENAI_API_KEY);
-                } else {
-                    return;
-                }
-            }
-
             const input = document.getElementById('chat-input');
             const messages = document.getElementById('chat-messages');
             const text = input.value.trim();
@@ -483,55 +476,39 @@
             messages.scrollTop = messages.scrollHeight;
 
             try {
-                // 1. Pega os dados atuais dos projetos do banco para dar contexto ao ChatGPT
-                const { data: projetos } = await supabaseClient.from('projects').select('title, description, status, clients(name)');
-                const contextoProjetos = JSON.stringify(projetos || []);
-
-                // 2. Requisição para a API da OpenAI (ChatGPT)
-                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                const response = await fetch(COPILOTO_FUNCTION_URL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${OPENAI_API_KEY}`
+                        // Necessário para o Supabase aceitar a chamada à Edge Function.
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'apikey': SUPABASE_ANON_KEY
                     },
                     body: JSON.stringify({
-                        model: 'gpt-4o-mini',
-                        messages: [
-                            {
-                                role: 'system',
-                                content: `Você é o Copiloto Solluz, um assistente inteligente de gestão de produção de vídeo e marketing. 
-                                Aqui estão os projetos atuais cadastrados no banco de dados da empresa: ${contextoProjetos}. 
-                                Responda de forma prestativa, direta e objetiva em português.`
-                            },
-                            { role: 'user', content: text }
-                        ],
-                        temperature: 0.7
+                        message: text,
+                        history: chatHistory
                     })
                 });
 
                 const data = await response.json();
                 document.getElementById(loadingId).remove();
 
-                if (data.choices && data.choices.length > 0) {
-                    const respostaIA = data.choices[0].message.content;
-                    messages.innerHTML += `<div class="bg-white border border-zinc-200 text-zinc-700 p-2.5 rounded-xl max-w-[85%] self-start shadow-sm whitespace-pre-line">${respostaIA}</div>`;
-                } else if (data.error) {
-                    // Se a chave for inválida, limpa do localStorage para pedir novamente
-                    if (data.error.code === 'invalid_api_key') {
-                        localStorage.removeItem('solluz_openai_key');
-                        OPENAI_API_KEY = '';
-                    }
-                    messages.innerHTML += `<div class="bg-white border border-zinc-200 text-rose-600 p-2.5 rounded-xl max-w-[85%] self-start shadow-sm">Erro da OpenAI: ${data.error.message}</div>`;
+                if (data.reply) {
+                    messages.innerHTML += `<div class="bg-white border border-zinc-200 text-zinc-700 p-2.5 rounded-xl max-w-[85%] self-start shadow-sm whitespace-pre-line">${data.reply}</div>`;
+                    // Guarda no histórico pra manter contexto na próxima mensagem
+                    chatHistory.push({ role: 'user', text });
+                    chatHistory.push({ role: 'assistant', text: data.reply });
+                    // Como o copiloto pode ter alterado dados, atualiza a tabela
+                    carregarDados();
                 } else {
-                    messages.innerHTML += `<div class="bg-white border border-zinc-200 text-rose-600 p-2.5 rounded-xl max-w-[85%] self-start shadow-sm">Erro ao obter resposta da IA.</div>`;
+                    messages.innerHTML += `<div class="bg-white border border-zinc-200 text-rose-600 p-2.5 rounded-xl max-w-[85%] self-start shadow-sm">Erro: ${data.error || 'falha desconhecida'}</div>`;
                 }
             } catch (err) {
                 document.getElementById(loadingId).remove();
-                messages.innerHTML += `<div class="bg-white border border-zinc-200 text-rose-600 p-2.5 rounded-xl max-w-[85%] self-start shadow-sm">Erro de conexão com a OpenAI.</div>`;
+                messages.innerHTML += `<div class="bg-white border border-zinc-200 text-rose-600 p-2.5 rounded-xl max-w-[85%] self-start shadow-sm">Erro de conexão com o Copiloto.</div>`;
             }
 
             messages.scrollTop = messages.scrollHeight;
-            carregarDados();
         }
     </script>
 </body>
