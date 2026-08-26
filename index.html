@@ -12,6 +12,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
+        .kanban-col { min-height: 500px; transition: background-color 0.2s; }
+        .kanban-col.drag-over { background-color: rgba(228, 228, 231, 0.6); border-color: #71717a; }
     </style>
 </head>
 <body class="bg-zinc-50 text-zinc-900 antialiased min-h-screen flex h-screen overflow-hidden">
@@ -21,7 +23,7 @@
         <div class="p-5">
             <div class="flex items-center space-x-3 mb-8">
                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
-                <h1 class="font-semibold text-base tracking-tight text-zinc-900">MEU AVAL <span class="text-zinc-400 font-normal">| MVP</span></h1>
+                <h1 class="font-semibold text-base tracking-tight text-zinc-900">SOLLUZ <span class="text-zinc-400 font-normal">| Produção</span></h1>
             </div>
             <nav class="space-y-1.5">
                 <button onclick="mudarAba('projetos')" class="w-full text-left px-3.5 py-2.5 rounded-lg text-xs font-medium bg-zinc-900 text-white transition tab-btn flex items-center gap-2.5 shadow-sm" data-tab="projetos">
@@ -79,37 +81,37 @@
                     <button onclick="carregarDados()" class="text-xs text-zinc-500 hover:text-zinc-900 ml-auto font-medium">Atualizar Dados</button>
                 </div>
 
-                <!-- Quadro Kanban -->
+                <!-- Quadro Kanban com suporte a Drag & Drop -->
                 <div class="grid grid-cols-1 md:grid-cols-6 gap-4 min-h-[600px] pb-4">
                     <!-- Planejamento -->
-                    <div class="bg-zinc-100/70 border border-zinc-200/80 rounded-xl p-3 flex flex-col">
+                    <div class="bg-zinc-100/70 border border-zinc-200/80 rounded-xl p-3 flex flex-col kanban-col" id="col-planejamento" data-status="Planejamento" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Planejamento')">
                         <h3 class="text-xs font-bold uppercase tracking-wider text-amber-600 mb-3 px-1 flex items-center justify-between">Planejamento <span id="count-planejamento" class="bg-white border border-zinc-200 text-zinc-600 px-1.5 py-0.5 rounded-full text-[10px]">0</span></h3>
-                        <div class="flex-1 space-y-3 overflow-y-auto kanban-col" id="col-planejamento" data-status="Planejamento"></div>
+                        <div class="flex-1 space-y-3 overflow-y-auto"></div>
                     </div>
                     <!-- Em execução -->
-                    <div class="bg-zinc-100/70 border border-zinc-200/80 rounded-xl p-3 flex flex-col">
+                    <div class="bg-zinc-100/70 border border-zinc-200/80 rounded-xl p-3 flex flex-col kanban-col" id="col-em-execucao" data-status="Em execução" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Em execução')">
                         <h3 class="text-xs font-bold uppercase tracking-wider text-blue-600 mb-3 px-1 flex items-center justify-between">Em execução <span id="count-em-execucao" class="bg-white border border-zinc-200 text-zinc-600 px-1.5 py-0.5 rounded-full text-[10px]">0</span></h3>
-                        <div class="flex-1 space-y-3 overflow-y-auto kanban-col" id="col-em-execucao" data-status="Em execução"></div>
+                        <div class="flex-1 space-y-3 overflow-y-auto"></div>
                     </div>
                     <!-- Em Validação -->
-                    <div class="bg-zinc-100/70 border border-zinc-200/80 rounded-xl p-3 flex flex-col">
+                    <div class="bg-zinc-100/70 border border-zinc-200/80 rounded-xl p-3 flex flex-col kanban-col" id="col-em-validacao" data-status="Em Validação" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Em Validação')">
                         <h3 class="text-xs font-bold uppercase tracking-wider text-purple-600 mb-3 px-1 flex items-center justify-between">Em Validação <span id="count-em-validacao" class="bg-white border border-zinc-200 text-zinc-600 px-1.5 py-0.5 rounded-full text-[10px]">0</span></h3>
-                        <div class="flex-1 space-y-3 overflow-y-auto kanban-col" id="col-em-validacao" data-status="Em Validação"></div>
+                        <div class="flex-1 space-y-3 overflow-y-auto"></div>
                     </div>
                     <!-- Aprovado -->
-                    <div class="bg-zinc-100/70 border border-zinc-200/80 rounded-xl p-3 flex flex-col">
+                    <div class="bg-zinc-100/70 border border-zinc-200/80 rounded-xl p-3 flex flex-col kanban-col" id="col-aprovado" data-status="Aprovado" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Aprovado')">
                         <h3 class="text-xs font-bold uppercase tracking-wider text-teal-600 mb-3 px-1 flex items-center justify-between">Aprovado <span id="count-aprovado" class="bg-white border border-zinc-200 text-zinc-600 px-1.5 py-0.5 rounded-full text-[10px]">0</span></h3>
-                        <div class="flex-1 space-y-3 overflow-y-auto kanban-col" id="col-aprovado" data-status="Aprovado"></div>
+                        <div class="flex-1 space-y-3 overflow-y-auto"></div>
                     </div>
                     <!-- Programado -->
-                    <div class="bg-zinc-100/70 border border-zinc-200/80 rounded-xl p-3 flex flex-col">
+                    <div class="bg-zinc-100/70 border border-zinc-200/80 rounded-xl p-3 flex flex-col kanban-col" id="col-programado" data-status="Programado" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Programado')">
                         <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-600 mb-3 px-1 flex items-center justify-between">Programado <span id="count-programado" class="bg-white border border-zinc-200 text-zinc-600 px-1.5 py-0.5 rounded-full text-[10px]">0</span></h3>
-                        <div class="flex-1 space-y-3 overflow-y-auto kanban-col" id="col-programado" data-status="Programado"></div>
+                        <div class="flex-1 space-y-3 overflow-y-auto"></div>
                     </div>
                     <!-- Concluido -->
-                    <div class="bg-zinc-100/70 border border-zinc-200/80 rounded-xl p-3 flex flex-col">
+                    <div class="bg-zinc-100/70 border border-zinc-200/80 rounded-xl p-3 flex flex-col kanban-col" id="col-concluido" data-status="Concluido" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Concluido')">
                         <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-600 mb-3 px-1 flex items-center justify-between">Concluído <span id="count-concluido" class="bg-white border border-zinc-200 text-zinc-600 px-1.5 py-0.5 rounded-full text-[10px]">0</span></h3>
-                        <div class="flex-1 space-y-3 overflow-y-auto kanban-col" id="col-concluido" data-status="Concluido"></div>
+                        <div class="flex-1 space-y-3 overflow-y-auto"></div>
                     </div>
                 </div>
             </section>
@@ -375,10 +377,17 @@
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             document.getElementById('db-status').innerText = 'Conectado';
             document.getElementById('db-status').className = 'px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-medium';
-            carregarDados();
+            inicializarSistema();
         } catch (e) {
             document.getElementById('db-status').innerText = 'Erro';
             document.getElementById('db-status').className = 'px-2 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200 font-medium';
+        }
+
+        async function inicializarSistema() {
+            // Corrige automaticamente status legados antigos no banco (como 'ativo' ou nulos) para 'Planejamento'
+            await supabaseClient.from('projects').update({ status: 'Planejamento' }).eq('status', 'ativo');
+            await supabaseClient.from('projects').update({ status: 'Planejamento' }).is('status', null);
+            carregarDados();
         }
 
         // Navegação por Abas
@@ -447,13 +456,13 @@
 
             const { data, error } = await query;
             
-            const colunas = {
-                'Planejamento': document.getElementById('col-planejamento'),
-                'Em execução': document.getElementById('col-em-execucao'),
-                'Em Validação': document.getElementById('col-em-validacao'),
-                'Aprovado': document.getElementById('col-aprovado'),
-                'Programado': document.getElementById('col-programado'),
-                'Concluido': document.getElementById('col-concluido')
+            const colunasMapeamento = {
+                'Planejamento': document.querySelector('#col-planejamento div:last-child'),
+                'Em execução': document.querySelector('#col-em-execucao div:last-child'),
+                'Em Validação': document.querySelector('#col-em-validacao div:last-child'),
+                'Aprovado': document.querySelector('#col-aprovado div:last-child'),
+                'Programado': document.querySelector('#col-programado div:last-child'),
+                'Concluido': document.querySelector('#col-concluido div:last-child')
             };
 
             const contadores = {
@@ -465,13 +474,16 @@
                 'Concluido': 0
             };
 
-            // Limpa colunas
-            Object.values(colunas.length ? colunas : colunas).forEach(col => { if(col) col.innerHTML = ''; });
+            // Limpa as colunas
+            Object.values(colunasMapeamento).forEach(container => {
+                if (container) container.innerHTML = '';
+            });
 
             if (error || !data || data.length === 0) {
-                Object.keys(colunas).forEach(statusKey => {
-                    if(colunas[statusKey]) {
-                        colunas[statusKey].innerHTML = `<p class="text-zinc-400 text-center py-6 text-[11px]">Vazio</p>`;
+                Object.keys(colunasMapeamento).forEach(statusKey => {
+                    const container = colunasMapeamento[statusKey];
+                    if(container) {
+                        container.innerHTML = `<p class="text-zinc-400 text-center py-6 text-[11px]">Vazio</p>`;
                     }
                 });
                 atualizarContadores(contadores);
@@ -479,17 +491,23 @@
             }
 
             data.forEach(proj => {
-                const statusNormalizado = proj.status || 'Planejamento';
+                let statusNormalizado = proj.status || 'Planejamento';
+                // Compatibilidade com valores antigos caso restem
+                if (statusNormalizado === 'ativo') statusNormalizado = 'Planejamento';
+
                 if (contadores[statusNormalizado] !== undefined) {
                     contadores[statusNormalizado]++;
                 }
 
                 const clienteNome = proj.clients ? proj.clients.name : 'Geral';
-                const targetCol = colunas[statusNormalizado] || colunas['Planejamento'];
+                const targetContainer = colunasMapeamento[statusNormalizado] || colunasMapeamento['Planejamento'];
 
-                if (targetCol) {
-                    targetCol.innerHTML += `
-                        <div class="bg-white border border-zinc-200/80 rounded-xl p-3.5 shadow-sm space-y-2.5 hover:border-zinc-300 transition">
+                if (targetContainer) {
+                    // Remove texto "Vazio" se houver
+                    if (targetContainer.innerHTML.includes('Vazio')) targetContainer.innerHTML = '';
+
+                    targetContainer.innerHTML += `
+                        <div draggable="true" ondragstart="iniciarArraste(event, '${proj.id}')" class="bg-white border border-zinc-200/80 rounded-xl p-3.5 shadow-sm space-y-2.5 hover:border-zinc-300 transition cursor-grab active:cursor-grabbing">
                             <div class="flex justify-between items-start">
                                 <span class="font-medium text-zinc-900 text-xs">${proj.title}</span>
                                 <span class="text-[10px] bg-zinc-100 text-zinc-600 px-1.5 py-0.5 rounded">${clienteNome}</span>
@@ -508,6 +526,43 @@
             });
 
             atualizarContadores(contadores);
+        }
+
+        // --- FUNÇÕES DE DRAG AND DROP (ARRASTAR E SOLTAR) ---
+        function iniciarArraste(event, projectId) {
+            event.dataTransfer.setData('text/plain', projectId);
+        }
+
+        function permitirDrop(event) {
+            event.preventDefault();
+            const col = event.currentTarget;
+            col.classList.add('drag-over');
+        }
+
+        function removerDestaque(event) {
+            const col = event.currentTarget;
+            col.classList.remove('drag-over');
+        }
+
+        async function soltarCard(event, novoStatus) {
+            event.preventDefault();
+            const col = event.currentTarget;
+            col.classList.remove('drag-over');
+
+            const projectId = event.dataTransfer.getData('text/plain');
+            if (!projectId) return;
+
+            // Atualiza no Supabase imediatamente
+            const { error } = await supabaseClient
+                .from('projects')
+                .update({ status: novoStatus })
+                .eq('id', projectId);
+
+            if (error) {
+                alert('Erro ao atualizar status: ' + error.message);
+            } else {
+                carregarDados(); // Recarrega o quadro atualizado
+            }
         }
 
         function atualizarContadores(contadores) {
