@@ -423,7 +423,6 @@
         }
 
         async function inicializarSistema() {
-            // Corrige automaticamente status legados antigos no banco para 'Planejamento'
             await supabaseClient.from('projects').update({ status: 'Planejamento' }).eq('status', 'ativo');
             await supabaseClient.from('projects').update({ status: 'Planejamento' }).is('status', null);
             carregarDados();
@@ -550,10 +549,10 @@
                     if (targetContainer.innerHTML.includes('Vazio')) targetContainer.innerHTML = '';
 
                     targetContainer.innerHTML += `
-                        <div draggable="true" ondragstart="iniciarArraste(event, '${proj.id}')" class="bg-white border border-zinc-200/80 rounded-xl p-3.5 shadow-sm space-y-2.5 hover:border-zinc-300 transition cursor-grab active:cursor-grabbing">
+                        <div draggable="true" ondragstart="iniciarArraste(event, '${proj.id}')" class="bg-white border border-zinc-200/80 rounded-xl p-3.5 shadow-sm space-y-2.5 hover:border-zinc-300 transition cursor-grab active:cursor-grabbing" style="border-left: 4px solid ${clienteCor}; background-color: ${clienteCor}08;">
                             <div class="flex justify-between items-start gap-2">
                                 <span class="font-medium text-zinc-900 text-xs">${proj.title}</span>
-                                <span class="text-[10px] font-medium px-2 py-0.5 rounded-full text-white shrink-0" style="background-color: ${clienteCor};">${clienteNome}</span>
+                                <span class="text-[10px] font-medium px-2 py-0.5 rounded-full text-zinc-600 bg-white border border-zinc-200 shrink-0">${clienteNome}</span>
                             </div>
                             <p class="text-[11px] text-zinc-500 line-clamp-2">${proj.description || 'Sem descrição'}</p>
                             <div class="flex items-center justify-between pt-1 border-t border-zinc-100 text-[11px]">
