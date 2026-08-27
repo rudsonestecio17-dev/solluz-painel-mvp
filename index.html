@@ -191,10 +191,49 @@
                     <label class="block text-xs font-medium text-zinc-600 mb-1">Documento (CNPJ / CPF)</label>
                     <input type="text" id="client-doc" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400" placeholder="00.000.000/0001-00">
                 </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-600 mb-1">Cor de Identificação</label>
+                    <div class="flex items-center gap-2">
+                        <input type="color" id="client-color" value="#3498db" class="w-10 h-10 bg-zinc-50 border border-zinc-200 rounded-lg cursor-pointer p-1">
+                        <span class="text-xs text-zinc-500">Cor para diferenciar os projetos no Kanban.</span>
+                    </div>
+                </div>
             </div>
             <div class="flex justify-end gap-2 pt-2">
                 <button onclick="closeModal('client-modal')" class="px-4 py-2 text-xs font-medium text-zinc-600 hover:bg-zinc-100 rounded-lg transition">Cancelar</button>
                 <button onclick="salvarCliente()" class="px-4 py-2 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-lg transition">Salvar Cliente</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Editar Cliente -->
+    <div id="edit-client-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white border border-zinc-200 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="font-semibold text-lg text-zinc-900">Editar Cliente</h3>
+                <button onclick="closeModal('edit-client-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm">✕</button>
+            </div>
+            <input type="hidden" id="edit-client-id">
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-medium text-zinc-600 mb-1">Nome da Empresa / Cliente</label>
+                    <input type="text" id="edit-client-name" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-600 mb-1">Documento (CNPJ / CPF)</label>
+                    <input type="text" id="edit-client-doc" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-600 mb-1">Cor de Identificação</label>
+                    <div class="flex items-center gap-2">
+                        <input type="color" id="edit-client-color" class="w-10 h-10 bg-zinc-50 border border-zinc-200 rounded-lg cursor-pointer p-1">
+                        <span class="text-xs text-zinc-500">Altere a cor de identificação da empresa.</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeModal('edit-client-modal')" class="px-4 py-2 text-xs font-medium text-zinc-600 hover:bg-zinc-100 rounded-lg transition">Cancelar</button>
+                <button onclick="atualizarCliente()" class="px-4 py-2 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-lg transition">Salvar Alterações</button>
             </div>
         </div>
     </div>
@@ -384,7 +423,7 @@
         }
 
         async function inicializarSistema() {
-            // Corrige automaticamente status legados antigos no banco (como 'ativo' ou nulos) para 'Planejamento'
+            // Corrige automaticamente status legados antigos no banco para 'Planejamento'
             await supabaseClient.from('projects').update({ status: 'Planejamento' }).eq('status', 'ativo');
             await supabaseClient.from('projects').update({ status: 'Planejamento' }).is('status', null);
             carregarDados();
@@ -434,11 +473,16 @@
             if (clientesData && clientesData.length > 0) {
                 tbodyClientes.innerHTML = '';
                 clientesData.forEach(c => {
+                    const corHex = c.color || '#3498db';
                     tbodyClientes.innerHTML += `
                         <tr class="hover:bg-zinc-50 transition">
-                            <td class="p-4 pl-6 font-medium text-zinc-900">${c.name}</td>
+                            <td class="p-4 pl-6 font-medium text-zinc-900 flex items-center gap-2.5">
+                                <span class="w-3 h-3 rounded-full inline-block shrink-0 shadow-sm" style="background-color: ${corHex};"></span>
+                                ${c.name}
+                            </td>
                             <td class="p-4 text-zinc-500">${c.document || 'Não informado'}</td>
-                            <td class="p-4 pr-6 text-right">
+                            <td class="p-4 pr-6 text-right space-x-3">
+                                <button onclick="abrirEditarCliente('${c.id}', '${c.name}', '${c.document || ''}', '${corHex}')" class="text-zinc-600 hover:text-zinc-900 font-medium">Editar</button>
                                 <button onclick="deletarCliente('${c.id}')" class="text-rose-500 hover:text-rose-700 font-medium">Excluir</button>
                             </td>
                         </tr>
@@ -448,8 +492,8 @@
                 tbodyClientes.innerHTML = `<tr><td colspan="3" class="p-6 text-center text-zinc-400">Nenhum cliente cadastrado.</td></tr>`;
             }
 
-            // Carrega Projetos para o Kanban
-            let query = supabaseClient.from('projects').select('*, clients(name)');
+            // Carrega Projetos para o Kanban (trazendo o relacionamento de cor do cliente)
+            let query = supabaseClient.from('projects').select('*, clients(name, color)');
             if (clienteFiltro) {
                 query = query.eq('client_id', clienteFiltro);
             }
@@ -492,7 +536,6 @@
 
             data.forEach(proj => {
                 let statusNormalizado = proj.status || 'Planejamento';
-                // Compatibilidade com valores antigos caso restem
                 if (statusNormalizado === 'ativo') statusNormalizado = 'Planejamento';
 
                 if (contadores[statusNormalizado] !== undefined) {
@@ -500,17 +543,17 @@
                 }
 
                 const clienteNome = proj.clients ? proj.clients.name : 'Geral';
+                const clienteCor = (proj.clients && proj.clients.color) ? proj.clients.color : '#71717a';
                 const targetContainer = colunasMapeamento[statusNormalizado] || colunasMapeamento['Planejamento'];
 
                 if (targetContainer) {
-                    // Remove texto "Vazio" se houver
                     if (targetContainer.innerHTML.includes('Vazio')) targetContainer.innerHTML = '';
 
                     targetContainer.innerHTML += `
                         <div draggable="true" ondragstart="iniciarArraste(event, '${proj.id}')" class="bg-white border border-zinc-200/80 rounded-xl p-3.5 shadow-sm space-y-2.5 hover:border-zinc-300 transition cursor-grab active:cursor-grabbing">
-                            <div class="flex justify-between items-start">
+                            <div class="flex justify-between items-start gap-2">
                                 <span class="font-medium text-zinc-900 text-xs">${proj.title}</span>
-                                <span class="text-[10px] bg-zinc-100 text-zinc-600 px-1.5 py-0.5 rounded">${clienteNome}</span>
+                                <span class="text-[10px] font-medium px-2 py-0.5 rounded-full text-white shrink-0" style="background-color: ${clienteCor};">${clienteNome}</span>
                             </div>
                             <p class="text-[11px] text-zinc-500 line-clamp-2">${proj.description || 'Sem descrição'}</p>
                             <div class="flex items-center justify-between pt-1 border-t border-zinc-100 text-[11px]">
@@ -528,7 +571,7 @@
             atualizarContadores(contadores);
         }
 
-        // --- FUNÇÕES DE DRAG AND DROP (ARRASTAR E SOLTAR) ---
+        // --- FUNÇÕES DE DRAG AND DROP ---
         function iniciarArraste(event, projectId) {
             event.dataTransfer.setData('text/plain', projectId);
         }
@@ -552,7 +595,6 @@
             const projectId = event.dataTransfer.getData('text/plain');
             if (!projectId) return;
 
-            // Atualiza no Supabase imediatamente
             const { error } = await supabaseClient
                 .from('projects')
                 .update({ status: novoStatus })
@@ -561,7 +603,7 @@
             if (error) {
                 alert('Erro ao atualizar status: ' + error.message);
             } else {
-                carregarDados(); // Recarrega o quadro atualizado
+                carregarDados();
             }
         }
 
@@ -602,15 +644,47 @@
         async function salvarCliente() {
             const name = document.getElementById('client-name').value;
             const documentVal = document.getElementById('client-doc').value;
+            const colorVal = document.getElementById('client-color').value;
             if (!name) return alert('Informe o nome.');
 
-            const { error } = await supabaseClient.from('clients').insert([{ name, document: documentVal }]);
+            const { error } = await supabaseClient.from('clients').insert([{ name, document: documentVal, color: colorVal }]);
             if (error) alert('Erro: ' + error.message);
             else {
-                alert('Cliente cadastrado!');
+                alert('Cliente cadastrado com sucesso!');
                 document.getElementById('client-name').value = '';
                 document.getElementById('client-doc').value = '';
+                document.getElementById('client-color').value = '#3498db';
                 closeModal('client-modal');
+                carregarDados();
+            }
+        }
+
+        function abrirEditarCliente(id, name, documentVal, color) {
+            document.getElementById('edit-client-id').value = id;
+            document.getElementById('edit-client-name').value = name;
+            document.getElementById('edit-client-doc').value = documentVal === 'null' ? '' : documentVal;
+            document.getElementById('edit-client-color').value = color || '#3498db';
+            openModal('edit-client-modal');
+        }
+
+        async function atualizarCliente() {
+            const id = document.getElementById('edit-client-id').value;
+            const name = document.getElementById('edit-client-name').value;
+            const documentVal = document.getElementById('edit-client-doc').value;
+            const color = document.getElementById('edit-client-color').value;
+
+            if (!name) return alert('O nome do cliente é obrigatório.');
+
+            const { error } = await supabaseClient
+                .from('clients')
+                .update({ name, document: documentVal, color })
+                .eq('id', id);
+
+            if (error) {
+                alert('Erro ao atualizar cliente: ' + error.message);
+            } else {
+                alert('Cliente atualizado com sucesso!');
+                closeModal('edit-client-modal');
                 carregarDados();
             }
         }
