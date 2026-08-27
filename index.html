@@ -967,6 +967,7 @@
         }
 
         // --- GESTÃO FINANCEIRA ---
+        // --- GESTÃO FINANCEIRA COM RECORRÊNCIA AUTOMÁTICA ---
         function filtrarFinanceiro(periodo) {
             filtroPeriodoAtual = periodo;
             ['dia', 'semana', 'mes', 'ano'].forEach(p => {
@@ -985,6 +986,9 @@
         async function carregarFinanceiro() {
             const tbody = document.getElementById('transactions-table-body');
             const clienteFiltroFin = document.getElementById('filtro-cliente-financeiro').value;
+
+            // 1. Verificar e gerar faturas recorrentes do mês atual para os Planos ativos
+            await gerarFaturasRecorrentesAutomaticas();
 
             let query = supabaseClient.from('transactions').select('*, clients(name, color)');
             if (clienteFiltroFin) {
@@ -1070,6 +1074,42 @@
             document.getElementById('kpi-recebido').innerText = totalRecebido.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             document.getElementById('kpi-pendente').innerText = totalPendente.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             document.getElementById('kpi-atrasado').innerText = totalAtrasado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        // Função auxiliar que checa e gera a fatura mensal do plano recorrente
+        async function gerarFaturasRecorrentesAutomaticas() {
+            const { data: contratos } = await supabaseClient.from('contracts').select('*').eq('type', 'Plano').eq('status', 'Ativo');
+            if (!contratos || contratos.length === 0) return;
+
+            const { data: transacoes } = await supabaseClient.from('transactions').select('*');
+            if (!transacoes) return;
+
+            const dataAtual = new Date();
+            const anoAtual = dataAtual.getFullYear();
+            const mesAtual = String(dataAtual.getMonth() + 1).padStart(2, '0');
+            const diaVencimentoPadrao = `${anoAtual}-${mesAtual}-10`; // Vencimento padrão dia 10 de cada mês
+
+            for (const contrato of contratos) {
+                // Procura se já existe alguma transação para este contrato neste mês/ano atual
+                const jaExisteNesteMes = transacoes.some(t => {
+                    if (t.client_id !== contrato.client_id) return false;
+                    if (!t.due_date) return false;
+                    const [anoT, mesT] = t.due_date.split('-');
+                    return anoT == anoAtual && mesT == mesAtual && t.description.includes(contrato.title);
+                });
+
+                // Se não existir, gera a fatura do mês atual automaticamente
+                if (!jaExisteNesteMes) {
+                    await supabaseClient.from('transactions').insert([{
+                        client_id: contrato.client_id,
+                        description: `Mensalidade: ${contrato.title}`,
+                        amount: contrato.amount,
+                        due_date: diaVencimentoPadrao,
+                        status: 'Pendente',
+                        payment_method: 'Pix'
+                    }]);
+                }
+            }
         }
 
         async function salvarTransacao() {
