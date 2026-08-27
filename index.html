@@ -145,11 +145,16 @@
             <!-- ABA: FINANCEIRO -->
             <section id="aba-financeiro" class="tab-content hidden space-y-6">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 rounded-xl border border-zinc-200 shadow-sm">
-                    <div class="flex items-center gap-1.5 bg-zinc-100 p-1 rounded-lg">
-                        <button onclick="filtrarFinanceiro('dia')" id="btn-filtro-dia" class="px-3 py-1.5 text-xs font-medium text-zinc-600 rounded-md transition">Hoje</button>
-                        <button onclick="filtrarFinanceiro('semana')" id="btn-filtro-semana" class="px-3 py-1.5 text-xs font-medium text-zinc-600 rounded-md transition">Esta Semana</button>
-                        <button onclick="filtrarFinanceiro('mes')" id="btn-filtro-mes" class="px-3 py-1.5 text-xs font-medium bg-white text-zinc-900 shadow-sm rounded-md transition">Este Mês</button>
-                        <button onclick="filtrarFinanceiro('ano')" id="btn-filtro-ano" class="px-3 py-1.5 text-xs font-medium text-zinc-600 rounded-md transition">Este Ano</button>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <div class="flex items-center gap-1.5 bg-zinc-100 p-1 rounded-lg">
+                            <button onclick="filtrarFinanceiro('dia')" id="btn-filtro-dia" class="px-3 py-1.5 text-xs font-medium text-zinc-600 rounded-md transition">Hoje</button>
+                            <button onclick="filtrarFinanceiro('semana')" id="btn-filtro-semana" class="px-3 py-1.5 text-xs font-medium text-zinc-600 rounded-md transition">Esta Semana</button>
+                            <button onclick="filtrarFinanceiro('mes')" id="btn-filtro-mes" class="px-3 py-1.5 text-xs font-medium bg-white text-zinc-900 shadow-sm rounded-md transition">Este Mês</button>
+                            <button onclick="filtrarFinanceiro('ano')" id="btn-filtro-ano" class="px-3 py-1.5 text-xs font-medium text-zinc-600 rounded-md transition">Este Ano</button>
+                        </div>
+                        <select id="filtro-cliente-financeiro" onchange="carregarFinanceiro()" class="bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-xs text-zinc-900 focus:outline-none">
+                            <option value="">Todos os Clientes</option>
+                        </select>
                     </div>
                     <button onclick="openModal('transaction-modal')" class="px-3.5 py-2 text-xs font-medium text-white bg-zinc-900 rounded-lg shadow-sm hover:bg-zinc-800 transition">+ Nova Fatura / Recebimento</button>
                 </div>
@@ -913,7 +918,8 @@
                 return alert('Preencha os campos obrigatórios (Cliente, Título e Valor).');
             }
 
-            const { error } = await supabaseClient.from('contracts').insert([{
+            // 1. Salva o Contrato
+            const { error: contractError } = await supabaseClient.from('contracts').insert([{
                 client_id,
                 title,
                 type,
@@ -923,16 +929,34 @@
                 status: 'Ativo'
             }]);
 
-            if (error) {
-                alert('Erro ao salvar contrato: ' + error.message);
-            } else {
-                alert('Contrato cadastrado com sucesso!');
-                document.getElementById('contract-title').value = '';
-                document.getElementById('contract-amount').value = '';
-                document.getElementById('contract-cycle').value = '';
-                closeModal('contract-modal');
-                carregarContratos();
+            if (contractError) {
+                alert('Erro ao salvar contrato: ' + contractError.message);
+                return;
             }
+
+            // 2. Cria automaticamente a Fatura/Transação correspondente no Financeiro
+            const dataVencimento = start_date || new Date().toISOString().split('T')[0];
+            const { error: transError } = await supabaseClient.from('transactions').insert([{
+                client_id,
+                description: `Contrato: ${title}`,
+                amount: parseFloat(amount.replace(',', '.')),
+                due_date: dataVencimento,
+                status: 'Pendente',
+                payment_method: 'Pix'
+            }]);
+
+            if (transError) {
+                alert('Contrato salvo, mas houve erro ao gerar a fatura financeira: ' + transError.message);
+            } else {
+                alert('Contrato cadastrado e fatura gerada no Financeiro com sucesso!');
+            }
+
+            document.getElementById('contract-title').value = '';
+            document.getElementById('contract-amount').value = '';
+            document.getElementById('contract-cycle').value = '';
+            closeModal('contract-modal');
+            carregarContratos();
+            carregarFinanceiro();
         }
 
         async function deletarContrato(id) {
@@ -960,9 +984,14 @@
 
         async function carregarFinanceiro() {
             const tbody = document.getElementById('transactions-table-body');
-            const { data, error } = await supabaseClient
-                .from('transactions')
-                .select('*, clients(name, color)');
+            const clienteFiltroFin = document.getElementById('filtro-cliente-financeiro').value;
+
+            let query = supabaseClient.from('transactions').select('*, clients(name, color)');
+            if (clienteFiltroFin) {
+                query = query.eq('client_id', clienteFiltroFin);
+            }
+
+            const { data, error } = await query;
 
             if (error || !data) {
                 tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-zinc-400">Erro ao carregar transações.</td></tr>`;
@@ -1150,24 +1179,30 @@
             const selectContrato = document.getElementById('contract-client-select');
             const selectTrans = document.getElementById('trans-client-select');
             const selectFiltro = document.getElementById('filtro-cliente');
+            const selectFiltroFin = document.getElementById('filtro-cliente-financeiro');
+            
             const { data } = await supabaseClient.from('clients').select('*');
             if (!data) return;
 
             const clienteAtualFiltro = selectFiltro ? selectFiltro.value : '';
+            const clienteAtualFin = selectFiltroFin ? selectFiltroFin.value : '';
 
             if(selectProj) selectProj.innerHTML = '<option value="">Selecione um cliente...</option>';
             if(selectContrato) selectContrato.innerHTML = '<option value="">Selecione um cliente...</option>';
             if(selectTrans) selectTrans.innerHTML = '<option value="">Selecione um cliente...</option>';
             if(selectFiltro) selectFiltro.innerHTML = '<option value="">Todos os Clientes</option>';
+            if(selectFiltroFin) selectFiltroFin.innerHTML = '<option value="">Todos os Clientes</option>';
 
             data.forEach(client => {
                 if(selectProj) selectProj.innerHTML += `<option value="${client.id}">${client.name}</option>`;
                 if(selectContrato) selectContrato.innerHTML += `<option value="${client.id}">${client.name}</option>`;
                 if(selectTrans) selectTrans.innerHTML += `<option value="${client.id}">${client.name}</option>`;
                 if(selectFiltro) selectFiltro.innerHTML += `<option value="${client.id}">${client.name}</option>`;
+                if(selectFiltroFin) selectFiltroFin.innerHTML += `<option value="${client.id}">${client.name}</option>`;
             });
 
             if (clienteAtualFiltro && selectFiltro) selectFiltro.value = clienteAtualFiltro;
+            if (clienteAtualFin && selectFiltroFin) selectFiltroFin.value = clienteAtualFin;
         }
 
         async function salvarCliente() {
