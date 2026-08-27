@@ -9,71 +9,82 @@
     <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Google Fonts Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .kanban-col { min-height: 500px; transition: background-color 0.2s; }
-        .kanban-col.drag-over { background-color: rgba(228, 228, 231, 0.6); border-color: #71717a; }
+        .kanban-col { min-height: 550px; transition: all 0.25s ease; }
+        .kanban-col.drag-over { background-color: rgba(244, 244, 245, 0.9); border-color: #a1a1aa; transform: scale(1.01); }
+        /* Scrollbar customizada e elegante */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e4e4e7; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #d4d4d8; }
     </style>
 </head>
-<body class="bg-zinc-50 text-zinc-900 antialiased min-h-screen flex h-screen overflow-hidden">
+<body class="bg-zinc-900/5 text-zinc-900 antialiased min-h-screen flex h-screen overflow-hidden">
 
     <!-- MENU LATERAL / ABAS -->
-    <aside class="w-64 bg-white border-r border-zinc-200 flex flex-col justify-between z-30">
-        <div class="p-5 overflow-y-auto">
-            <div class="flex items-center space-x-3 mb-8">
-                <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
-                <h1 class="font-semibold text-base tracking-tight text-zinc-900">MEU AVAL <span class="text-zinc-400 font-normal">| Produção</span></h1>
+    <aside class="w-72 bg-white border-r border-zinc-200/80 flex flex-col justify-between z-30 shadow-sm">
+        <div class="p-6 overflow-y-auto space-y-6">
+            <div class="flex items-center space-x-3 px-1">
+                <div class="w-8 h-8 rounded-xl bg-zinc-900 flex items-center justify-center text-white shadow-md shadow-zinc-900/20">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                </div>
+                <div>
+                    <h1 class="font-bold text-sm tracking-tight text-zinc-900">MEU AVAL</h1>
+                    <p class="text-[10px] text-zinc-400 font-medium tracking-wide uppercase">Gestão de Produção</p>
+                </div>
             </div>
-            <nav class="space-y-1.5">
-                <button onclick="mudarAba('projetos')" class="w-full text-left px-3.5 py-2.5 rounded-lg text-xs font-medium bg-zinc-900 text-white transition tab-btn flex items-center gap-2.5 shadow-sm" data-tab="projetos">
-                    📁 Projetos (Kanban)
+            <nav class="space-y-1">
+                <button onclick="mudarAba('projetos')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium bg-zinc-900 text-white transition tab-btn flex items-center gap-3 shadow-sm shadow-zinc-900/10" data-tab="projetos">
+                    <span class="text-sm">📁</span> Projetos (Kanban)
                 </button>
-                <button onclick="mudarAba('clientes')" class="w-full text-left px-3.5 py-2.5 rounded-lg text-xs font-medium text-zinc-600 hover:bg-zinc-100 transition tab-btn flex items-center gap-2.5" data-tab="clientes">
-                    👥 Clientes
+                <button onclick="mudarAba('clientes')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 transition tab-btn flex items-center gap-3" data-tab="clientes">
+                    <span class="text-sm">👥</span> Clientes
                 </button>
-                <button onclick="mudarAba('financeiro')" class="w-full text-left px-3.5 py-2.5 rounded-lg text-xs font-medium text-zinc-600 hover:bg-zinc-100 transition tab-btn flex items-center gap-2.5" data-tab="financeiro">
-                    💰 Financeiro
+                <button onclick="mudarAba('financeiro')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 transition tab-btn flex items-center gap-3" data-tab="financeiro">
+                    <span class="text-sm">💰</span> Financeiro
                 </button>
 
                 <!-- Grupo Administrativo / Subpastas -->
-                <div class="pt-3 pb-1">
-                    <span class="px-3.5 text-[10px] font-bold uppercase tracking-wider text-zinc-400">Administrativo</span>
+                <div class="pt-5 pb-2 px-1">
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Administrativo</span>
                 </div>
-                <button onclick="mudarAba('comercial')" class="w-full text-left px-3.5 py-2 rounded-lg text-xs font-medium text-zinc-600 hover:bg-zinc-100 transition tab-btn flex items-center gap-2.5 pl-6" data-tab="comercial">
-                    💼 Comercial / Contratos
+                <button onclick="mudarAba('comercial')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 transition tab-btn flex items-center gap-3 pl-5" data-tab="comercial">
+                    <span class="text-sm">💼</span> Comercial / Contratos
                 </button>
-                <button onclick="mudarAba('planos')" class="w-full text-left px-3.5 py-2 rounded-lg text-xs font-medium text-zinc-600 hover:bg-zinc-100 transition tab-btn flex items-center gap-2.5 pl-6" data-tab="planos">
-                    ⚙️ Planos & Assinaturas
+                <button onclick="mudarAba('planos')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 transition tab-btn flex items-center gap-3 pl-5" data-tab="planos">
+                    <span class="text-sm">⚙️</span> Planos & Assinaturas
                 </button>
 
-                <div class="pt-3"></div>
-                <button onclick="mudarAba('configuracoes')" class="w-full text-left px-3.5 py-2.5 rounded-lg text-xs font-medium text-zinc-600 hover:bg-zinc-100 transition tab-btn flex items-center gap-2.5" data-tab="configuracoes">
-                    🔧 Configurações
+                <div class="pt-4"></div>
+                <button onclick="mudarAba('configuracoes')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 transition tab-btn flex items-center gap-3" data-tab="configuracoes">
+                    <span class="text-sm">🔧</span> Configurações
                 </button>
             </nav>
         </div>
-        <div class="p-4 border-t border-zinc-200 flex items-center justify-between text-xs">
+        <div class="p-4 mx-4 mb-4 rounded-xl bg-zinc-50 border border-zinc-200/60 flex items-center justify-between text-xs">
             <span class="text-zinc-500 font-medium">Status DB:</span>
-            <span id="db-status" class="px-2 py-0.5 rounded bg-zinc-100 text-zinc-700 border border-zinc-200">Conectando...</span>
+            <span id="db-status" class="px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-zinc-200 text-zinc-700">Conectando...</span>
         </div>
     </aside>
 
     <!-- CONTEÚDO PRINCIPAL -->
-    <main class="flex-1 flex flex-col overflow-y-auto">
+    <main class="flex-1 flex flex-col overflow-y-auto bg-zinc-50/50">
         
-        <!-- Header Minimalista -->
-        <header class="border-b border-zinc-200 bg-white sticky top-0 z-20">
-            <div class="max-w-7xl mx-auto px-8 h-16 flex items-center justify-between">
-                <h2 id="titulo-aba" class="font-semibold text-base tracking-tight text-zinc-900">Central de Projetos (Kanban)</h2>
-                <div class="flex items-center gap-3">
-                    <button onclick="openModal('client-modal')" class="inline-flex items-center justify-center px-3.5 py-2 text-xs font-medium text-zinc-700 bg-white border border-zinc-200 rounded-lg shadow-sm hover:bg-zinc-50 transition">
-                        + Novo Cliente
-                    </button>
-                    <button onclick="openModal('project-modal')" class="inline-flex items-center justify-center px-3.5 py-2 text-xs font-medium text-white bg-zinc-900 rounded-lg shadow-sm hover:bg-zinc-800 transition">
-                        + Novo Projeto
-                    </button>
-                </div>
+        <!-- Header Polido -->
+        <header class="border-b border-zinc-200/80 bg-white/80 backdrop-blur-md sticky top-0 z-20 px-8 h-18 flex items-center justify-between shadow-xs">
+            <div>
+                <h2 id="titulo-aba" class="font-bold text-base tracking-tight text-zinc-900">Central de Projetos (Kanban)</h2>
+                <p class="text-xs text-zinc-400">Gerencie fluxos, entregas e operações com agilidade.</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="openModal('client-modal')" class="inline-flex items-center justify-center px-4 py-2.5 text-xs font-medium text-zinc-700 bg-white border border-zinc-200 rounded-xl shadow-xs hover:bg-zinc-50 hover:border-zinc-300 transition active:scale-95">
+                    + Novo Cliente
+                </button>
+                <button onclick="openModal('project-modal')" class="inline-flex items-center justify-center px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 rounded-xl shadow-md shadow-zinc-900/20 hover:bg-zinc-800 transition active:scale-95">
+                    + Novo Projeto
+                </button>
             </div>
         </header>
 
@@ -83,38 +94,38 @@
             <!-- ABA: PROJETOS (KANBAN) -->
             <section id="aba-projetos" class="tab-content space-y-6">
                 <!-- Filtro por Cliente -->
-                <div class="flex items-center gap-3 bg-white p-4 rounded-xl border border-zinc-200 shadow-sm">
-                    <label for="filtro-cliente" class="text-xs font-medium text-zinc-600">Filtrar por Cliente:</label>
-                    <select id="filtro-cliente" onchange="carregarDados()" class="bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-900 focus:outline-none focus:border-zinc-400">
+                <div class="flex items-center gap-3 bg-white p-4 rounded-2xl border border-zinc-200/80 shadow-xs">
+                    <label for="filtro-cliente" class="text-xs font-medium text-zinc-500">Filtrar por Cliente:</label>
+                    <select id="filtro-cliente" onchange="carregarDados()" class="bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2 text-xs text-zinc-900 focus:outline-none focus:border-zinc-400 font-medium">
                         <option value="">Todos os Clientes</option>
                     </select>
-                    <button onclick="carregarDados()" class="text-xs text-zinc-500 hover:text-zinc-900 ml-auto font-medium">Atualizar Dados</button>
+                    <button onclick="carregarDados()" class="text-xs text-zinc-500 hover:text-zinc-900 ml-auto font-medium transition px-3 py-1.5 rounded-lg hover:bg-zinc-100">Atualizar Dados ⟳</button>
                 </div>
 
                 <!-- Quadro Kanban com suporte a Drag & Drop -->
                 <div class="grid grid-cols-1 md:grid-cols-6 gap-4 min-h-[600px] pb-4">
-                    <div class="bg-zinc-100/70 border border-zinc-200/80 rounded-xl p-3 flex flex-col kanban-col" id="col-planejamento" data-status="Planejamento" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Planejamento')">
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-amber-600 mb-3 px-1 flex items-center justify-between">Planejamento <span id="count-planejamento" class="bg-white border border-zinc-200 text-zinc-600 px-1.5 py-0.5 rounded-full text-[10px]">0</span></h3>
+                    <div class="bg-zinc-100/60 border border-zinc-200/70 rounded-2xl p-3.5 flex flex-col kanban-col shadow-xs" id="col-planejamento" data-status="Planejamento" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Planejamento')">
+                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-amber-700 mb-3 px-1 flex items-center justify-between">Planejamento <span id="count-planejamento" class="bg-white border border-zinc-200/80 text-zinc-700 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
                         <div class="flex-1 space-y-3 overflow-y-auto"></div>
                     </div>
-                    <div class="bg-zinc-100/70 border border-zinc-200/80 rounded-xl p-3 flex flex-col kanban-col" id="col-em-execucao" data-status="Em execução" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Em execução')">
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-blue-600 mb-3 px-1 flex items-center justify-between">Em execução <span id="count-em-execucao" class="bg-white border border-zinc-200 text-zinc-600 px-1.5 py-0.5 rounded-full text-[10px]">0</span></h3>
+                    <div class="bg-zinc-100/60 border border-zinc-200/70 rounded-2xl p-3.5 flex flex-col kanban-col shadow-xs" id="col-em-execucao" data-status="Em execução" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Em execução')">
+                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-blue-700 mb-3 px-1 flex items-center justify-between">Em execução <span id="count-em-execucao" class="bg-white border border-zinc-200/80 text-zinc-700 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
                         <div class="flex-1 space-y-3 overflow-y-auto"></div>
                     </div>
-                    <div class="bg-zinc-100/70 border border-zinc-200/80 rounded-xl p-3 flex flex-col kanban-col" id="col-em-validacao" data-status="Em Validação" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Em Validação')">
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-purple-600 mb-3 px-1 flex items-center justify-between">Em Validação <span id="count-em-validacao" class="bg-white border border-zinc-200 text-zinc-600 px-1.5 py-0.5 rounded-full text-[10px]">0</span></h3>
+                    <div class="bg-zinc-100/60 border border-zinc-200/70 rounded-2xl p-3.5 flex flex-col kanban-col shadow-xs" id="col-em-validacao" data-status="Em Validação" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Em Validação')">
+                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-purple-700 mb-3 px-1 flex items-center justify-between">Em Validação <span id="count-em-validacao" class="bg-white border border-zinc-200/80 text-zinc-700 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
                         <div class="flex-1 space-y-3 overflow-y-auto"></div>
                     </div>
-                    <div class="bg-zinc-100/70 border border-zinc-200/80 rounded-xl p-3 flex flex-col kanban-col" id="col-aprovado" data-status="Aprovado" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Aprovado')">
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-teal-600 mb-3 px-1 flex items-center justify-between">Aprovado <span id="count-aprovado" class="bg-white border border-zinc-200 text-zinc-600 px-1.5 py-0.5 rounded-full text-[10px]">0</span></h3>
+                    <div class="bg-zinc-100/60 border border-zinc-200/70 rounded-2xl p-3.5 flex flex-col kanban-col shadow-xs" id="col-aprovado" data-status="Aprovado" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Aprovado')">
+                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-teal-700 mb-3 px-1 flex items-center justify-between">Aprovado <span id="count-aprovado" class="bg-white border border-zinc-200/80 text-zinc-700 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
                         <div class="flex-1 space-y-3 overflow-y-auto"></div>
                     </div>
-                    <div class="bg-zinc-100/70 border border-zinc-200/80 rounded-xl p-3 flex flex-col kanban-col" id="col-programado" data-status="Programado" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Programado')">
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-600 mb-3 px-1 flex items-center justify-between">Programado <span id="count-programado" class="bg-white border border-zinc-200 text-zinc-600 px-1.5 py-0.5 rounded-full text-[10px]">0</span></h3>
+                    <div class="bg-zinc-100/60 border border-zinc-200/70 rounded-2xl p-3.5 flex flex-col kanban-col shadow-xs" id="col-programado" data-status="Programado" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Programado')">
+                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-indigo-700 mb-3 px-1 flex items-center justify-between">Programado <span id="count-programado" class="bg-white border border-zinc-200/80 text-zinc-700 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
                         <div class="flex-1 space-y-3 overflow-y-auto"></div>
                     </div>
-                    <div class="bg-zinc-100/70 border border-zinc-200/80 rounded-xl p-3 flex flex-col kanban-col" id="col-concluido" data-status="Concluido" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Concluido')">
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-600 mb-3 px-1 flex items-center justify-between">Concluído <span id="count-concluido" class="bg-white border border-zinc-200 text-zinc-600 px-1.5 py-0.5 rounded-full text-[10px]">0</span></h3>
+                    <div class="bg-zinc-100/60 border border-zinc-200/70 rounded-2xl p-3.5 flex flex-col kanban-col shadow-xs" id="col-concluido" data-status="Concluido" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Concluido')">
+                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-emerald-700 mb-3 px-1 flex items-center justify-between">Concluído <span id="count-concluido" class="bg-white border border-zinc-200/80 text-zinc-700 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
                         <div class="flex-1 space-y-3 overflow-y-auto"></div>
                     </div>
                 </div>
@@ -122,21 +133,24 @@
 
             <!-- ABA: CLIENTES -->
             <section id="aba-clientes" class="tab-content hidden space-y-6">
-                <div class="flex justify-between items-center bg-white p-4 rounded-xl border border-zinc-200 shadow-sm">
-                    <h3 class="font-medium text-sm text-zinc-800">Gerenciamento de Clientes</h3>
-                    <button onclick="openModal('client-modal')" class="px-3.5 py-2 text-xs font-medium text-white bg-zinc-900 rounded-lg shadow-sm hover:bg-zinc-800 transition">+ Novo Cliente</button>
+                <div class="flex justify-between items-center bg-white p-5 rounded-2xl border border-zinc-200/80 shadow-xs">
+                    <div>
+                        <h3 class="font-semibold text-sm text-zinc-900">Gerenciamento de Clientes</h3>
+                        <p class="text-xs text-zinc-400">Cadastre e personalize a identidade visual de cada empresa.</p>
+                    </div>
+                    <button onclick="openModal('client-modal')" class="px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 rounded-xl shadow-md shadow-zinc-900/10 hover:bg-zinc-800 transition">+ Novo Cliente</button>
                 </div>
-                <div class="bg-white border border-zinc-200 rounded-xl shadow-sm overflow-hidden">
+                <div class="bg-white border border-zinc-200/80 rounded-2xl shadow-xs overflow-hidden">
                     <table class="w-full text-left text-sm">
-                        <thead class="bg-zinc-50 border-b border-zinc-200 text-zinc-500 font-medium text-xs uppercase tracking-wider">
+                        <thead class="bg-zinc-50/80 border-b border-zinc-200 text-zinc-400 font-semibold text-[11px] uppercase tracking-wider">
                             <tr>
                                 <th class="p-4 pl-6">Cliente / Empresa</th>
                                 <th class="p-4">Documento (CPF/CNPJ)</th>
                                 <th class="p-4 pr-6 text-right">Ações</th>
                             </tr>
                         </thead>
-                        <tbody id="clients-table-body" class="divide-y divide-zinc-100 text-zinc-700 text-xs">
-                            <tr><td colspan="3" class="p-6 text-center text-zinc-400">Carregando clientes...</td></tr>
+                        <tbody id="clients-table-body" class="divide-y divide-zinc-100 text-zinc-700 text-xs font-medium">
+                            <tr><td colspan="3" class="p-8 text-center text-zinc-400">Carregando clientes...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -144,39 +158,39 @@
 
             <!-- ABA: FINANCEIRO -->
             <section id="aba-financeiro" class="tab-content hidden space-y-6">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 rounded-xl border border-zinc-200 shadow-sm">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-5 rounded-2xl border border-zinc-200/80 shadow-xs">
                     <div class="flex flex-wrap items-center gap-2">
-                        <div class="flex items-center gap-1.5 bg-zinc-100 p-1 rounded-lg">
-                            <button onclick="filtrarFinanceiro('dia')" id="btn-filtro-dia" class="px-3 py-1.5 text-xs font-medium text-zinc-600 rounded-md transition">Hoje</button>
-                            <button onclick="filtrarFinanceiro('semana')" id="btn-filtro-semana" class="px-3 py-1.5 text-xs font-medium text-zinc-600 rounded-md transition">Esta Semana</button>
-                            <button onclick="filtrarFinanceiro('mes')" id="btn-filtro-mes" class="px-3 py-1.5 text-xs font-medium bg-white text-zinc-900 shadow-sm rounded-md transition">Este Mês</button>
-                            <button onclick="filtrarFinanceiro('ano')" id="btn-filtro-ano" class="px-3 py-1.5 text-xs font-medium text-zinc-600 rounded-md transition">Este Ano</button>
+                        <div class="flex items-center gap-1 bg-zinc-100 p-1 rounded-xl border border-zinc-200/60">
+                            <button onclick="filtrarFinanceiro('dia')" id="btn-filtro-dia" class="px-3 py-1.5 text-xs font-medium text-zinc-600 rounded-lg transition">Hoje</button>
+                            <button onclick="filtrarFinanceiro('semana')" id="btn-filtro-semana" class="px-3 py-1.5 text-xs font-medium text-zinc-600 rounded-lg transition">Esta Semana</button>
+                            <button onclick="filtrarFinanceiro('mes')" id="btn-filtro-mes" class="px-3 py-1.5 text-xs font-medium bg-white text-zinc-900 shadow-xs rounded-lg transition">Este Mês</button>
+                            <button onclick="filtrarFinanceiro('ano')" id="btn-filtro-ano" class="px-3 py-1.5 text-xs font-medium text-zinc-600 rounded-lg transition">Este Ano</button>
                         </div>
-                        <select id="filtro-cliente-financeiro" onchange="carregarFinanceiro()" class="bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-xs text-zinc-900 focus:outline-none">
+                        <select id="filtro-cliente-financeiro" onchange="carregarFinanceiro()" class="bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2 text-xs text-zinc-900 focus:outline-none font-medium">
                             <option value="">Todos os Clientes</option>
                         </select>
                     </div>
-                    <button onclick="openModal('transaction-modal')" class="px-3.5 py-2 text-xs font-medium text-white bg-zinc-900 rounded-lg shadow-sm hover:bg-zinc-800 transition">+ Nova Fatura / Recebimento</button>
+                    <button onclick="openModal('transaction-modal')" class="px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 rounded-xl shadow-md shadow-zinc-900/10 hover:bg-zinc-800 transition">+ Nova Fatura / Recebimento</button>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="bg-white p-5 rounded-xl border border-zinc-200 shadow-sm space-y-1">
-                        <span class="text-xs font-medium text-zinc-500">Recebido no Período</span>
-                        <h3 id="kpi-recebido" class="text-xl font-bold text-emerald-600">R$ 0,00</h3>
+                    <div class="bg-white p-6 rounded-2xl border border-zinc-200/80 shadow-xs space-y-1">
+                        <span class="text-xs font-medium text-zinc-400">Recebido no Período</span>
+                        <h3 id="kpi-recebido" class="text-2xl font-bold text-emerald-600 tracking-tight">R$ 0,00</h3>
                     </div>
-                    <div class="bg-white p-5 rounded-xl border border-zinc-200 shadow-sm space-y-1">
-                        <span class="text-xs font-medium text-zinc-500">Pagamentos Pendentes</span>
-                        <h3 id="kpi-pendente" class="text-xl font-bold text-amber-600">R$ 0,00</h3>
+                    <div class="bg-white p-6 rounded-2xl border border-zinc-200/80 shadow-xs space-y-1">
+                        <span class="text-xs font-medium text-zinc-400">Pagamentos Pendentes</span>
+                        <h3 id="kpi-pendente" class="text-2xl font-bold text-amber-600 tracking-tight">R$ 0,00</h3>
                     </div>
-                    <div class="bg-white p-5 rounded-xl border border-zinc-200 shadow-sm space-y-1">
-                        <span class="text-xs font-medium text-zinc-500">Pagamentos Atrasados</span>
-                        <h3 id="kpi-atrasado" class="text-xl font-bold text-rose-600">R$ 0,00</h3>
+                    <div class="bg-white p-6 rounded-2xl border border-zinc-200/80 shadow-xs space-y-1">
+                        <span class="text-xs font-medium text-zinc-400">Pagamentos Atrasados</span>
+                        <h3 id="kpi-atrasado" class="text-2xl font-bold text-rose-600 tracking-tight">R$ 0,00</h3>
                     </div>
                 </div>
 
-                <div class="bg-white border border-zinc-200 rounded-xl shadow-sm overflow-hidden">
+                <div class="bg-white border border-zinc-200/80 rounded-2xl shadow-xs overflow-hidden">
                     <table class="w-full text-left text-sm">
-                        <thead class="bg-zinc-50 border-b border-zinc-200 text-zinc-500 font-medium text-xs uppercase tracking-wider">
+                        <thead class="bg-zinc-50/80 border-b border-zinc-200 text-zinc-400 font-semibold text-[11px] uppercase tracking-wider">
                             <tr>
                                 <th class="p-4 pl-6">Cliente / Empresa</th>
                                 <th class="p-4">Descrição</th>
@@ -186,8 +200,8 @@
                                 <th class="p-4 pr-6 text-right">Ações</th>
                             </tr>
                         </thead>
-                        <tbody id="transactions-table-body" class="divide-y divide-zinc-100 text-zinc-700 text-xs">
-                            <tr><td colspan="6" class="p-6 text-center text-zinc-400">Carregando transações...</td></tr>
+                        <tbody id="transactions-table-body" class="divide-y divide-zinc-100 text-zinc-700 text-xs font-medium">
+                            <tr><td colspan="6" class="p-8 text-center text-zinc-400">Carregando transações...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -195,16 +209,16 @@
 
             <!-- ABA: COMERCIAL / CONTRATOS -->
             <section id="aba-comercial" class="tab-content hidden space-y-6">
-                <div class="flex justify-between items-center bg-white p-4 rounded-xl border border-zinc-200 shadow-sm">
+                <div class="flex justify-between items-center bg-white p-5 rounded-2xl border border-zinc-200/80 shadow-xs">
                     <div>
-                        <h3 class="font-medium text-sm text-zinc-800">Gestão Comercial e Contratos</h3>
-                        <p class="text-xs text-zinc-500">Gerencie planos recorrentes e serviços avulsos de cada cliente.</p>
+                        <h3 class="font-semibold text-sm text-zinc-900">Gestão Comercial e Contratos</h3>
+                        <p class="text-xs text-zinc-400">Gerencie planos recorrentes e serviços avulsos de cada cliente.</p>
                     </div>
-                    <button onclick="openModal('contract-modal')" class="px-3.5 py-2 text-xs font-medium text-white bg-zinc-900 rounded-lg shadow-sm hover:bg-zinc-800 transition">+ Novo Contrato / Serviço</button>
+                    <button onclick="openModal('contract-modal')" class="px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 rounded-xl shadow-md shadow-zinc-900/10 hover:bg-zinc-800 transition">+ Novo Contrato / Serviço</button>
                 </div>
-                <div class="bg-white border border-zinc-200 rounded-xl shadow-sm overflow-hidden">
+                <div class="bg-white border border-zinc-200/80 rounded-2xl shadow-xs overflow-hidden">
                     <table class="w-full text-left text-sm">
-                        <thead class="bg-zinc-50 border-b border-zinc-200 text-zinc-500 font-medium text-xs uppercase tracking-wider">
+                        <thead class="bg-zinc-50/80 border-b border-zinc-200 text-zinc-400 font-semibold text-[11px] uppercase tracking-wider">
                             <tr>
                                 <th class="p-4 pl-6">Cliente / Empresa</th>
                                 <th class="p-4">Título do Contrato / Serviço</th>
@@ -214,8 +228,8 @@
                                 <th class="p-4 pr-6 text-right">Ações</th>
                             </tr>
                         </thead>
-                        <tbody id="contracts-table-body" class="divide-y divide-zinc-100 text-zinc-700 text-xs">
-                            <tr><td colspan="6" class="p-6 text-center text-zinc-400">Carregando contratos...</td></tr>
+                        <tbody id="contracts-table-body" class="divide-y divide-zinc-100 text-zinc-700 text-xs font-medium">
+                            <tr><td colspan="6" class="p-8 text-center text-zinc-400">Carregando contratos...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -223,23 +237,23 @@
 
             <!-- ABA: PLANOS & ASSINATURAS -->
             <section id="aba-planos" class="tab-content hidden space-y-6">
-                <div class="flex justify-between items-center bg-white p-4 rounded-xl border border-zinc-200 shadow-sm">
+                <div class="flex justify-between items-center bg-white p-5 rounded-2xl border border-zinc-200/80 shadow-xs">
                     <div>
-                        <h3 class="font-medium text-sm text-zinc-800">Planos e Pacotes Cadastrados</h3>
-                        <p class="text-xs text-zinc-500">Cadastre modelos de contratação para selecionar rapidamente na aba Comercial.</p>
+                        <h3 class="font-semibold text-sm text-zinc-900">Planos e Pacotes Cadastrados</h3>
+                        <p class="text-xs text-zinc-400">Cadastre modelos de contratação para selecionar rapidamente na aba Comercial.</p>
                     </div>
-                    <button onclick="openModal('plan-modal')" class="px-3.5 py-2 text-xs font-medium text-white bg-zinc-900 rounded-lg shadow-sm hover:bg-zinc-800 transition">+ Novo Plano</button>
+                    <button onclick="openModal('plan-modal')" class="px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 rounded-xl shadow-md shadow-zinc-900/10 hover:bg-zinc-800 transition">+ Novo Plano</button>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="grid-planos">
-                    <p class="text-xs text-zinc-400 col-span-3 text-center py-6">Carregando planos...</p>
+                    <p class="text-xs text-zinc-400 col-span-3 text-center py-8">Carregando planos...</p>
                 </div>
             </section>
 
             <!-- ABA: CONFIGURAÇÕES -->
             <section id="aba-configuracoes" class="tab-content hidden space-y-6">
-                <div class="bg-white p-6 rounded-xl border border-zinc-200 shadow-sm space-y-2">
-                    <h3 class="font-medium text-sm text-zinc-800">Configurações do Sistema</h3>
-                    <p class="text-xs text-zinc-500">Ajustes gerais da aplicação, chaves de API e conexões com Supabase.</p>
+                <div class="bg-white p-6 rounded-2xl border border-zinc-200/80 shadow-xs space-y-2">
+                    <h3 class="font-semibold text-sm text-zinc-900">Configurações do Sistema</h3>
+                    <p class="text-xs text-zinc-400">Ajustes gerais da aplicação, chaves de API e conexões com Supabase.</p>
                 </div>
             </section>
 
@@ -247,198 +261,198 @@
     </main>
 
     <!-- MODAL: Novo Cliente -->
-    <div id="client-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-        <div class="bg-white border border-zinc-200 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
+    <div id="client-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+        <div class="bg-white border border-zinc-200 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-150">
             <div class="flex justify-between items-center">
-                <h3 class="font-semibold text-lg text-zinc-900">Cadastrar Novo Cliente</h3>
-                <button onclick="closeModal('client-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm">✕</button>
+                <h3 class="font-bold text-base text-zinc-900">Cadastrar Novo Cliente</h3>
+                <button onclick="closeModal('client-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 transition">✕</button>
             </div>
-            <div class="space-y-3">
+            <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-medium text-zinc-600 mb-1">Nome da Empresa / Cliente</label>
-                    <input type="text" id="client-name" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400" placeholder="Ex: C-METAL">
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Nome da Empresa / Cliente</label>
+                    <input type="text" id="client-name" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 font-medium" placeholder="Ex: C-METAL">
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-zinc-600 mb-1">Documento (CNPJ / CPF)</label>
-                    <input type="text" id="client-doc" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400" placeholder="00.000.000/0001-00">
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Documento (CNPJ / CPF)</label>
+                    <input type="text" id="client-doc" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 font-medium" placeholder="00.000.000/0001-00">
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-zinc-600 mb-1">Cor de Identificação</label>
-                    <div class="flex items-center gap-2">
-                        <input type="color" id="client-color" value="#3498db" class="w-10 h-10 bg-zinc-50 border border-zinc-200 rounded-lg cursor-pointer p-1">
-                        <span class="text-xs text-zinc-500">Cor para diferenciar os projetos no Kanban.</span>
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Cor de Identificação</label>
+                    <div class="flex items-center gap-3 bg-zinc-50 p-3 rounded-xl border border-zinc-200">
+                        <input type="color" id="client-color" value="#3498db" class="w-10 h-10 bg-transparent border-0 rounded-lg cursor-pointer p-0">
+                        <span class="text-xs text-zinc-500 font-medium">Cor para diferenciar os cartões no Kanban.</span>
                     </div>
                 </div>
             </div>
             <div class="flex justify-end gap-2 pt-2">
-                <button onclick="closeModal('client-modal')" class="px-4 py-2 text-xs font-medium text-zinc-600 hover:bg-zinc-100 rounded-lg transition">Cancelar</button>
-                <button onclick="salvarCliente()" class="px-4 py-2 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-lg transition">Salvar Cliente</button>
+                <button onclick="closeModal('client-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 rounded-xl transition">Cancelar</button>
+                <button onclick="salvarCliente()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl shadow-md transition">Salvar Cliente</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL: Editar Cliente -->
-    <div id="edit-client-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-        <div class="bg-white border border-zinc-200 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
+    <div id="edit-client-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+        <div class="bg-white border border-zinc-200 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
-                <h3 class="font-semibold text-lg text-zinc-900">Editar Cliente</h3>
-                <button onclick="closeModal('edit-client-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm">✕</button>
+                <h3 class="font-bold text-base text-zinc-900">Editar Cliente</h3>
+                <button onclick="closeModal('edit-client-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 transition">✕</button>
             </div>
             <input type="hidden" id="edit-client-id">
-            <div class="space-y-3">
+            <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-medium text-zinc-600 mb-1">Nome da Empresa / Cliente</label>
-                    <input type="text" id="edit-client-name" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400">
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Nome da Empresa / Cliente</label>
+                    <input type="text" id="edit-client-name" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-zinc-600 mb-1">Documento (CNPJ / CPF)</label>
-                    <input type="text" id="edit-client-doc" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400">
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Documento (CNPJ / CPF)</label>
+                    <input type="text" id="edit-client-doc" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-zinc-600 mb-1">Cor de Identificação</label>
-                    <div class="flex items-center gap-2">
-                        <input type="color" id="edit-client-color" class="w-10 h-10 bg-zinc-50 border border-zinc-200 rounded-lg cursor-pointer p-1">
-                        <span class="text-xs text-zinc-500">Altere a cor de identificação da empresa.</span>
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Cor de Identificação</label>
+                    <div class="flex items-center gap-3 bg-zinc-50 p-3 rounded-xl border border-zinc-200">
+                        <input type="color" id="edit-client-color" class="w-10 h-10 bg-transparent border-0 rounded-lg cursor-pointer p-0">
+                        <span class="text-xs text-zinc-500 font-medium">Altere a cor de identificação da empresa.</span>
                     </div>
                 </div>
             </div>
             <div class="flex justify-end gap-2 pt-2">
-                <button onclick="closeModal('edit-client-modal')" class="px-4 py-2 text-xs font-medium text-zinc-600 hover:bg-zinc-100 rounded-lg transition">Cancelar</button>
-                <button onclick="atualizarCliente()" class="px-4 py-2 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-lg transition">Salvar Alterações</button>
+                <button onclick="closeModal('edit-client-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 rounded-xl transition">Cancelar</button>
+                <button onclick="atualizarCliente()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl shadow-md transition">Salvar Alterações</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL: Novo Contrato / Serviço (Comercial) -->
-    <div id="contract-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-        <div class="bg-white border border-zinc-200 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
+    <div id="contract-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+        <div class="bg-white border border-zinc-200 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
-                <h3 class="font-semibold text-lg text-zinc-900">Novo Contrato ou Serviço</h3>
-                <button onclick="closeModal('contract-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm">✕</button>
+                <h3 class="font-bold text-base text-zinc-900">Novo Contrato ou Serviço</h3>
+                <button onclick="closeModal('contract-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 transition">✕</button>
             </div>
-            <div class="space-y-3">
+            <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-medium text-zinc-600 mb-1">Cliente / Empresa</label>
-                    <select id="contract-client-select" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400">
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Cliente / Empresa</label>
+                    <select id="contract-client-select" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
                         <option value="">Selecione um cliente...</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-zinc-600 mb-1">Carregar dados de um Plano Cadastrado (Opcional)</label>
-                    <select id="contract-plan-select" onchange="selecionarPlanoNoContrato()" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400">
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Carregar dados de um Plano (Opcional)</label>
+                    <select id="contract-plan-select" onchange="selecionarPlanoNoContrato()" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
                         <option value="">Selecione um plano pré-definido...</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-zinc-600 mb-1">Título do Contrato / Serviço</label>
-                    <input type="text" id="contract-title" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400" placeholder="Ex: Retainer Mensal / Cobertura Evento X">
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Título do Contrato / Serviço</label>
+                    <input type="text" id="contract-title" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="Ex: Retainer Mensal / Cobertura Evento X">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-medium text-zinc-600 mb-1">Tipo</label>
-                        <select id="contract-type" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none">
+                        <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Tipo</label>
+                        <select id="contract-type" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
                             <option value="Plano">Plano (Recorrente)</option>
                             <option value="Serviço Avulso">Serviço Avulso</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-zinc-600 mb-1">Valor (R$)</label>
-                        <input type="text" id="contract-amount" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none" placeholder="2500.00">
+                        <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Valor (R$)</label>
+                        <input type="text" id="contract-amount" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="2500.00">
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-medium text-zinc-600 mb-1">Ciclo / Vencimento</label>
-                        <input type="text" id="contract-cycle" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none" placeholder="Ex: Mensal / Dia 10">
+                        <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Ciclo / Vencimento</label>
+                        <input type="text" id="contract-cycle" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="Ex: Mensal / Dia 10">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-zinc-600 mb-1">Data de Início</label>
-                        <input type="date" id="contract-date" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none">
+                        <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Data de Início</label>
+                        <input type="date" id="contract-date" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
                     </div>
                 </div>
             </div>
             <div class="flex justify-end gap-2 pt-2">
-                <button onclick="closeModal('contract-modal')" class="px-4 py-2 text-xs font-medium text-zinc-600 hover:bg-zinc-100 rounded-lg transition">Cancelar</button>
-                <button onclick="salvarContrato()" class="px-4 py-2 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-lg transition">Salvar Contrato</button>
+                <button onclick="closeModal('contract-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 rounded-xl transition">Cancelar</button>
+                <button onclick="salvarContrato()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl shadow-md transition">Salvar Contrato</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL: Nova Transação / Fatura (Financeiro) -->
-    <div id="transaction-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-        <div class="bg-white border border-zinc-200 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
+    <div id="transaction-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+        <div class="bg-white border border-zinc-200 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
-                <h3 class="font-semibold text-lg text-zinc-900">Registrar Recebimento / Fatura</h3>
-                <button onclick="closeModal('transaction-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm">✕</button>
+                <h3 class="font-bold text-base text-zinc-900">Registrar Recebimento / Fatura</h3>
+                <button onclick="closeModal('transaction-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 transition">✕</button>
             </div>
-            <div class="space-y-3">
+            <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-medium text-zinc-600 mb-1">Cliente / Empresa</label>
-                    <select id="trans-client-select" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400">
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Cliente / Empresa</label>
+                    <select id="trans-client-select" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
                         <option value="">Selecione um cliente...</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-zinc-600 mb-1">Descrição</label>
-                    <input type="text" id="trans-desc" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none" placeholder="Ex: Mensalidade - Agosto/2026">
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Descrição</label>
+                    <input type="text" id="trans-desc" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="Ex: Mensalidade - Agosto/2026">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-medium text-zinc-600 mb-1">Valor (R$)</label>
-                        <input type="text" id="trans-amount" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none" placeholder="2500.00">
+                        <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Valor (R$)</label>
+                        <input type="text" id="trans-amount" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="2500.00">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-zinc-600 mb-1">Vencimento</label>
-                        <input type="date" id="trans-duedate" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none">
+                        <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Vencimento</label>
+                        <input type="date" id="trans-duedate" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-medium text-zinc-600 mb-1">Status</label>
-                        <select id="trans-status" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none">
+                        <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Status</label>
+                        <select id="trans-status" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
                             <option value="Pendente">Pendente</option>
                             <option value="Pago">Pago</option>
                             <option value="Atrasado">Atrasado</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-zinc-600 mb-1">Forma de Pagamento</label>
-                        <input type="text" id="trans-method" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none" placeholder="Ex: Pix / Boleto">
+                        <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Forma de Pagamento</label>
+                        <input type="text" id="trans-method" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="Ex: Pix / Boleto">
                     </div>
                 </div>
             </div>
             <div class="flex justify-end gap-2 pt-2">
-                <button onclick="closeModal('transaction-modal')" class="px-4 py-2 text-xs font-medium text-zinc-600 hover:bg-zinc-100 rounded-lg transition">Cancelar</button>
-                <button onclick="salvarTransacao()" class="px-4 py-2 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-lg transition">Salvar Fatura</button>
+                <button onclick="closeModal('transaction-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 rounded-xl transition">Cancelar</button>
+                <button onclick="salvarTransacao()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl shadow-md transition">Salvar Fatura</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL: Novo Projeto -->
-    <div id="project-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-        <div class="bg-white border border-zinc-200 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
+    <div id="project-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+        <div class="bg-white border border-zinc-200 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
-                <h3 class="font-semibold text-lg text-zinc-900">Cadastrar Novo Projeto</h3>
-                <button onclick="closeModal('project-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm">✕</button>
+                <h3 class="font-bold text-base text-zinc-900">Cadastrar Novo Projeto</h3>
+                <button onclick="closeModal('project-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 transition">✕</button>
             </div>
-            <div class="space-y-3">
+            <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-medium text-zinc-600 mb-1">Cliente</label>
-                    <select id="project-client-select" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400">
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Cliente</label>
+                    <select id="project-client-select" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
                         <option value="">Carregando clientes...</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-zinc-600 mb-1">Título do Projeto</label>
-                    <input type="text" id="project-title" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400" placeholder="Ex: Cobertura FEIMEC 2026">
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Título do Projeto</label>
+                    <input type="text" id="project-title" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="Ex: Cobertura FEIMEC 2026">
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-zinc-600 mb-1">Descrição / Escopo</label>
-                    <textarea id="project-desc" rows="2" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400" placeholder="Detalhes da produção..."></textarea>
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Descrição / Escopo</label>
+                    <textarea id="project-desc" rows="2" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="Detalhes da produção..."></textarea>
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-zinc-600 mb-1">Status (Coluna Kanban)</label>
-                    <select id="project-status" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400">
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Status (Coluna Kanban)</label>
+                    <select id="project-status" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
                         <option value="Planejamento">Planejamento</option>
                         <option value="Em execução">Em execução</option>
                         <option value="Em Validação">Em Validação</option>
@@ -449,32 +463,32 @@
                 </div>
             </div>
             <div class="flex justify-end gap-2 pt-2">
-                <button onclick="closeModal('project-modal')" class="px-4 py-2 text-xs font-medium text-zinc-600 hover:bg-zinc-100 rounded-lg transition">Cancelar</button>
-                <button onclick="salvarProjeto()" class="px-4 py-2 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-lg transition">Criar Projeto</button>
+                <button onclick="closeModal('project-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 rounded-xl transition">Cancelar</button>
+                <button onclick="salvarProjeto()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl shadow-md transition">Criar Projeto</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL: Editar Projeto -->
-    <div id="edit-project-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-        <div class="bg-white border border-zinc-200 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
+    <div id="edit-project-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+        <div class="bg-white border border-zinc-200 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
-                <h3 class="font-semibold text-lg text-zinc-900">Editar Projeto</h3>
-                <button onclick="closeModal('edit-project-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm">✕</button>
+                <h3 class="font-bold text-base text-zinc-900">Editar Projeto</h3>
+                <button onclick="closeModal('edit-project-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 transition">✕</button>
             </div>
             <input type="hidden" id="edit-project-id">
-            <div class="space-y-3">
+            <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-medium text-zinc-600 mb-1">Título do Projeto</label>
-                    <input type="text" id="edit-project-title" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400">
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Título do Projeto</label>
+                    <input type="text" id="edit-project-title" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-zinc-600 mb-1">Descrição</label>
-                    <textarea id="edit-project-desc" rows="2" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400"></textarea>
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Descrição</label>
+                    <textarea id="edit-project-desc" rows="2" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium"></textarea>
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-zinc-600 mb-1">Status (Coluna Kanban)</label>
-                    <select id="edit-project-status" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400">
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Status (Coluna Kanban)</label>
+                    <select id="edit-project-status" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
                         <option value="Planejamento">Planejamento</option>
                         <option value="Em execução">Em execução</option>
                         <option value="Em Validação">Em Validação</option>
@@ -485,69 +499,69 @@
                 </div>
             </div>
             <div class="flex justify-end gap-2 pt-2">
-                <button onclick="closeModal('edit-project-modal')" class="px-4 py-2 text-xs font-medium text-zinc-600 hover:bg-zinc-100 rounded-lg transition">Cancelar</button>
-                <button onclick="atualizarProjeto()" class="px-4 py-2 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-lg transition">Salvar Alterações</button>
+                <button onclick="closeModal('edit-project-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 rounded-xl transition">Cancelar</button>
+                <button onclick="atualizarProjeto()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl shadow-md transition">Salvar Alterações</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL: Gerenciar Arquivos / Peças -->
-    <div id="files-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-        <div class="bg-white border border-zinc-200 rounded-2xl w-full max-w-xl p-6 shadow-2xl space-y-5">
+    <div id="files-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+        <div class="bg-white border border-zinc-200 rounded-3xl w-full max-w-xl p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
                 <div>
-                    <h3 class="font-semibold text-lg text-zinc-900">Arquivos da Campanha</h3>
-                    <p id="files-project-title" class="text-xs text-zinc-500">Projeto selecionado</p>
+                    <h3 class="font-bold text-base text-zinc-900">Arquivos da Campanha</h3>
+                    <p id="files-project-title" class="text-xs text-zinc-400">Projeto selecionado</p>
                 </div>
-                <button onclick="closeModal('files-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm">✕</button>
+                <button onclick="closeModal('files-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 transition">✕</button>
             </div>
             <input type="hidden" id="current-file-project-id">
 
-            <div class="bg-zinc-50 p-4 rounded-xl border border-zinc-200 space-y-3">
-                <h4 class="text-xs font-semibold uppercase tracking-wider text-zinc-700">Enviar Nova Peça / Arquivo</h4>
+            <div class="bg-zinc-50 p-4 rounded-2xl border border-zinc-200/80 space-y-3">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-600">Enviar Nova Peça / Arquivo</h4>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <input type="text" id="piece-title" placeholder="Nome da peça (ex: Reels 01)" class="bg-white border border-zinc-200 rounded-lg px-3 py-2 text-xs text-zinc-900 focus:outline-none">
-                    <input type="text" id="piece-platform" placeholder="Plataforma (ex: Instagram)" class="bg-white border border-zinc-200 rounded-lg px-3 py-2 text-xs text-zinc-900 focus:outline-none">
+                    <input type="text" id="piece-title" placeholder="Nome da peça (ex: Reels 01)" class="bg-white border border-zinc-200 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 focus:outline-none font-medium">
+                    <input type="text" id="piece-platform" placeholder="Plataforma (ex: Instagram)" class="bg-white border border-zinc-200 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 focus:outline-none font-medium">
                 </div>
                 <div>
-                    <input type="file" id="piece-file" class="w-full text-xs text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-zinc-900 file:text-white hover:file:bg-zinc-800 cursor-pointer">
+                    <input type="file" id="piece-file" class="w-full text-xs text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-medium file:bg-zinc-900 file:text-white hover:file:bg-zinc-800 cursor-pointer">
                 </div>
-                <button onclick="uploadArquivoCampanha()" class="w-full py-2 bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium rounded-lg transition">Fazer Upload e Cadastrar Peça</button>
+                <button onclick="uploadArquivoCampanha()" class="w-full py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium rounded-xl transition shadow-md">Fazer Upload e Cadastrar Peça</button>
             </div>
 
             <div class="space-y-2">
-                <h4 class="text-xs font-semibold uppercase tracking-wider text-zinc-700">Peças Cadastradas</h4>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-600">Peças Cadastradas</h4>
                 <div id="pieces-list-container" class="max-h-48 overflow-y-auto space-y-2 text-xs divide-y divide-zinc-100">
-                    <p class="text-zinc-400 text-center py-4">Selecione um projeto para ver os arquivos.</p>
+                    <p class="text-zinc-400 text-center py-6">Selecione um projeto para ver os arquivos.</p>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- MODAL: Novo Plano (Administrativo) -->
-    <div id="plan-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-        <div class="bg-white border border-zinc-200 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
+    <div id="plan-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+        <div class="bg-white border border-zinc-200 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
-                <h3 class="font-semibold text-lg text-zinc-900">Cadastrar Novo Plano / Pacote</h3>
-                <button onclick="closeModal('plan-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm">✕</button>
+                <h3 class="font-bold text-base text-zinc-900">Cadastrar Novo Plano / Pacote</h3>
+                <button onclick="closeModal('plan-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 transition">✕</button>
             </div>
-            <div class="space-y-3">
+            <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-medium text-zinc-600 mb-1">Nome do Plano</label>
-                    <input type="text" id="plan-name" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none" placeholder="Ex: Pacote Redes Sociais + Vídeos">
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Nome do Plano</label>
+                    <input type="text" id="plan-name" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="Ex: Pacote Redes Sociais + Vídeos">
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-zinc-600 mb-1">Descrição / O que inclui</label>
-                    <textarea id="plan-description" rows="2" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none" placeholder="Ex: 4 Reels gravados + edições semanais + relatório"></textarea>
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Descrição / O que inclui</label>
+                    <textarea id="plan-description" rows="2" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="Ex: 4 Reels gravados + edições semanais + relatório"></textarea>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-medium text-zinc-600 mb-1">Valor (R$)</label>
-                        <input type="text" id="plan-price" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none" placeholder="2500.00">
+                        <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Valor (R$)</label>
+                        <input type="text" id="plan-price" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="2500.00">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-zinc-600 mb-1">Ciclo de Cobrança</label>
-                        <select id="plan-cycle" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none">
+                        <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Ciclo de Cobrança</label>
+                        <select id="plan-cycle" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
                             <option value="Mensal">Mensal</option>
                             <option value="Trimestral">Trimestral</option>
                             <option value="Semestral">Semestral</option>
@@ -558,15 +572,15 @@
                 </div>
             </div>
             <div class="flex justify-end gap-2 pt-2">
-                <button onclick="closeModal('plan-modal')" class="px-4 py-2 text-xs font-medium text-zinc-600 hover:bg-zinc-100 rounded-lg transition">Cancelar</button>
-                <button onclick="salvarPlano()" class="px-4 py-2 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-lg transition">Salvar Plano</button>
+                <button onclick="closeModal('plan-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 rounded-xl transition">Cancelar</button>
+                <button onclick="salvarPlano()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl shadow-md transition">Salvar Plano</button>
             </div>
         </div>
     </div>
 
     <!-- Botão Flutuante do Robô (Copiloto) -->
     <div class="fixed bottom-6 right-6 z-50">
-        <button onclick="toggleChat()" class="w-14 h-14 bg-zinc-900 hover:bg-zinc-800 text-white rounded-full shadow-xl flex items-center justify-center transition transform hover:scale-105 focus:outline-none">
+        <button onclick="toggleChat()" class="w-14 h-14 bg-zinc-900 hover:bg-zinc-800 text-white rounded-2xl shadow-xl shadow-zinc-900/30 flex items-center justify-center transition transform hover:scale-105 active:scale-95 focus:outline-none">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-1.072 1.922L6.75 11.85m7.5-8.746v5.714a2.25 2.25 0 001.072 1.922l1.928 1.11M12 15.75v3.75m-4.5-9h9M7.5 12h9a2.25 2.25 0 012.25 2.25v4.5A2.25 2.25 0 0116.5 21h-9a2.25 2.25 0 01-2.25-2.25v-4.5A2.25 2.25 0 017.5 12z" />
             </svg>
@@ -574,22 +588,22 @@
     </div>
 
     <!-- Janela Pop-up do Chat / Copiloto -->
-    <div id="chat-window" class="fixed bottom-24 right-6 w-96 bg-white border border-zinc-200 rounded-2xl shadow-2xl z-50 hidden flex-col overflow-hidden">
+    <div id="chat-window" class="fixed bottom-24 right-6 w-96 bg-white border border-zinc-200/80 rounded-3xl shadow-2xl z-50 hidden flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
         <div class="bg-zinc-900 text-white px-5 py-4 flex items-center justify-between">
-            <div class="flex items-center space-x-2">
-                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                <span class="font-medium text-sm">Copiloto Meu Aval (IA)</span>
+            <div class="flex items-center space-x-2.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                <span class="font-semibold text-xs tracking-wide">Copiloto Meu Aval (IA)</span>
             </div>
             <button onclick="toggleChat()" class="text-zinc-400 hover:text-white text-sm">✕</button>
         </div>
         <div id="chat-messages" class="p-4 h-80 overflow-y-auto space-y-3 text-xs bg-zinc-50 flex flex-col">
-            <div class="bg-white border border-zinc-200 text-zinc-700 p-3 rounded-xl max-w-[85%] self-start shadow-sm">
+            <div class="bg-white border border-zinc-200 text-zinc-700 p-3.5 rounded-2xl max-w-[85%] self-start shadow-2xs font-medium">
                 Olá! Sou o Copiloto do Meu Aval. Como posso ajudar na gestão hoje?
             </div>
         </div>
-        <div class="p-3 bg-white border-t border-zinc-200 flex gap-2">
-            <input type="text" id="chat-input" placeholder="Pergunte algo à IA..." onkeypress="if(event.key === 'Enter') sendMessage()" class="flex-1 bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-xs text-zinc-900 focus:outline-none">
-            <button onclick="sendMessage()" class="bg-zinc-900 hover:bg-zinc-800 text-white px-3 py-2 rounded-lg text-xs font-medium transition">Enviar</button>
+        <div class="p-3 bg-white border-t border-zinc-200/80 flex gap-2">
+            <input type="text" id="chat-input" placeholder="Pergunte algo à IA..." onkeypress="if(event.key === 'Enter') sendMessage()" class="flex-1 bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 focus:outline-none font-medium">
+            <button onclick="sendMessage()" class="bg-zinc-900 hover:bg-zinc-800 text-white px-4 py-2.5 rounded-xl text-xs font-medium transition shadow-sm">Enviar</button>
         </div>
     </div>
 
@@ -607,11 +621,11 @@
         try {
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             document.getElementById('db-status').innerText = 'Conectado';
-            document.getElementById('db-status').className = 'px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-medium';
+            document.getElementById('db-status').className = 'px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold';
             inicializarSistema();
         } catch (e) {
             document.getElementById('db-status').innerText = 'Erro';
-            document.getElementById('db-status').className = 'px-2 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200 font-medium';
+            document.getElementById('db-status').className = 'px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 font-semibold';
         }
 
         async function inicializarSistema() {
@@ -623,19 +637,18 @@
             carregarPlanos();
         }
 
-        // Navegação por Abas
         function mudarAba(abaId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => {
-                el.classList.remove('bg-zinc-900', 'text-white', 'shadow-sm');
-                el.classList.add('text-zinc-600', 'hover:bg-zinc-100');
+                el.classList.remove('bg-zinc-900', 'text-white', 'shadow-sm', 'shadow-zinc-900/10');
+                el.classList.add('text-zinc-600', 'hover:bg-zinc-50', 'hover:text-zinc-900');
             });
 
             document.getElementById(`aba-${abaId}`).classList.remove('hidden');
             const btnAtivo = document.querySelector(`[data-tab="${abaId}"]`);
             if(btnAtivo) {
-                btnAtivo.classList.add('bg-zinc-900', 'text-white', 'shadow-sm');
-                btnAtivo.classList.remove('text-zinc-600', 'hover:bg-zinc-100');
+                btnAtivo.classList.add('bg-zinc-900', 'text-white', 'shadow-sm', 'shadow-zinc-900/10');
+                btnAtivo.classList.remove('text-zinc-600', 'hover:bg-zinc-50', 'hover:text-zinc-900');
             }
 
             const titulos = {
@@ -663,13 +676,12 @@
             document.getElementById(modalId).style.display = 'none';
         }
 
-        // --- GESTÃO DE PLANOS & ASSINATURAS ---
         async function carregarPlanos() {
             const grid = document.getElementById('grid-planos');
             const { data, error } = await supabaseClient.from('plans').select('*');
 
             if (error || !data || data.length === 0) {
-                grid.innerHTML = `<p class="text-xs text-zinc-400 col-span-3 text-center py-6">Nenhum plano cadastrado. Clique no botão acima para criar o primeiro.</p>`;
+                grid.innerHTML = `<p class="text-xs text-zinc-400 col-span-3 text-center py-12">Nenhum plano cadastrado. Clique no botão acima para criar o primeiro.</p>`;
                 listaPlanosGlobal = [];
                 return;
             }
@@ -679,17 +691,17 @@
             data.forEach(p => {
                 const valorFormatado = Number(p.price).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
                 grid.innerHTML += `
-                    <div class="bg-white p-5 rounded-xl border border-zinc-200 shadow-sm space-y-3 flex flex-col justify-between">
+                    <div class="bg-white p-6 rounded-2xl border border-zinc-200/80 shadow-xs space-y-4 flex flex-col justify-between hover:border-zinc-300 transition">
                         <div>
                             <div class="flex justify-between items-start">
                                 <h4 class="font-semibold text-sm text-zinc-900">${p.name}</h4>
-                                <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-zinc-100 text-zinc-700 border border-zinc-200">${p.billing_cycle || 'Mensal'}</span>
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-100 text-zinc-700 border border-zinc-200">${p.billing_cycle || 'Mensal'}</span>
                             </div>
-                            <p class="text-xs text-zinc-500 mt-1">${p.description || 'Sem descrição.'}</p>
+                            <p class="text-xs text-zinc-400 mt-1.5 leading-relaxed">${p.description || 'Sem descrição.'}</p>
                         </div>
-                        <div class="flex items-center justify-between pt-3 border-t border-zinc-100">
+                        <div class="flex items-center justify-between pt-4 border-t border-zinc-100">
                             <span class="text-sm font-bold text-zinc-900">${valorFormatado}</span>
-                            <button onclick="deletarPlano('${p.id}')" class="text-xs text-rose-500 hover:text-rose-700 font-medium">Excluir</button>
+                            <button onclick="deletarPlano('${p.id}')" class="text-xs text-rose-500 hover:text-rose-700 font-medium transition">Excluir</button>
                         </div>
                     </div>
                 `;
@@ -702,20 +714,14 @@
             const price = document.getElementById('plan-price').value;
             const billing_cycle = document.getElementById('plan-cycle').value;
 
-            if (!name || !price) {
-                return alert('Informe o nome e o valor do plano.');
-            }
+            if (!name || !price) return alert('Informe o nome e o valor do plano.');
 
             const { error } = await supabaseClient.from('plans').insert([{
-                name,
-                description,
-                price: parseFloat(price.replace(',', '.')),
-                billing_cycle
+                name, description, price: parseFloat(price.replace(',', '.')), billing_cycle
             }]);
 
-            if (error) {
-                alert('Erro ao salvar plano: ' + error.message);
-            } else {
+            if (error) alert('Erro ao salvar plano: ' + error.message);
+            else {
                 alert('Plano cadastrado com sucesso!');
                 document.getElementById('plan-name').value = '';
                 document.getElementById('plan-description').value = '';
@@ -735,7 +741,6 @@
         async function carregarSelectPlanos() {
             const select = document.getElementById('contract-plan-select');
             if (!select) return;
-            
             const { data } = await supabaseClient.from('plans').select('*');
             select.innerHTML = '<option value="">Selecione um plano pré-definido...</option>';
             if (data && data.length > 0) {
@@ -749,7 +754,6 @@
         function selecionarPlanoNoContrato() {
             const planId = document.getElementById('contract-plan-select').value;
             if (!planId) return;
-
             const planoEncontrado = listaPlanosGlobal.find(p => p.id === planId);
             if (planoEncontrado) {
                 document.getElementById('contract-title').value = planoEncontrado.name;
@@ -759,10 +763,8 @@
             }
         }
 
-        // Carrega Dados Globais (Projetos e Clientes)
         async function carregarDados() {
             await carregarSelectClientes();
-            
             const clienteFiltro = document.getElementById('filtro-cliente').value;
             
             const { data: clientesData } = await supabaseClient.from('clients').select('*');
@@ -772,30 +774,27 @@
                 clientesData.forEach(c => {
                     const corHex = c.color || '#3498db';
                     tbodyClientes.innerHTML += `
-                        <tr class="hover:bg-zinc-50 transition">
-                            <td class="p-4 pl-6 font-medium text-zinc-900 flex items-center gap-2.5">
-                                <span class="w-3 h-3 rounded-full inline-block shrink-0 shadow-sm" style="background-color: ${corHex};"></span>
+                        <tr class="hover:bg-zinc-50/80 transition">
+                            <td class="p-4 pl-6 font-semibold text-zinc-900 flex items-center gap-3">
+                                <span class="w-3.5 h-3.5 rounded-full inline-block shrink-0 shadow-xs" style="background-color: ${corHex};"></span>
                                 ${c.name}
                             </td>
                             <td class="p-4 text-zinc-500">${c.document || 'Não informado'}</td>
                             <td class="p-4 pr-6 text-right space-x-3">
-                                <button onclick="abrirEditarCliente('${c.id}', '${c.name}', '${c.document || ''}', '${corHex}')" class="text-zinc-600 hover:text-zinc-900 font-medium">Editar</button>
-                                <button onclick="deletarCliente('${c.id}')" class="text-rose-500 hover:text-rose-700 font-medium">Excluir</button>
+                                <button onclick="abrirEditarCliente('${c.id}', '${c.name}', '${c.document || ''}', '${corHex}')" class="text-zinc-600 hover:text-zinc-900 font-medium transition">Editar</button>
+                                <button onclick="deletarCliente('${c.id}')" class="text-rose-500 hover:text-rose-700 font-medium transition">Excluir</button>
                             </td>
                         </tr>
                     `;
                 });
             } else {
-                tbodyClientes.innerHTML = `<tr><td colspan="3" class="p-6 text-center text-zinc-400">Nenhum cliente cadastrado.</td></tr>`;
+                tbodyClientes.innerHTML = `<tr><td colspan="3" class="p-8 text-center text-zinc-400">Nenhum cliente cadastrado.</td></tr>`;
             }
 
             let query = supabaseClient.from('projects').select('*, clients(name, color)');
-            if (clienteFiltro) {
-                query = query.eq('client_id', clienteFiltro);
-            }
+            if (clienteFiltro) query = query.eq('client_id', clienteFiltro);
 
             const { data, error } = await query;
-            
             const colunasMapeamento = {
                 'Planejamento': document.querySelector('#col-planejamento div:last-child'),
                 'Em execução': document.querySelector('#col-em-execucao div:last-child'),
@@ -805,25 +804,14 @@
                 'Concluido': document.querySelector('#col-concluido div:last-child')
             };
 
-            const contadores = {
-                'Planejamento': 0,
-                'Em execução': 0,
-                'Em Validação': 0,
-                'Aprovado': 0,
-                'Programado': 0,
-                'Concluido': 0
-            };
+            const contadores = { 'Planejamento': 0, 'Em execução': 0, 'Em Validação': 0, 'Aprovado': 0, 'Programado': 0, 'Concluido': 0 };
 
-            Object.values(colunasMapeamento).forEach(container => {
-                if (container) container.innerHTML = '';
-            });
+            Object.values(colunasMapeamento).forEach(container => { if (container) container.innerHTML = ''; });
 
             if (error || !data || data.length === 0) {
                 Object.keys(colunasMapeamento).forEach(statusKey => {
                     const container = colunasMapeamento[statusKey];
-                    if(container) {
-                        container.innerHTML = `<p class="text-zinc-400 text-center py-6 text-[11px]">Vazio</p>`;
-                    }
+                    if(container) container.innerHTML = `<p class="text-zinc-400 text-center py-10 text-[11px] font-medium">Vazio</p>`;
                 });
                 atualizarContadores(contadores);
                 return;
@@ -832,10 +820,7 @@
             data.forEach(proj => {
                 let statusNormalizado = proj.status || 'Planejamento';
                 if (statusNormalizado === 'ativo') statusNormalizado = 'Planejamento';
-
-                if (contadores[statusNormalizado] !== undefined) {
-                    contadores[statusNormalizado]++;
-                }
+                if (contadores[statusNormalizado] !== undefined) contadores[statusNormalizado]++;
 
                 const clienteNome = proj.clients ? proj.clients.name : 'Geral';
                 const clienteCor = (proj.clients && proj.clients.color) ? proj.clients.color : '#71717a';
@@ -843,38 +828,33 @@
 
                 if (targetContainer) {
                     if (targetContainer.innerHTML.includes('Vazio')) targetContainer.innerHTML = '';
-
                     targetContainer.innerHTML += `
-                        <div draggable="true" ondragstart="iniciarArraste(event, '${proj.id}')" class="bg-white border border-zinc-200/80 rounded-xl p-3.5 shadow-sm space-y-2.5 hover:border-zinc-300 transition cursor-grab active:cursor-grabbing" style="border-left: 4px solid ${clienteCor}; background-color: ${clienteCor}08;">
+                        <div draggable="true" ondragstart="iniciarArraste(event, '${proj.id}')" class="bg-white border border-zinc-200/80 rounded-2xl p-4 shadow-2xs space-y-3 hover:border-zinc-300 transition cursor-grab active:cursor-grabbing" style="border-left: 4px solid ${clienteCor};">
                             <div class="flex justify-between items-start gap-2">
-                                <span class="font-medium text-zinc-900 text-xs">${proj.title}</span>
-                                <span class="text-[10px] font-medium px-2 py-0.5 rounded-full text-zinc-600 bg-white border border-zinc-200 shrink-0">${clienteNome}</span>
+                                <span class="font-semibold text-zinc-900 text-xs tracking-tight">${proj.title}</span>
+                                <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full text-zinc-600 bg-zinc-50 border border-zinc-200/60 shrink-0">${clienteNome}</span>
                             </div>
-                            <p class="text-[11px] text-zinc-500 line-clamp-2">${proj.description || 'Sem descrição'}</p>
-                            <div class="flex items-center justify-between pt-1 border-t border-zinc-100 text-[11px]">
-                                <button onclick="abrirGerenciarArquivos('${proj.id}', '${proj.title}')" class="text-indigo-600 hover:underline font-medium">Arquivos</button>
+                            <p class="text-[11px] text-zinc-400 line-clamp-2 leading-relaxed">${proj.description || 'Sem descrição'}</p>
+                            <div class="flex items-center justify-between pt-2 border-t border-zinc-100 text-[11px]">
+                                <button onclick="abrirGerenciarArquivos('${proj.id}', '${proj.title}')" class="text-indigo-600 hover:underline font-semibold">Arquivos</button>
                                 <div class="space-x-2">
-                                    <button onclick="abrirEditarProjeto('${proj.id}', '${proj.title}', '${proj.description || ''}', '${proj.status}')" class="text-zinc-600 hover:text-zinc-900">Editar</button>
-                                    <button onclick="deletarProjeto('${proj.id}')" class="text-rose-500 hover:text-rose-700">Excluir</button>
+                                    <button onclick="abrirEditarProjeto('${proj.id}', '${proj.title}', '${proj.description || ''}', '${proj.status}')" class="text-zinc-500 hover:text-zinc-900 font-medium">Editar</button>
+                                    <button onclick="deletarProjeto('${proj.id}')" class="text-rose-500 hover:text-rose-700 font-medium">Excluir</button>
                                 </div>
                             </div>
                         </div>
                     `;
                 }
             });
-
             atualizarContadores(contadores);
         }
 
-        // --- GESTÃO COMERCIAL E CONTRATOS ---
         async function carregarContratos() {
             const tbody = document.getElementById('contracts-table-body');
-            const { data, error } = await supabaseClient
-                .from('contracts')
-                .select('*, clients(name, color)');
+            const { data, error } = await supabaseClient.from('contracts').select('*, clients(name, color)');
 
             if (error || !data || data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-zinc-400">Nenhum contrato ou serviço cadastrado.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-zinc-400">Nenhum contrato ou serviço cadastrado.</td></tr>`;
                 return;
             }
 
@@ -885,21 +865,21 @@
                 const valorFormatado = Number(c.amount).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
                 tbody.innerHTML += `
-                    <tr class="hover:bg-zinc-50 transition">
-                        <td class="p-4 pl-6 font-medium text-zinc-900 flex items-center gap-2.5">
-                            <span class="w-3 h-3 rounded-full inline-block shrink-0 shadow-sm" style="background-color: ${clienteCor};"></span>
+                    <tr class="hover:bg-zinc-50/80 transition">
+                        <td class="p-4 pl-6 font-semibold text-zinc-900 flex items-center gap-3">
+                            <span class="w-3.5 h-3.5 rounded-full inline-block shrink-0 shadow-xs" style="background-color: ${clienteCor};"></span>
                             ${clienteNome}
                         </td>
-                        <td class="p-4 text-zinc-900 font-medium">${c.title}</td>
+                        <td class="p-4 text-zinc-900 font-semibold">${c.title}</td>
                         <td class="p-4">
-                            <span class="px-2 py-0.5 rounded text-[10px] font-medium ${c.type === 'Plano' ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' : 'bg-amber-50 text-amber-700 border border-amber-200'}">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${c.type === 'Plano' ? 'bg-indigo-50 text-indigo-700 border border-indigo-200/60' : 'bg-amber-50 text-amber-700 border border-amber-200/60'}">
                                 ${c.type}
                             </span>
                         </td>
-                        <td class="p-4 text-zinc-700 font-semibold">${valorFormatado}</td>
-                        <td class="p-4 text-zinc-500">${c.status || 'Ativo'}</td>
+                        <td class="p-4 text-zinc-700 font-bold">${valorFormatado}</td>
+                        <td class="p-4 text-zinc-400 font-medium">${c.status || 'Ativo'}</td>
                         <td class="p-4 pr-6 text-right">
-                            <button onclick="deletarContrato('${c.id}')" class="text-rose-500 hover:text-rose-700 font-medium">Excluir</button>
+                            <button onclick="deletarContrato('${c.id}')" class="text-rose-500 hover:text-rose-700 font-semibold transition">Excluir</button>
                         </td>
                     </tr>
                 `;
@@ -914,43 +894,20 @@
             const billing_cycle = document.getElementById('contract-cycle').value;
             const start_date = document.getElementById('contract-date').value;
 
-            if (!client_id || !title || !amount) {
-                return alert('Preencha os campos obrigatórios (Cliente, Título e Valor).');
-            }
+            if (!client_id || !title || !amount) return alert('Preencha os campos obrigatórios.');
 
-            // 1. Salva o Contrato
             const { error: contractError } = await supabaseClient.from('contracts').insert([{
-                client_id,
-                title,
-                type,
-                amount: parseFloat(amount.replace(',', '.')),
-                billing_cycle: billing_cycle || 'Mensal',
-                start_date: start_date || null,
-                status: 'Ativo'
+                client_id, title, type, amount: parseFloat(amount.replace(',', '.')), billing_cycle: billing_cycle || 'Mensal', start_date: start_date || null, status: 'Ativo'
             }]);
 
-            if (contractError) {
-                alert('Erro ao salvar contrato: ' + contractError.message);
-                return;
-            }
+            if (contractError) return alert('Erro ao salvar contrato: ' + contractError.message);
 
-            // 2. Cria automaticamente a Fatura/Transação correspondente no Financeiro
             const dataVencimento = start_date || new Date().toISOString().split('T')[0];
-            const { error: transError } = await supabaseClient.from('transactions').insert([{
-                client_id,
-                description: `Contrato: ${title}`,
-                amount: parseFloat(amount.replace(',', '.')),
-                due_date: dataVencimento,
-                status: 'Pendente',
-                payment_method: 'Pix'
+            await supabaseClient.from('transactions').insert([{
+                client_id, description: `Contrato: ${title}`, amount: parseFloat(amount.replace(',', '.')), due_date: dataVencimento, status: 'Pendente', payment_method: 'Pix'
             }]);
 
-            if (transError) {
-                alert('Contrato salvo, mas houve erro ao gerar a fatura financeira: ' + transError.message);
-            } else {
-                alert('Contrato cadastrado e fatura gerada no Financeiro com sucesso!');
-            }
-
+            alert('Contrato cadastrado com sucesso!');
             document.getElementById('contract-title').value = '';
             document.getElementById('contract-amount').value = '';
             document.getElementById('contract-cycle').value = '';
@@ -966,17 +923,15 @@
             else carregarContratos();
         }
 
-        // --- GESTÃO FINANCEIRA ---
-        // --- GESTÃO FINANCEIRA COM RECORRÊNCIA AUTOMÁTICA ---
         function filtrarFinanceiro(periodo) {
             filtroPeriodoAtual = periodo;
             ['dia', 'semana', 'mes', 'ano'].forEach(p => {
                 const btn = document.getElementById(`btn-filtro-${p}`);
                 if(btn) {
                     if(p === periodo) {
-                        btn.className = 'px-3 py-1.5 text-xs font-medium bg-white text-zinc-900 shadow-sm rounded-md transition';
+                        btn.className = 'px-3 py-1.5 text-xs font-medium bg-white text-zinc-900 shadow-xs rounded-lg transition';
                     } else {
-                        btn.className = 'px-3 py-1.5 text-xs font-medium text-zinc-600 rounded-md transition';
+                        btn.className = 'px-3 py-1.5 text-xs font-medium text-zinc-600 rounded-lg transition';
                     }
                 }
             });
@@ -987,18 +942,14 @@
             const tbody = document.getElementById('transactions-table-body');
             const clienteFiltroFin = document.getElementById('filtro-cliente-financeiro').value;
 
-            // 1. Verificar e gerar faturas recorrentes do mês atual para os Planos ativos
             await gerarFaturasRecorrentesAutomaticas();
 
             let query = supabaseClient.from('transactions').select('*, clients(name, color)');
-            if (clienteFiltroFin) {
-                query = query.eq('client_id', clienteFiltroFin);
-            }
+            if (clienteFiltroFin) query = query.eq('client_id', clienteFiltroFin);
 
             const { data, error } = await query;
-
             if (error || !data) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-zinc-400">Erro ao carregar transações.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-zinc-400">Erro ao carregar transações.</td></tr>`;
                 return;
             }
 
@@ -1008,29 +959,22 @@
             const dadosFiltrados = data.filter(t => {
                 if(!t.due_date) return false;
                 const dataVenc = new Date(t.due_date + 'T00:00:00');
-                
-                if (filtroPeriodoAtual === 'dia') {
-                    return dataVenc.toDateString() === hoje.toDateString();
-                } else if (filtroPeriodoAtual === 'semana') {
+                if (filtroPeriodoAtual === 'dia') return dataVenc.toDateString() === hoje.toDateString();
+                else if (filtroPeriodoAtual === 'semana') {
                     const primeiroDiaSemana = new Date(hoje);
                     primeiroDiaSemana.setDate(hoje.getDate() - hoje.getDay());
                     const ultimoDiaSemana = new Date(primeiroDiaSemana);
                     ultimoDiaSemana.setDate(primeiroDiaSemana.getDate() + 6);
                     return dataVenc >= primeiroDiaSemana && dataVenc <= ultimoDiaSemana;
-                } else if (filtroPeriodoAtual === 'mes') {
-                    return dataVenc.getMonth() === hoje.getMonth() && dataVenc.getFullYear() === hoje.getFullYear();
-                } else if (filtroPeriodoAtual === 'ano') {
-                    return dataVenc.getFullYear() === hoje.getFullYear();
-                }
+                } else if (filtroPeriodoAtual === 'mes') return dataVenc.getMonth() === hoje.getMonth() && dataVenc.getFullYear() === hoje.getFullYear();
+                else if (filtroPeriodoAtual === 'ano') return dataVenc.getFullYear() === hoje.getFullYear();
                 return true;
             });
 
-            let totalRecebido = 0;
-            let totalPendente = 0;
-            let totalAtrasado = 0;
+            let totalRecebido = 0, totalPendente = 0, totalAtrasado = 0;
 
             if (dadosFiltrados.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-zinc-400">Nenhum registro financeiro neste período.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-zinc-400">Nenhum registro financeiro neste período.</td></tr>`;
             } else {
                 tbody.innerHTML = '';
                 dadosFiltrados.forEach(t => {
@@ -1038,7 +982,6 @@
                     const clienteCor = t.clients?.color || '#3498db';
                     const valorNum = Number(t.amount);
                     const valorFormatado = valorNum.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-                    
                     const dataFormatada = t.due_date ? t.due_date.split('-').reverse().join('/') : '-';
 
                     if (t.status === 'Pago') totalRecebido += valorNum;
@@ -1046,25 +989,23 @@
                     else if (t.status === 'Atrasado') totalAtrasado += valorNum;
 
                     let badgeStatus = 'bg-zinc-100 text-zinc-700';
-                    if (t.status === 'Pago') badgeStatus = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
-                    if (t.status === 'Pendente') badgeStatus = 'bg-amber-50 text-amber-700 border border-amber-200';
-                    if (t.status === 'Atrasado') badgeStatus = 'bg-rose-50 text-rose-700 border border-rose-200';
+                    if (t.status === 'Pago') badgeStatus = 'bg-emerald-50 text-emerald-700 border border-emerald-200/60';
+                    if (t.status === 'Pendente') badgeStatus = 'bg-amber-50 text-amber-700 border border-amber-200/60';
+                    if (t.status === 'Atrasado') badgeStatus = 'bg-rose-50 text-rose-700 border border-rose-200/60';
 
                     tbody.innerHTML += `
-                        <tr class="hover:bg-zinc-50 transition">
-                            <td class="p-4 pl-6 font-medium text-zinc-900 flex items-center gap-2.5">
-                                <span class="w-3 h-3 rounded-full inline-block shrink-0 shadow-sm" style="background-color: ${clienteCor};"></span>
+                        <tr class="hover:bg-zinc-50/80 transition">
+                            <td class="p-4 pl-6 font-semibold text-zinc-900 flex items-center gap-3">
+                                <span class="w-3.5 h-3.5 rounded-full inline-block shrink-0 shadow-xs" style="background-color: ${clienteCor};"></span>
                                 ${clienteNome}
                             </td>
-                            <td class="p-4 text-zinc-900 font-medium">${t.description}</td>
-                            <td class="p-4 text-zinc-500">${dataFormatada}</td>
-                            <td class="p-4 text-zinc-700 font-semibold">${valorFormatado}</td>
-                            <td class="p-4">
-                                <span class="px-2.5 py-0.5 rounded text-[10px] font-medium ${badgeStatus}">${t.status}</span>
-                            </td>
+                            <td class="p-4 text-zinc-900 font-semibold">${t.description}</td>
+                            <td class="p-4 text-zinc-400 font-medium">${dataFormatada}</td>
+                            <td class="p-4 text-zinc-700 font-bold">${valorFormatado}</td>
+                            <td class="p-4"><span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${badgeStatus}">${t.status}</span></td>
                             <td class="p-4 pr-6 text-right space-x-2">
-                                ${t.status !== 'Pago' ? `<button onclick="marcarComoPago('${t.id}')" class="text-emerald-600 hover:underline font-medium">Receber</button>` : ''}
-                                <button onclick="deletarTransacao('${t.id}')" class="text-rose-500 hover:text-rose-700 font-medium">Excluir</button>
+                                ${t.status !== 'Pago' ? `<button onclick="marcarComoPago('${t.id}')" class="text-emerald-600 hover:underline font-semibold transition">Receber</button>` : ''}
+                                <button onclick="deletarTransacao('${t.id}')" class="text-rose-500 hover:text-rose-700 font-semibold transition">Excluir</button>
                             </td>
                         </tr>
                     `;
@@ -1076,21 +1017,18 @@
             document.getElementById('kpi-atrasado').innerText = totalAtrasado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
 
-        // Função auxiliar que checa e gera a fatura mensal do plano recorrente
         async function gerarFaturasRecorrentesAutomaticas() {
             const { data: contratos } = await supabaseClient.from('contracts').select('*').eq('type', 'Plano').eq('status', 'Ativo');
             if (!contratos || contratos.length === 0) return;
-
             const { data: transacoes } = await supabaseClient.from('transactions').select('*');
             if (!transacoes) return;
 
             const dataAtual = new Date();
             const anoAtual = dataAtual.getFullYear();
             const mesAtual = String(dataAtual.getMonth() + 1).padStart(2, '0');
-            const diaVencimentoPadrao = `${anoAtual}-${mesAtual}-10`; // Vencimento padrão dia 10 de cada mês
+            const diaVencimentoPadrao = `${anoAtual}-${mesAtual}-10`;
 
             for (const contrato of contratos) {
-                // Procura se já existe alguma transação para este contrato neste mês/ano atual
                 const jaExisteNesteMes = transacoes.some(t => {
                     if (t.client_id !== contrato.client_id) return false;
                     if (!t.due_date) return false;
@@ -1098,15 +1036,9 @@
                     return anoT == anoAtual && mesT == mesAtual && t.description.includes(contrato.title);
                 });
 
-                // Se não existir, gera a fatura do mês atual automaticamente
                 if (!jaExisteNesteMes) {
                     await supabaseClient.from('transactions').insert([{
-                        client_id: contrato.client_id,
-                        description: `Mensalidade: ${contrato.title}`,
-                        amount: contrato.amount,
-                        due_date: diaVencimentoPadrao,
-                        status: 'Pendente',
-                        payment_method: 'Pix'
+                        client_id: contrato.client_id, description: `Mensalidade: ${contrato.title}`, amount: contrato.amount, due_date: diaVencimentoPadrao, status: 'Pendente', payment_method: 'Pix'
                     }]);
                 }
             }
@@ -1120,23 +1052,14 @@
             const status = document.getElementById('trans-status').value;
             const payment_method = document.getElementById('trans-method').value;
 
-            if (!client_id || !description || !amount || !due_date) {
-                return alert('Preencha os campos obrigatórios.');
-            }
+            if (!client_id || !description || !amount || !due_date) return alert('Preencha os campos obrigatórios.');
 
             const { error } = await supabaseClient.from('transactions').insert([{
-                client_id,
-                description,
-                amount: parseFloat(amount.replace(',', '.')),
-                due_date,
-                status,
-                payment_method: payment_method || 'Pix',
-                payment_date: status === 'Pago' ? new Date().toISOString().split('T')[0] : null
+                client_id, description, amount: parseFloat(amount.replace(',', '.')), due_date, status, payment_method: payment_method || 'Pix', payment_date: status === 'Pago' ? new Date().toISOString().split('T')[0] : null
             }]);
 
-            if (error) {
-                alert('Erro ao salvar transação: ' + error.message);
-            } else {
+            if (error) alert('Erro ao salvar transação: ' + error.message);
+            else {
                 alert('Fatura cadastrada com sucesso!');
                 document.getElementById('trans-desc').value = '';
                 document.getElementById('trans-amount').value = '';
@@ -1147,11 +1070,7 @@
         }
 
         async function marcarComoPago(id) {
-            const { error } = await supabaseClient
-                .from('transactions')
-                .update({ status: 'Pago', payment_date: new Date().toISOString().split('T')[0] })
-                .eq('id', id);
-
+            const { error } = await supabaseClient.from('transactions').update({ status: 'Pago', payment_date: new Date().toISOString().split('T')[0] }).eq('id', id);
             if (error) alert('Erro ao atualizar: ' + error.message);
             else carregarFinanceiro();
         }
@@ -1163,52 +1082,24 @@
             else carregarFinanceiro();
         }
 
-        // --- FUNÇÕES DE DRAG AND DROP ---
-        function iniciarArraste(event, projectId) {
-            event.dataTransfer.setData('text/plain', projectId);
-        }
-
-        function permitirDrop(event) {
-            event.preventDefault();
-            const col = event.currentTarget;
-            col.classList.add('drag-over');
-        }
-
-        function removerDestaque(event) {
-            const col = event.currentTarget;
-            col.classList.remove('drag-over');
-        }
+        function iniciarArraste(event, projectId) { event.dataTransfer.setData('text/plain', projectId); }
+        function permitirDrop(event) { event.preventDefault(); event.currentTarget.classList.add('drag-over'); }
+        function removerDestaque(event) { event.currentTarget.classList.remove('drag-over'); }
 
         async function soltarCard(event, novoStatus) {
             event.preventDefault();
-            const col = event.currentTarget;
-            col.classList.remove('drag-over');
-
+            event.currentTarget.classList.remove('drag-over');
             const projectId = event.dataTransfer.getData('text/plain');
             if (!projectId) return;
 
-            const { error } = await supabaseClient
-                .from('projects')
-                .update({ status: novoStatus })
-                .eq('id', projectId);
-
-            if (error) {
-                alert('Erro ao atualizar status: ' + error.message);
-            } else {
-                carregarDados();
-            }
+            const { error } = await supabaseClient.from('projects').update({ status: novoStatus }).eq('id', projectId);
+            if (error) alert('Erro ao atualizar status: ' + error.message);
+            else carregarDados();
         }
 
         function atualizarContadores(contadores) {
             for (const [key, value] of Object.entries(contadores)) {
-                const mapId = {
-                    'Planejamento': 'count-planejamento',
-                    'Em execução': 'count-em-execucao',
-                    'Em Validação': 'count-em-validacao',
-                    'Aprovado': 'count-aprovado',
-                    'Programado': 'count-programado',
-                    'Concluido': 'count-concluido'
-                };
+                const mapId = { 'Planejamento': 'count-planejamento', 'Em execução': 'count-em-execucao', 'Em Validação': 'count-em-validacao', 'Aprovado': 'count-aprovado', 'Programado': 'count-programado', 'Concluido': 'count-concluido' };
                 const el = document.getElementById(mapId[key]);
                 if (el) el.innerText = value;
             }
@@ -1279,14 +1170,9 @@
 
             if (!name) return alert('O nome do cliente é obrigatório.');
 
-            const { error } = await supabaseClient
-                .from('clients')
-                .update({ name, document: documentVal, color })
-                .eq('id', id);
-
-            if (error) {
-                alert('Erro ao atualizar cliente: ' + error.message);
-            } else {
+            const { error } = await supabaseClient.from('clients').update({ name, document: documentVal, color }).eq('id', id);
+            if (error) alert('Erro ao atualizar cliente: ' + error.message);
+            else {
                 alert('Cliente atualizado com sucesso!');
                 closeModal('edit-client-modal');
                 carregarDados();
@@ -1345,7 +1231,6 @@
             if (!error) carregarDados();
         }
 
-        // --- GESTÃO DE ARQUIVOS / PEÇAS ---
         function abrirGerenciarArquivos(projectId, projectTitle) {
             document.getElementById('current-file-project-id').value = projectId;
             document.getElementById('files-project-title').innerText = `Projeto: ${projectTitle}`;
@@ -1358,18 +1243,18 @@
             const { data } = await supabaseClient.from('content_pieces').select('*').eq('project_id', projectId);
 
             if (!data || data.length === 0) {
-                container.innerHTML = `<p class="text-zinc-400 text-center py-4">Nenhuma peça ou arquivo enviado ainda.</p>`;
+                container.innerHTML = `<p class="text-zinc-400 text-center py-6">Nenhuma peça ou arquivo enviado ainda.</p>`;
                 return;
             }
 
             container.innerHTML = '';
             data.forEach(piece => {
                 container.innerHTML += `
-                    <div class="py-2 flex items-center justify-between">
+                    <div class="py-2.5 flex items-center justify-between">
                         <div>
-                            <span class="font-medium text-zinc-900">${piece.title}</span> <span class="text-zinc-400">(${piece.platform})</span>
+                            <span class="font-semibold text-zinc-900">${piece.title}</span> <span class="text-zinc-400 font-medium">(${piece.platform})</span>
                         </div>
-                        ${piece.media_url ? `<a href="${piece.media_url}" target="_blank" class="text-indigo-600 hover:underline">Ver Arquivo</a>` : '<span class="text-zinc-400">Sem anexo</span>'}
+                        ${piece.media_url ? `<a href="${piece.media_url}" target="_blank" class="text-indigo-600 hover:underline font-semibold">Ver Arquivo</a>` : '<span class="text-zinc-400">Sem anexo</span>'}
                     </div>
                 `;
             });
@@ -1382,44 +1267,26 @@
             const fileInput = document.getElementById('piece-file');
 
             if (!title || !platform) return alert('Informe o nome e a plataforma da peça.');
-
             let mediaUrl = null;
 
             if (fileInput.files.length > 0) {
                 const file = fileInput.files[0];
-                const safeName = file.name
-                    .normalize('NFD').replace(/[\u0300-\u036f]/g, "")
-                    .replace(/[^a-zA-Z0-9.-]/g, '_');
-
+                const safeName = file.name.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9.-]/g, '_');
                 const fileName = `${Date.now()}_${safeName}`;
 
-                const { error: uploadError } = await supabaseClient.storage
-                    .from('campaign-files')
-                    .upload(fileName, file);
+                const { error: uploadError } = await supabaseClient.storage.from('campaign-files').upload(fileName, file);
+                if (uploadError) return alert('Erro no upload: ' + uploadError.message);
 
-                if (uploadError) {
-                    alert('Erro no upload: ' + uploadError.message);
-                    return;
-                }
-
-                const { data: publicUrlData } = supabaseClient.storage
-                    .from('campaign-files')
-                    .getPublicUrl(fileName);
-
+                const { data: publicUrlData } = supabaseClient.storage.from('campaign-files').getPublicUrl(fileName);
                 mediaUrl = publicUrlData.publicUrl;
             }
 
             const { error: insertError } = await supabaseClient.from('content_pieces').insert([{
-                project_id: projectId,
-                title,
-                platform,
-                media_url: mediaUrl,
-                scheduled_date: new Date().toISOString().split('T')[0]
+                project_id: projectId, title, platform, media_url: mediaUrl, scheduled_date: new Date().toISOString().split('T')[0]
             }]);
 
-            if (insertError) {
-                alert('Erro ao registrar peça: ' + insertError.message);
-            } else {
+            if (insertError) alert('Erro ao registrar peça: ' + insertError.message);
+            else {
                 alert('Peça e arquivo cadastrados!');
                 document.getElementById('piece-title').value = '';
                 document.getElementById('piece-platform').value = '';
@@ -1428,7 +1295,6 @@
             }
         }
 
-        // --- CHAT / COPILOTO INTELIGENTE ---
         function toggleChat() {
             const chat = document.getElementById('chat-window');
             chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
@@ -1440,47 +1306,36 @@
             const text = input.value.trim();
             if (!text) return;
 
-            messages.innerHTML += `<div class="bg-zinc-900 text-white p-2.5 rounded-xl max-w-[85%] self-end">${text}</div>`;
+            messages.innerHTML += `<div class="bg-zinc-900 text-white p-3.5 rounded-2xl max-w-[85%] self-end font-medium shadow-2xs">${text}</div>`;
             input.value = '';
             messages.scrollTop = messages.scrollHeight;
 
             const loadingId = 'loading-' + Date.now();
-            messages.innerHTML += `<div id="${loadingId}" class="bg-white border border-zinc-200 text-zinc-400 p-2.5 rounded-xl max-w-[85%] self-start shadow-sm">IA pensando...</div>`;
+            messages.innerHTML += `<div id="${loadingId}" class="bg-white border border-zinc-200 text-zinc-400 p-3.5 rounded-2xl max-w-[85%] self-start shadow-2xs font-medium">IA pensando...</div>`;
             messages.scrollTop = messages.scrollHeight;
 
             try {
                 const response = await fetch(COPILOTO_FUNCTION_URL, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                        'apikey': SUPABASE_ANON_KEY
-                    },
-                    body: JSON.stringify({
-                        message: text,
-                        history: chatHistory
-                    })
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`, 'apikey': SUPABASE_ANON_KEY },
+                    body: JSON.stringify({ message: text, history: chatHistory })
                 });
 
                 const data = await response.json();
                 document.getElementById(loadingId).remove();
 
                 if (data.reply) {
-                    messages.innerHTML += `<div class="bg-white border border-zinc-200 text-zinc-700 p-2.5 rounded-xl max-w-[85%] self-start shadow-sm whitespace-pre-line">${data.reply}</div>`;
+                    messages.innerHTML += `<div class="bg-white border border-zinc-200 text-zinc-700 p-3.5 rounded-2xl max-w-[85%] self-start shadow-2xs font-medium whitespace-pre-line">${data.reply}</div>`;
                     chatHistory.push({ role: 'user', text });
                     chatHistory.push({ role: 'assistant', text: data.reply });
-                    carregarDados();
-                    carregarContratos();
-                    carregarFinanceiro();
-                    carregarPlanos();
+                    carregarDados(); carregarContratos(); carregarFinanceiro(); carregarPlanos();
                 } else {
-                    messages.innerHTML += `<div class="bg-white border border-zinc-200 text-rose-600 p-2.5 rounded-xl max-w-[85%] self-start shadow-sm">Erro: ${data.error || 'falha desconhecida'}</div>`;
+                    messages.innerHTML += `<div class="bg-white border border-zinc-200 text-rose-600 p-3.5 rounded-2xl max-w-[85%] self-start shadow-2xs font-medium">Erro: ${data.error || 'falha desconhecida'}</div>`;
                 }
             } catch (err) {
                 document.getElementById(loadingId).remove();
-                messages.innerHTML += `<div class="bg-white border border-zinc-200 text-rose-600 p-2.5 rounded-xl max-w-[85%] self-start shadow-sm">Erro de conexão com o Copiloto.</div>`;
+                messages.innerHTML += `<div class="bg-white border border-zinc-200 text-rose-600 p-3.5 rounded-2xl max-w-[85%] self-start shadow-sm font-medium">Erro de conexão com o Copiloto.</div>`;
             }
-
             messages.scrollTop = messages.scrollHeight;
         }
     </script>
