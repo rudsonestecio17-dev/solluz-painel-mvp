@@ -150,12 +150,47 @@
 
             <!-- ABA: FINANCEIRO -->
             <section id="aba-financeiro" class="tab-content hidden space-y-6">
-                <div class="bg-white p-6 rounded-xl border border-zinc-200 shadow-sm space-y-3">
-                    <h3 class="font-medium text-sm text-zinc-800">Controle de Ganhos e Fluxo de Caixa</h3>
-                    <p class="text-xs text-zinc-500">Monitore recebimentos por dia, semana, mês ou ano, além de faturas pendentes e atrasadas.</p>
-                    <div id="financeiro-container" class="border border-zinc-100 rounded-lg p-4 text-xs text-zinc-600 bg-zinc-50">
-                        Módulo financeiro em preparação para lançamento.
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 rounded-xl border border-zinc-200 shadow-sm">
+                    <div class="flex items-center gap-1.5 bg-zinc-100 p-1 rounded-lg">
+                        <button onclick="filtrarFinanceiro('dia')" id="btn-filtro-dia" class="px-3 py-1.5 text-xs font-medium text-zinc-600 rounded-md transition">Hoje</button>
+                        <button onclick="filtrarFinanceiro('semana')" id="btn-filtro-semana" class="px-3 py-1.5 text-xs font-medium text-zinc-600 rounded-md transition">Esta Semana</button>
+                        <button onclick="filtrarFinanceiro('mes')" id="btn-filtro-mes" class="px-3 py-1.5 text-xs font-medium bg-white text-zinc-900 shadow-sm rounded-md transition">Este Mês</button>
+                        <button onclick="filtrarFinanceiro('ano')" id="btn-filtro-ano" class="px-3 py-1.5 text-xs font-medium text-zinc-600 rounded-md transition">Este Ano</button>
                     </div>
+                    <button onclick="openModal('transaction-modal')" class="px-3.5 py-2 text-xs font-medium text-white bg-zinc-900 rounded-lg shadow-sm hover:bg-zinc-800 transition">+ Nova Fatura / Recebimento</button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-white p-5 rounded-xl border border-zinc-200 shadow-sm space-y-1">
+                        <span class="text-xs font-medium text-zinc-500">Recebido no Período</span>
+                        <h3 id="kpi-recebido" class="text-xl font-bold text-emerald-600">R$ 0,00</h3>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl border border-zinc-200 shadow-sm space-y-1">
+                        <span class="text-xs font-medium text-zinc-500">Pagamentos Pendentes</span>
+                        <h3 id="kpi-pendente" class="text-xl font-bold text-amber-600">R$ 0,00</h3>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl border border-zinc-200 shadow-sm space-y-1">
+                        <span class="text-xs font-medium text-zinc-500">Pagamentos Atrasados</span>
+                        <h3 id="kpi-atrasado" class="text-xl font-bold text-rose-600">R$ 0,00</h3>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-zinc-200 rounded-xl shadow-sm overflow-hidden">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-zinc-50 border-b border-zinc-200 text-zinc-500 font-medium text-xs uppercase tracking-wider">
+                            <tr>
+                                <th class="p-4 pl-6">Cliente / Empresa</th>
+                                <th class="p-4">Descrição</th>
+                                <th class="p-4">Vencimento</th>
+                                <th class="p-4">Valor (R$)</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4 pr-6 text-right">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactions-table-body" class="divide-y divide-zinc-100 text-zinc-700 text-xs">
+                            <tr><td colspan="6" class="p-6 text-center text-zinc-400">Carregando transações...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </section>
 
@@ -325,6 +360,56 @@
         </div>
     </div>
 
+    <!-- MODAL: Nova Transação / Fatura (Financeiro) -->
+    <div id="transaction-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-white border border-zinc-200 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="font-semibold text-lg text-zinc-900">Registrar Recebimento / Fatura</h3>
+                <button onclick="closeModal('transaction-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm">✕</button>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-medium text-zinc-600 mb-1">Cliente / Empresa</label>
+                    <select id="trans-client-select" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400">
+                        <option value="">Selecione um cliente...</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-zinc-600 mb-1">Descrição</label>
+                    <input type="text" id="trans-desc" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none" placeholder="Ex: Mensalidade - Agosto/2026">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-zinc-600 mb-1">Valor (R$)</label>
+                        <input type="text" id="trans-amount" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none" placeholder="2500.00">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-zinc-600 mb-1">Vencimento</label>
+                        <input type="date" id="trans-duedate" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-zinc-600 mb-1">Status</label>
+                        <select id="trans-status" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none">
+                            <option value="Pendente">Pendente</option>
+                            <option value="Pago">Pago</option>
+                            <option value="Atrasado">Atrasado</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-zinc-600 mb-1">Forma de Pagamento</label>
+                        <input type="text" id="trans-method" class="w-full bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2 text-sm text-zinc-900 focus:outline-none" placeholder="Ex: Pix / Boleto">
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeModal('transaction-modal')" class="px-4 py-2 text-xs font-medium text-zinc-600 hover:bg-zinc-100 rounded-lg transition">Cancelar</button>
+                <button onclick="salvarTransacao()" class="px-4 py-2 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-lg transition">Salvar Fatura</button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL: Novo Projeto -->
     <div id="project-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
         <div class="bg-white border border-zinc-200 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
@@ -414,7 +499,6 @@
             </div>
             <input type="hidden" id="current-file-project-id">
 
-            <!-- Formulário de Upload -->
             <div class="bg-zinc-50 p-4 rounded-xl border border-zinc-200 space-y-3">
                 <h4 class="text-xs font-semibold uppercase tracking-wider text-zinc-700">Enviar Nova Peça / Arquivo</h4>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -427,7 +511,6 @@
                 <button onclick="uploadArquivoCampanha()" class="w-full py-2 bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium rounded-lg transition">Fazer Upload e Cadastrar Peça</button>
             </div>
 
-            <!-- Lista de Arquivos do Projeto -->
             <div class="space-y-2">
                 <h4 class="text-xs font-semibold uppercase tracking-wider text-zinc-700">Peças Cadastradas</h4>
                 <div id="pieces-list-container" class="max-h-48 overflow-y-auto space-y-2 text-xs divide-y divide-zinc-100">
@@ -498,6 +581,7 @@
 
         let chatHistory = [];
         let supabaseClient = null;
+        let filtroPeriodoAtual = 'mes';
 
         try {
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -514,6 +598,7 @@
             await supabaseClient.from('projects').update({ status: 'Planejamento' }).is('status', null);
             carregarDados();
             carregarContratos();
+            carregarFinanceiro();
         }
 
         // Navegação por Abas
@@ -544,7 +629,7 @@
 
         function openModal(modalId) {
             document.getElementById(modalId).style.display = 'flex';
-            if (modalId === 'project-modal' || modalId === 'client-modal' || modalId === 'contract-modal') {
+            if (modalId === 'project-modal' || modalId === 'client-modal' || modalId === 'contract-modal' || modalId === 'transaction-modal') {
                 carregarSelectClientes();
             }
         }
@@ -559,7 +644,6 @@
             
             const clienteFiltro = document.getElementById('filtro-cliente').value;
             
-            // Carrega Clientes para a tabela da aba Clientes
             const { data: clientesData } = await supabaseClient.from('clients').select('*');
             const tbodyClientes = document.getElementById('clients-table-body');
             if (clientesData && clientesData.length > 0) {
@@ -584,7 +668,6 @@
                 tbodyClientes.innerHTML = `<tr><td colspan="3" class="p-6 text-center text-zinc-400">Nenhum cliente cadastrado.</td></tr>`;
             }
 
-            // Carrega Projetos para o Kanban
             let query = supabaseClient.from('projects').select('*, clients(name, color)');
             if (clienteFiltro) {
                 query = query.eq('client_id', clienteFiltro);
@@ -743,6 +826,158 @@
             else carregarContratos();
         }
 
+        // --- GESTÃO FINANCEIRA ---
+        function filtrarFinanceiro(periodo) {
+            filtroPeriodoAtual = periodo;
+            ['dia', 'semana', 'mes', 'ano'].forEach(p => {
+                const btn = document.getElementById(`btn-filtro-${p}`);
+                if(btn) {
+                    if(p === periodo) {
+                        btn.className = 'px-3 py-1.5 text-xs font-medium bg-white text-zinc-900 shadow-sm rounded-md transition';
+                    } else {
+                        btn.className = 'px-3 py-1.5 text-xs font-medium text-zinc-600 rounded-md transition';
+                    }
+                }
+            });
+            carregarFinanceiro();
+        }
+
+        async function carregarFinanceiro() {
+            const tbody = document.getElementById('transactions-table-body');
+            const { data, error } = await supabaseClient
+                .from('transactions')
+                .select('*, clients(name, color)');
+
+            if (error || !data) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-zinc-400">Erro ao carregar transações.</td></tr>`;
+                return;
+            }
+
+            const hoje = new Date();
+            hoje.setHours(0,0,0,0);
+
+            const dadosFiltrados = data.filter(t => {
+                if(!t.due_date) return false;
+                const dataVenc = new Date(t.due_date + 'T00:00:00');
+                
+                if (filtroPeriodoAtual === 'dia') {
+                    return dataVenc.toDateString() === hoje.toDateString();
+                } else if (filtroPeriodoAtual === 'semana') {
+                    const primeiroDiaSemana = new Date(hoje);
+                    primeiroDiaSemana.setDate(hoje.getDate() - hoje.getDay());
+                    const ultimoDiaSemana = new Date(primeiroDiaSemana);
+                    ultimoDiaSemana.setDate(primeiroDiaSemana.getDate() + 6);
+                    return dataVenc >= primeiroDiaSemana && dataVenc <= ultimoDiaSemana;
+                } else if (filtroPeriodoAtual === 'mes') {
+                    return dataVenc.getMonth() === hoje.getMonth() && dataVenc.getFullYear() === hoje.getFullYear();
+                } else if (filtroPeriodoAtual === 'ano') {
+                    return dataVenc.getFullYear() === hoje.getFullYear();
+                }
+                return true;
+            });
+
+            let totalRecebido = 0;
+            let totalPendente = 0;
+            let totalAtrasado = 0;
+
+            if (dadosFiltrados.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-zinc-400">Nenhum registro financeiro neste período.</td></tr>`;
+            } else {
+                tbody.innerHTML = '';
+                dadosFiltrados.forEach(t => {
+                    const clienteNome = t.clients ? t.clients.name : 'Geral';
+                    const clienteCor = t.clients?.color || '#3498db';
+                    const valorNum = Number(t.amount);
+                    const valorFormatado = valorNum.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                    
+                    const dataFormatada = t.due_date ? t.due_date.split('-').reverse().join('/') : '-';
+
+                    if (t.status === 'Pago') totalRecebido += valorNum;
+                    else if (t.status === 'Pendente') totalPendente += valorNum;
+                    else if (t.status === 'Atrasado') totalAtrasado += valorNum;
+
+                    let badgeStatus = 'bg-zinc-100 text-zinc-700';
+                    if (t.status === 'Pago') badgeStatus = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
+                    if (t.status === 'Pendente') badgeStatus = 'bg-amber-50 text-amber-700 border border-amber-200';
+                    if (t.status === 'Atrasado') badgeStatus = 'bg-rose-50 text-rose-700 border border-rose-200';
+
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-zinc-50 transition">
+                            <td class="p-4 pl-6 font-medium text-zinc-900 flex items-center gap-2.5">
+                                <span class="w-3 h-3 rounded-full inline-block shrink-0 shadow-sm" style="background-color: ${clienteCor};"></span>
+                                ${clienteNome}
+                            </td>
+                            <td class="p-4 text-zinc-900 font-medium">${t.description}</td>
+                            <td class="p-4 text-zinc-500">${dataFormatada}</td>
+                            <td class="p-4 text-zinc-700 font-semibold">${valorFormatado}</td>
+                            <td class="p-4">
+                                <span class="px-2.5 py-0.5 rounded text-[10px] font-medium ${badgeStatus}">${t.status}</span>
+                            </td>
+                            <td class="p-4 pr-6 text-right space-x-2">
+                                ${t.status !== 'Pago' ? `<button onclick="marcarComoPago('${t.id}')" class="text-emerald-600 hover:underline font-medium">Receber</button>` : ''}
+                                <button onclick="deletarTransacao('${t.id}')" class="text-rose-500 hover:text-rose-700 font-medium">Excluir</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+
+            document.getElementById('kpi-recebido').innerText = totalRecebido.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            document.getElementById('kpi-pendente').innerText = totalPendente.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            document.getElementById('kpi-atrasado').innerText = totalAtrasado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        async function salvarTransacao() {
+            const client_id = document.getElementById('trans-client-select').value;
+            const description = document.getElementById('trans-desc').value;
+            const amount = document.getElementById('trans-amount').value;
+            const due_date = document.getElementById('trans-duedate').value;
+            const status = document.getElementById('trans-status').value;
+            const payment_method = document.getElementById('trans-method').value;
+
+            if (!client_id || !description || !amount || !due_date) {
+                return alert('Preencha os campos obrigatórios.');
+            }
+
+            const { error } = await supabaseClient.from('transactions').insert([{
+                client_id,
+                description,
+                amount: parseFloat(amount.replace(',', '.')),
+                due_date,
+                status,
+                payment_method: payment_method || 'Pix',
+                payment_date: status === 'Pago' ? new Date().toISOString().split('T')[0] : null
+            }]);
+
+            if (error) {
+                alert('Erro ao salvar transação: ' + error.message);
+            } else {
+                alert('Fatura cadastrada com sucesso!');
+                document.getElementById('trans-desc').value = '';
+                document.getElementById('trans-amount').value = '';
+                document.getElementById('trans-duedate').value = '';
+                closeModal('transaction-modal');
+                carregarFinanceiro();
+            }
+        }
+
+        async function marcarComoPago(id) {
+            const { error } = await supabaseClient
+                .from('transactions')
+                .update({ status: 'Pago', payment_date: new Date().toISOString().split('T')[0] })
+                .eq('id', id);
+
+            if (error) alert('Erro ao atualizar: ' + error.message);
+            else carregarFinanceiro();
+        }
+
+        async function deletarTransacao(id) {
+            if (!confirm('Deseja excluir esta transação?')) return;
+            const { error } = await supabaseClient.from('transactions').delete().eq('id', id);
+            if (error) alert('Erro ao excluir: ' + error.message);
+            else carregarFinanceiro();
+        }
+
         // --- FUNÇÕES DE DRAG AND DROP ---
         function iniciarArraste(event, projectId) {
             event.dataTransfer.setData('text/plain', projectId);
@@ -797,19 +1032,22 @@
         async function carregarSelectClientes() {
             const selectProj = document.getElementById('project-client-select');
             const selectContrato = document.getElementById('contract-client-select');
+            const selectTrans = document.getElementById('trans-client-select');
             const selectFiltro = document.getElementById('filtro-cliente');
             const { data } = await supabaseClient.from('clients').select('*');
             if (!data) return;
 
-            const clienteAtualFiltro = selectFiltro.value;
+            const clienteAtualFiltro = selectFiltro ? selectFiltro.value : '';
 
             if(selectProj) selectProj.innerHTML = '<option value="">Selecione um cliente...</option>';
             if(selectContrato) selectContrato.innerHTML = '<option value="">Selecione um cliente...</option>';
+            if(selectTrans) selectTrans.innerHTML = '<option value="">Selecione um cliente...</option>';
             if(selectFiltro) selectFiltro.innerHTML = '<option value="">Todos os Clientes</option>';
 
             data.forEach(client => {
                 if(selectProj) selectProj.innerHTML += `<option value="${client.id}">${client.name}</option>`;
                 if(selectContrato) selectContrato.innerHTML += `<option value="${client.id}">${client.name}</option>`;
+                if(selectTrans) selectTrans.innerHTML += `<option value="${client.id}">${client.name}</option>`;
                 if(selectFiltro) selectFiltro.innerHTML += `<option value="${client.id}">${client.name}</option>`;
             });
 
@@ -1042,6 +1280,7 @@
                     chatHistory.push({ role: 'assistant', text: data.reply });
                     carregarDados();
                     carregarContratos();
+                    carregarFinanceiro();
                 } else {
                     messages.innerHTML += `<div class="bg-white border border-zinc-200 text-rose-600 p-2.5 rounded-xl max-w-[85%] self-start shadow-sm">Erro: ${data.error || 'falha desconhecida'}</div>`;
                 }
