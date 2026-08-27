@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solluz — Gestão de Produção</title>
+    <title>Meu Aval — Gestão de Produção</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Supabase JS Client -->
@@ -20,10 +20,10 @@
 
     <!-- MENU LATERAL / ABAS -->
     <aside class="w-64 bg-white border-r border-zinc-200 flex flex-col justify-between z-30">
-        <div class="p-5">
+        <div class="p-5 overflow-y-auto">
             <div class="flex items-center space-x-3 mb-8">
                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
-                <h1 class="font-semibold text-base tracking-tight text-zinc-900">SOLLUZ <span class="text-zinc-400 font-normal">| Produção</span></h1>
+                <h1 class="font-semibold text-base tracking-tight text-zinc-900">MEU AVAL <span class="text-zinc-400 font-normal">| Produção</span></h1>
             </div>
             <nav class="space-y-1.5">
                 <button onclick="mudarAba('projetos')" class="w-full text-left px-3.5 py-2.5 rounded-lg text-xs font-medium bg-zinc-900 text-white transition tab-btn flex items-center gap-2.5 shadow-sm" data-tab="projetos">
@@ -35,9 +35,19 @@
                 <button onclick="mudarAba('financeiro')" class="w-full text-left px-3.5 py-2.5 rounded-lg text-xs font-medium text-zinc-600 hover:bg-zinc-100 transition tab-btn flex items-center gap-2.5" data-tab="financeiro">
                     💰 Financeiro
                 </button>
-                <button onclick="mudarAba('administrativo')" class="w-full text-left px-3.5 py-2.5 rounded-lg text-xs font-medium text-zinc-600 hover:bg-zinc-100 transition tab-btn flex items-center gap-2.5" data-tab="administrativo">
-                    ⚙️ Administrativo (Planos)
+
+                <!-- Grupo Administrativo / Subpastas -->
+                <div class="pt-3 pb-1">
+                    <span class="px-3.5 text-[10px] font-bold uppercase tracking-wider text-zinc-400">Administrativo</span>
+                </div>
+                <button onclick="mudarAba('comercial')" class="w-full text-left px-3.5 py-2 rounded-lg text-xs font-medium text-zinc-600 hover:bg-zinc-100 transition tab-btn flex items-center gap-2.5 pl-6" data-tab="comercial">
+                    💼 Comercial / Contratos
                 </button>
+                <button onclick="mudarAba('planos')" class="w-full text-left px-3.5 py-2 rounded-lg text-xs font-medium text-zinc-600 hover:bg-zinc-100 transition tab-btn flex items-center gap-2.5 pl-6" data-tab="planos">
+                    ⚙️ Planos & Assinaturas
+                </button>
+
+                <div class="pt-3"></div>
                 <button onclick="mudarAba('configuracoes')" class="w-full text-left px-3.5 py-2.5 rounded-lg text-xs font-medium text-zinc-600 hover:bg-zinc-100 transition tab-btn flex items-center gap-2.5" data-tab="configuracoes">
                     🔧 Configurações
                 </button>
@@ -141,18 +151,29 @@
             <!-- ABA: FINANCEIRO -->
             <section id="aba-financeiro" class="tab-content hidden space-y-6">
                 <div class="bg-white p-6 rounded-xl border border-zinc-200 shadow-sm space-y-3">
-                    <h3 class="font-medium text-sm text-zinc-800">Controle de Pagamentos</h3>
-                    <p class="text-xs text-zinc-500">Monitore o status financeiro e faturas de cada cliente da produtora.</p>
+                    <h3 class="font-medium text-sm text-zinc-800">Controle de Ganhos e Fluxo de Caixa</h3>
+                    <p class="text-xs text-zinc-500">Monitore recebimentos por dia, semana, mês ou ano, além de faturas pendentes e atrasadas.</p>
                     <div id="financeiro-container" class="border border-zinc-100 rounded-lg p-4 text-xs text-zinc-600 bg-zinc-50">
-                        Nenhum registro de pagamento pendente no momento.
+                        Módulo financeiro em preparação para lançamento.
                     </div>
                 </div>
             </section>
 
-            <!-- ABA: ADMINISTRATIVO (PLANOS) -->
-            <section id="aba-administrativo" class="tab-content hidden space-y-6">
+            <!-- ABA: COMERCIAL / CONTRATOS -->
+            <section id="aba-comercial" class="tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-xl border border-zinc-200 shadow-sm space-y-3">
+                    <h3 class="font-medium text-sm text-zinc-800">Gestão Comercial e Contratos</h3>
+                    <p class="text-xs text-zinc-500">Cadastre e gerencie contratos recorrentes (planos) ou serviços avulsos por cliente.</p>
+                    <div id="comercial-container" class="border border-zinc-100 rounded-lg p-4 text-xs text-zinc-600 bg-zinc-50">
+                        Módulo comercial em preparação para lançamento.
+                    </div>
+                </div>
+            </section>
+
+            <!-- ABA: PLANOS & ASSINATURAS -->
+            <section id="aba-planos" class="tab-content hidden space-y-6">
                 <div class="flex justify-between items-center bg-white p-4 rounded-xl border border-zinc-200 shadow-sm">
-                    <h3 class="font-medium text-sm text-zinc-800">Gestão de Planos e Assinaturas</h3>
+                    <h3 class="font-medium text-sm text-zinc-800">Planos e Assinaturas Disponíveis</h3>
                     <button onclick="openModal('plan-modal')" class="px-3.5 py-2 text-xs font-medium text-white bg-zinc-900 rounded-lg shadow-sm hover:bg-zinc-800 transition">+ Cadastrar Plano</button>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="grid-planos">
@@ -388,13 +409,13 @@
         <div class="bg-zinc-900 text-white px-5 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-2">
                 <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                <span class="font-medium text-sm">Copiloto Solluz (IA)</span>
+                <span class="font-medium text-sm">Copiloto Meu Aval (IA)</span>
             </div>
             <button onclick="toggleChat()" class="text-zinc-400 hover:text-white text-sm">✕</button>
         </div>
         <div id="chat-messages" class="p-4 h-80 overflow-y-auto space-y-3 text-xs bg-zinc-50 flex flex-col">
             <div class="bg-white border border-zinc-200 text-zinc-700 p-3 rounded-xl max-w-[85%] self-start shadow-sm">
-                Olá! Sou o Copiloto Solluz. Posso consultar, criar e editar clientes e projetos pra você. Como posso ajudar hoje?
+                Olá! Sou o Copiloto do Meu Aval. Como posso ajudar na gestão hoje?
             </div>
         </div>
         <div class="p-3 bg-white border-t border-zinc-200 flex gap-2">
@@ -428,7 +449,7 @@
             carregarDados();
         }
 
-        // Navegação por Abas
+        // Navegação por Abas (incluindo as novas subpastas)
         function mudarAba(abaId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => {
@@ -438,17 +459,20 @@
 
             document.getElementById(`aba-${abaId}`).classList.remove('hidden');
             const btnAtivo = document.querySelector(`[data-tab="${abaId}"]`);
-            btnAtivo.classList.add('bg-zinc-900', 'text-white', 'shadow-sm');
-            btnAtivo.classList.remove('text-zinc-600', 'hover:bg-zinc-100');
+            if(btnAtivo) {
+                btnAtivo.classList.add('bg-zinc-900', 'text-white', 'shadow-sm');
+                btnAtivo.classList.remove('text-zinc-600', 'hover:bg-zinc-100');
+            }
 
             const titulos = {
                 'projetos': 'Central de Projetos (Kanban)',
                 'clientes': 'Cadastro e Gestão de Clientes',
-                'financeiro': 'Controle Financeiro e Pagamentos',
-                'administrativo': 'Administrativo - Planos e Assinaturas',
+                'financeiro': 'Controle de Ganhos e Fluxo de Caixa',
+                'comercial': 'Gestão Comercial e Contratos',
+                'planos': 'Administrativo - Planos e Assinaturas',
                 'configuracoes': 'Configurações do Sistema'
             };
-            document.getElementById('titulo-aba').innerText = titulos[abaId];
+            document.getElementById('titulo-aba').innerText = titulos[abaId] || 'Meu Aval';
         }
 
         function openModal(modalId) {
@@ -491,7 +515,7 @@
                 tbodyClientes.innerHTML = `<tr><td colspan="3" class="p-6 text-center text-zinc-400">Nenhum cliente cadastrado.</td></tr>`;
             }
 
-            // Carrega Projetos para o Kanban (trazendo o relacionamento de cor do cliente)
+            // Carrega Projetos para o Kanban
             let query = supabaseClient.from('projects').select('*, clients(name, color)');
             if (clienteFiltro) {
                 query = query.eq('client_id', clienteFiltro);
@@ -517,7 +541,6 @@
                 'Concluido': 0
             };
 
-            // Limpa as colunas
             Object.values(colunasMapeamento).forEach(container => {
                 if (container) container.innerHTML = '';
             });
