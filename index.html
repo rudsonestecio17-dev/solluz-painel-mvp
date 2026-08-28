@@ -23,6 +23,35 @@
 </head>
 <body class="bg-zinc-900/5 text-zinc-900 antialiased min-h-screen flex h-screen overflow-hidden">
 
+    <!-- TELA DE LOGIN -->
+    <div id="login-screen" class="fixed inset-0 bg-zinc-900 z-50 flex items-center justify-center p-4">
+        <div class="bg-white border border-zinc-200 rounded-3xl w-full max-w-md p-8 shadow-2xl space-y-6 animate-in fade-in zoom-in-95 duration-200">
+            <div class="flex flex-col items-center text-center space-y-2">
+                <div class="w-12 h-12 rounded-2xl bg-zinc-900 flex items-center justify-center text-white shadow-md shadow-zinc-900/20 mb-2">
+                    <span class="w-3.5 h-3.5 rounded-full bg-emerald-400"></span>
+                </div>
+                <h1 class="font-bold text-lg tracking-tight text-zinc-900">MEU AVAL</h1>
+                <p class="text-xs text-zinc-400">Faça login para acessar a gestão de produção</p>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">E-mail</label>
+                    <input type="email" id="login-email" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 font-medium" placeholder="seu@email.com">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Senha</label>
+                    <input type="password" id="login-password" onkeypress="if(event.key === 'Enter') realizarLogin()" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 font-medium" placeholder="••••••••">
+                </div>
+                <div id="login-error" class="text-rose-600 text-xs font-medium text-center hidden"></div>
+            </div>
+
+            <button onclick="realizarLogin()" class="w-full py-3 text-xs font-semibold text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl shadow-md transition active:scale-95">
+                Entrar no Sistema
+            </button>
+        </div>
+    </div>
+
     <!-- MENU LATERAL / ABAS -->
     <aside class="w-72 bg-white border-r border-zinc-200/80 flex flex-col justify-between z-30 shadow-sm">
         <div class="p-6 overflow-y-auto space-y-6">
@@ -63,9 +92,12 @@
                 </button>
             </nav>
         </div>
-        <div class="p-4 mx-4 mb-4 rounded-xl bg-zinc-50 border border-zinc-200/60 flex items-center justify-between text-xs">
-            <span class="text-zinc-500 font-medium">Status DB:</span>
-            <span id="db-status" class="px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-zinc-200 text-zinc-700">Conectando...</span>
+        <div class="p-4 mx-4 mb-4 rounded-xl bg-zinc-50 border border-zinc-200/60 flex flex-col gap-2 text-xs">
+            <div class="flex items-center justify-between">
+                <span class="text-zinc-500 font-medium">Status DB:</span>
+                <span id="db-status" class="px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-zinc-200 text-zinc-700">Conectando...</span>
+            </div>
+            <button onclick="realizarLogout()" class="w-full mt-1 py-1.5 bg-zinc-200 hover:bg-rose-100 hover:text-rose-700 text-zinc-700 font-semibold rounded-lg transition text-[11px]">Sair da Conta</button>
         </div>
     </aside>
 
@@ -262,7 +294,7 @@
 
     <!-- MODAL: Novo Cliente -->
     <div id="client-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white border border-zinc-200 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-150">
+        <div class="bg-white border border-zinc-200 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
                 <h3 class="font-bold text-base text-zinc-900">Cadastrar Novo Cliente</h3>
                 <button onclick="closeModal('client-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 transition">✕</button>
@@ -622,10 +654,56 @@
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             document.getElementById('db-status').innerText = 'Conectado';
             document.getElementById('db-status').className = 'px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold';
-            inicializarSistema();
+            verificarSessao();
         } catch (e) {
             document.getElementById('db-status').innerText = 'Erro';
             document.getElementById('db-status').className = 'px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 font-semibold';
+        }
+
+        async function verificarSessao() {
+            const { data: { session }, error } = await supabaseClient.auth.getSession();
+            const loginScreen = document.getElementById('login-screen');
+
+            if (session) {
+                if (loginScreen) loginScreen.style.display = 'none';
+                inicializarSistema();
+            } else {
+                if (loginScreen) loginScreen.style.display = 'flex';
+            }
+        }
+
+        async function realizarLogin() {
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            const errorDiv = document.getElementById('login-error');
+
+            errorDiv.classList.add('hidden');
+            errorDiv.innerText = '';
+
+            if (!email || !password) {
+                errorDiv.innerText = 'Preencha o e-mail e a senha.';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+
+            const { data, error } = await supabaseClient.auth.signInWithPassword({
+                email,
+                password
+            });
+
+            if (error) {
+                errorDiv.innerText = 'Credenciais inválidas. Verifique e tente novamente.';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+
+            document.getElementById('login-screen').style.display = 'none';
+            inicializarSistema();
+        }
+
+        async function realizarLogout() {
+            await supabaseClient.auth.signOut();
+            location.reload();
         }
 
         async function inicializarSistema() {
