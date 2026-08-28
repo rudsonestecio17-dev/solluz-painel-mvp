@@ -23,15 +23,15 @@
 </head>
 <body class="bg-zinc-900/5 text-zinc-900 antialiased min-h-screen flex h-screen overflow-hidden">
 
-    <!-- TELA DE LOGIN -->
+    <!-- TELA DE LOGIN / CADASTRO -->
     <div id="login-screen" class="fixed inset-0 bg-zinc-900 z-50 flex items-center justify-center p-4">
         <div class="bg-white border border-zinc-200 rounded-3xl w-full max-w-md p-8 shadow-2xl space-y-6 animate-in fade-in zoom-in-95 duration-200">
             <div class="flex flex-col items-center text-center space-y-2">
                 <div class="w-12 h-12 rounded-2xl bg-zinc-900 flex items-center justify-center text-white shadow-md shadow-zinc-900/20 mb-2">
                     <span class="w-3.5 h-3.5 rounded-full bg-emerald-400"></span>
                 </div>
-                <h1 class="font-bold text-lg tracking-tight text-zinc-900">MEU AVAL</h1>
-                <p class="text-xs text-zinc-400">Faça login para acessar a gestão de produção</p>
+                <h1 id="auth-title" class="font-bold text-lg tracking-tight text-zinc-900">MEU AVAL</h1>
+                <p id="auth-subtitle" class="text-xs text-zinc-400">Faça login para acessar a gestão de produção</p>
             </div>
 
             <div class="space-y-4">
@@ -41,14 +41,23 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Senha</label>
-                    <input type="password" id="login-password" onkeypress="if(event.key === 'Enter') realizarLogin()" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 font-medium" placeholder="••••••••">
+                    <input type="password" id="login-password" onkeypress="if(event.key === 'Enter') executarAcaoAuth()" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 font-medium" placeholder="••••••••">
                 </div>
                 <div id="login-error" class="text-rose-600 text-xs font-medium text-center hidden"></div>
+                <div id="login-success" class="text-emerald-600 text-xs font-medium text-center hidden"></div>
             </div>
 
-            <button onclick="realizarLogin()" class="w-full py-3 text-xs font-semibold text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl shadow-md transition active:scale-95">
-                Entrar no Sistema
-            </button>
+            <div class="space-y-3">
+                <button id="auth-btn" onclick="executarAcaoAuth()" class="w-full py-3 text-xs font-semibold text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl shadow-md transition active:scale-95">
+                    Entrar no Sistema
+                </button>
+                
+                <div class="text-center pt-2">
+                    <button id="toggle-auth-mode" onclick="alternarModoAuth()" class="text-xs text-zinc-500 hover:text-zinc-900 font-medium transition">
+                        Não tem uma conta? <span class="underline font-semibold">Criar cadastro</span>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -649,6 +658,7 @@
         let supabaseClient = null;
         let filtroPeriodoAtual = 'mes';
         let listaPlanosGlobal = [];
+        let modoCadastro = false;
 
         try {
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -672,13 +682,41 @@
             }
         }
 
-        async function realizarLogin() {
+        function alternarModoAuth() {
+            modoCadastro = !modoCadastro;
+            const title = document.getElementById('auth-title');
+            const subtitle = document.getElementById('auth-subtitle');
+            const btn = document.getElementById('auth-btn');
+            const toggleBtn = document.getElementById('toggle-auth-mode');
+            const errorDiv = document.getElementById('login-error');
+            const successDiv = document.getElementById('login-success');
+
+            errorDiv.classList.add('hidden');
+            successDiv.classList.add('hidden');
+
+            if (modoCadastro) {
+                title.innerText = 'CRIAR CONTA';
+                subtitle.innerText = 'Cadastre-se para acessar o sistema';
+                btn.innerText = 'Cadastrar Conta';
+                toggleBtn.innerHTML = 'Já tem uma conta? <span class="underline font-semibold">Fazer login</span>';
+            } else {
+                title.innerText = 'MEU AVAL';
+                subtitle.innerText = 'Faça login para acessar a gestão de produção';
+                btn.innerText = 'Entrar no Sistema';
+                toggleBtn.innerHTML = 'Não tem uma conta? <span class="underline font-semibold">Criar cadastro</span>';
+            }
+        }
+
+        async function executarAcaoAuth() {
             const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value;
             const errorDiv = document.getElementById('login-error');
+            const successDiv = document.getElementById('login-success');
 
             errorDiv.classList.add('hidden');
+            successDiv.classList.add('hidden');
             errorDiv.innerText = '';
+            successDiv.innerText = '';
 
             if (!email || !password) {
                 errorDiv.innerText = 'Preencha o e-mail e a senha.';
@@ -686,19 +724,38 @@
                 return;
             }
 
-            const { data, error } = await supabaseClient.auth.signInWithPassword({
-                email,
-                password
-            });
+            if (modoCadastro) {
+                // Criar Novo Cadastro
+                const { data, error } = await supabaseClient.auth.signUp({
+                    email,
+                    password
+                });
 
-            if (error) {
-                errorDiv.innerText = 'Credenciais inválidas. Verifique e tente novamente.';
-                errorDiv.classList.remove('hidden');
-                return;
+                if (error) {
+                    errorDiv.innerText = 'Erro ao cadastrar: ' + error.message;
+                    errorDiv.classList.remove('hidden');
+                    return;
+                }
+
+                successDiv.innerText = 'Cadastro realizado com sucesso! Verifique seu e-mail se necessário ou faça login.';
+                successDiv.classList.remove('hidden');
+                setTimeout(() => alternarModoAuth(), 3000);
+            } else {
+                // Realizar Login
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
+                    email,
+                    password
+                });
+
+                if (error) {
+                    errorDiv.innerText = 'Credenciais inválidas. Verifique e tente novamente.';
+                    errorDiv.classList.remove('hidden');
+                    return;
+                }
+
+                document.getElementById('login-screen').style.display = 'none';
+                inicializarSistema();
             }
-
-            document.getElementById('login-screen').style.display = 'none';
-            inicializarSistema();
         }
 
         async function realizarLogout() {
