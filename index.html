@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Aval — Gestão de Produção</title>
+    <title>Meu Aval — Gestão de Redes Sociais</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Supabase JS Client -->
@@ -31,7 +31,7 @@
                     <span class="w-3.5 h-3.5 rounded-full bg-emerald-400"></span>
                 </div>
                 <h1 id="auth-title" class="font-bold text-lg tracking-tight text-zinc-900">MEU AVAL</h1>
-                <p id="auth-subtitle" class="text-xs text-zinc-400">Faça login para acessar a gestão de produção</p>
+                <p id="auth-subtitle" class="text-xs text-zinc-400">Faça login para acessar o painel de redes sociais</p>
             </div>
 
             <div class="space-y-4">
@@ -69,32 +69,32 @@
                 </div>
                 <div>
                     <h1 class="font-bold text-sm tracking-tight text-zinc-900">MEU AVAL</h1>
-                    <p class="text-[10px] text-zinc-400 font-medium tracking-wide uppercase">Gestão de Produção</p>
+                    <p class="text-[10px] text-zinc-400 font-medium tracking-wide uppercase">Gestão de Mídia & Social</p>
                 </div>
             </div>
             <nav class="space-y-1">
                 <button onclick="mudarAba('projetos')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium bg-zinc-900 text-white transition tab-btn flex items-center gap-3 shadow-sm shadow-zinc-900/10" data-tab="projetos">
-                    <span class="text-sm">📁</span> Projetos (Kanban)
+                    <span class="text-sm">📋</span> Fluxo de Publicações
                 </button>
                 <button onclick="mudarAba('conteudo')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 transition tab-btn flex items-center gap-3" data-tab="conteudo">
-                    <span class="text-sm">📱</span> Peças de Conteúdo
+                    <span class="text-sm">🎬</span> Peças & Criativos
                 </button>
                 <button onclick="mudarAba('clientes')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 transition tab-btn flex items-center gap-3" data-tab="clientes">
-                    <span class="text-sm">👥</span> Clientes
+                    <span class="text-sm">🏢</span> Marcas & Clientes
                 </button>
                 <button onclick="mudarAba('financeiro')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 transition tab-btn flex items-center gap-3" data-tab="financeiro">
-                    <span class="text-sm">💰</span> Financeiro
+                    <span class="text-sm">💰</span> Fluxo de Caixa
                 </button>
 
                 <!-- Grupo Administrativo / Subpastas -->
                 <div class="pt-5 pb-2 px-1">
-                    <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Administrativo</span>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Comercial & Gestão</span>
                 </div>
                 <button onclick="mudarAba('comercial')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 transition tab-btn flex items-center gap-3 pl-5" data-tab="comercial">
-                    <span class="text-sm">💼</span> Comercial / Contratos
+                    <span class="text-sm">📝</span> Planos & Contratos
                 </button>
                 <button onclick="mudarAba('planos')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 transition tab-btn flex items-center gap-3 pl-5" data-tab="planos">
-                    <span class="text-sm">⚙️</span> Planos & Assinaturas
+                    <span class="text-sm">🏷️</span> Gestão de Pacotes
                 </button>
 
                 <div class="pt-4"></div>
@@ -118,15 +118,15 @@
         <!-- Header Polido -->
         <header class="border-b border-zinc-200/80 bg-white/80 backdrop-blur-md sticky top-0 z-20 px-8 h-18 flex items-center justify-between shadow-xs">
             <div>
-                <h2 id="titulo-aba" class="font-bold text-base tracking-tight text-zinc-900">Central de Projetos (Kanban)</h2>
-                <p class="text-xs text-zinc-400">Gerencie fluxos, entregas e operações com agilidade.</p>
+                <h2 id="titulo-aba" class="font-bold text-base tracking-tight text-zinc-900">Fluxo de Publicações (Kanban)</h2>
+                <p class="text-xs text-zinc-400">Gerencie campanhas, prazos e aprovações de conteúdo com agilidade.</p>
             </div>
             <div class="flex items-center gap-3">
                 <button onclick="openModal('client-modal')" class="inline-flex items-center justify-center px-4 py-2.5 text-xs font-medium text-zinc-700 bg-white border border-zinc-200 rounded-xl shadow-xs hover:bg-zinc-50 hover:border-zinc-300 transition active:scale-95">
-                    + Novo Cliente
+                    + Nova Marca
                 </button>
                 <button onclick="openModal('project-modal')" class="inline-flex items-center justify-center px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 rounded-xl shadow-md shadow-zinc-900/20 hover:bg-zinc-800 transition active:scale-95">
-                    + Novo Projeto
+                    + Nova Campanha
                 </button>
             </div>
         </header>
@@ -138,9 +138,9 @@
             <section id="aba-projetos" class="tab-content space-y-6">
                 <!-- Filtro por Cliente -->
                 <div class="flex items-center gap-3 bg-white p-4 rounded-2xl border border-zinc-200/80 shadow-xs">
-                    <label for="filtro-cliente" class="text-xs font-medium text-zinc-500">Filtrar por Cliente:</label>
+                    <label for="filtro-cliente" class="text-xs font-medium text-zinc-500">Filtrar por Marca:</label>
                     <select id="filtro-cliente" onchange="carregarDados()" class="bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2 text-xs text-zinc-900 focus:outline-none focus:border-zinc-400 font-medium">
-                        <option value="">Todos os Clientes</option>
+                        <option value="">Todas as Marcas</option>
                     </select>
                     <button onclick="carregarDados()" class="text-xs text-zinc-500 hover:text-zinc-900 ml-auto font-medium transition px-3 py-1.5 rounded-lg hover:bg-zinc-100">Atualizar Dados ⟳</button>
                 </div>
@@ -152,23 +152,23 @@
                         <div class="flex-1 space-y-3 overflow-y-auto"></div>
                     </div>
                     <div class="bg-zinc-100/60 border border-zinc-200/70 rounded-2xl p-3.5 flex flex-col kanban-col shadow-xs" id="col-em-execucao" data-status="Em execução" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Em execução')">
-                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-blue-700 mb-3 px-1 flex items-center justify-between">Em execução <span id="count-em-execucao" class="bg-white border border-zinc-200/80 text-zinc-700 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
+                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-blue-700 mb-3 px-1 flex items-center justify-between">Em Produção <span id="count-em-execucao" class="bg-white border border-zinc-200/80 text-zinc-700 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
                         <div class="flex-1 space-y-3 overflow-y-auto"></div>
                     </div>
                     <div class="bg-zinc-100/60 border border-zinc-200/70 rounded-2xl p-3.5 flex flex-col kanban-col shadow-xs" id="col-em-validacao" data-status="Em Validação" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Em Validação')">
-                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-purple-700 mb-3 px-1 flex items-center justify-between">Em Validação <span id="count-em-validacao" class="bg-white border border-zinc-200/80 text-zinc-700 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
+                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-purple-700 mb-3 px-1 flex items-center justify-between">Validação (Zap) <span id="count-em-validacao" class="bg-white border border-zinc-200/80 text-zinc-700 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
                         <div class="flex-1 space-y-3 overflow-y-auto"></div>
                     </div>
                     <div class="bg-zinc-100/60 border border-zinc-200/70 rounded-2xl p-3.5 flex flex-col kanban-col shadow-xs" id="col-aprovado" data-status="Aprovado" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Aprovado')">
-                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-teal-700 mb-3 px-1 flex items-center justify-between">Aprovado <span id="count-aprovado" class="bg-white border border-zinc-200/80 text-zinc-700 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
+                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-teal-700 mb-3 px-1 flex items-center justify-between">Aprovados <span id="count-aprovado" class="bg-white border border-zinc-200/80 text-zinc-700 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
                         <div class="flex-1 space-y-3 overflow-y-auto"></div>
                     </div>
                     <div class="bg-zinc-100/60 border border-zinc-200/70 rounded-2xl p-3.5 flex flex-col kanban-col shadow-xs" id="col-programado" data-status="Programado" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Programado')">
-                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-indigo-700 mb-3 px-1 flex items-center justify-between">Programado <span id="count-programado" class="bg-white border border-zinc-200/80 text-zinc-700 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
+                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-indigo-700 mb-3 px-1 flex items-center justify-between">Agendados <span id="count-programado" class="bg-white border border-zinc-200/80 text-zinc-700 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
                         <div class="flex-1 space-y-3 overflow-y-auto"></div>
                     </div>
                     <div class="bg-zinc-100/60 border border-zinc-200/70 rounded-2xl p-3.5 flex flex-col kanban-col shadow-xs" id="col-concluido" data-status="Concluido" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Concluido')">
-                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-emerald-700 mb-3 px-1 flex items-center justify-between">Concluído <span id="count-concluido" class="bg-white border border-zinc-200/80 text-zinc-700 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
+                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-emerald-700 mb-3 px-1 flex items-center justify-between">Publicados <span id="count-concluido" class="bg-white border border-zinc-200/80 text-zinc-700 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
                         <div class="flex-1 space-y-3 overflow-y-auto"></div>
                     </div>
                 </div>
@@ -178,17 +178,17 @@
             <section id="aba-conteudo" class="tab-content hidden space-y-6">
                 <div class="flex justify-between items-center bg-white p-5 rounded-2xl border border-zinc-200/80 shadow-xs">
                     <div>
-                        <h3 class="font-semibold text-sm text-zinc-900">Peças de Conteúdo (Fluxo de Aprovação)</h3>
-                        <p class="text-xs text-zinc-400">Gerencie posts e mídias integradas com prioridade para validação via WhatsApp.</p>
+                        <h3 class="font-semibold text-sm text-zinc-900">Peças & Criativos (Fluxo de Aprovação)</h3>
+                        <p class="text-xs text-zinc-400">Monitore todos os criativos cadastrados para validação no WhatsApp dos clientes.</p>
                     </div>
                 </div>
                 <div class="bg-white border border-zinc-200/80 rounded-2xl shadow-xs overflow-hidden">
                     <table class="w-full text-left text-sm">
                         <thead class="bg-zinc-50/80 border-b border-zinc-200 text-zinc-400 font-semibold text-[11px] uppercase tracking-wider">
                             <tr>
-                                <th class="p-4 pl-6">Título da Peça</th>
-                                <th class="p-4">Tipo</th>
-                                <th class="p-4">Prioridade (Bot)</th>
+                                <th class="p-4 pl-6">Título da Peça / Campanha</th>
+                                <th class="p-4">Plataforma / Formato</th>
+                                <th class="p-4">Ordem (Bot)</th>
                                 <th class="p-4">Status</th>
                                 <th class="p-4 pr-6 text-right">Ações</th>
                             </tr>
@@ -204,22 +204,22 @@
             <section id="aba-clientes" class="tab-content hidden space-y-6">
                 <div class="flex justify-between items-center bg-white p-5 rounded-2xl border border-zinc-200/80 shadow-xs">
                     <div>
-                        <h3 class="font-semibold text-sm text-zinc-900">Gerenciamento de Clientes</h3>
-                        <p class="text-xs text-zinc-400">Cadastre e personalize a identidade visual de cada empresa.</p>
+                        <h3 class="font-semibold text-sm text-zinc-900">Marcas & Clientes</h3>
+                        <p class="text-xs text-zinc-400">Gerencie perfis de marcas, contas e identidades visuais associadas.</p>
                     </div>
-                    <button onclick="openModal('client-modal')" class="px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 rounded-xl shadow-md shadow-zinc-900/10 hover:bg-zinc-800 transition">+ Novo Cliente</button>
+                    <button onclick="openModal('client-modal')" class="px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 rounded-xl shadow-md shadow-zinc-900/10 hover:bg-zinc-800 transition">+ Nova Marca</button>
                 </div>
                 <div class="bg-white border border-zinc-200/80 rounded-2xl shadow-xs overflow-hidden">
                     <table class="w-full text-left text-sm">
                         <thead class="bg-zinc-50/80 border-b border-zinc-200 text-zinc-400 font-semibold text-[11px] uppercase tracking-wider">
                             <tr>
-                                <th class="p-4 pl-6">Cliente / Empresa</th>
-                                <th class="p-4">Documento (CPF/CNPJ)</th>
+                                <th class="p-4 pl-6">Marca / Cliente</th>
+                                <th class="p-4">Documento (CNPJ/CPF)</th>
                                 <th class="p-4 pr-6 text-right">Ações</th>
                             </tr>
                         </thead>
                         <tbody id="clients-table-body" class="divide-y divide-zinc-100 text-zinc-700 text-xs font-medium">
-                            <tr><td colspan="3" class="p-8 text-center text-zinc-400">Carregando clientes...</td></tr>
+                            <tr><td colspan="3" class="p-8 text-center text-zinc-400">Carregando marcas...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -236,7 +236,7 @@
                             <button onclick="filtrarFinanceiro('ano')" id="btn-filtro-ano" class="px-3 py-1.5 text-xs font-medium text-zinc-600 rounded-lg transition">Este Ano</button>
                         </div>
                         <select id="filtro-cliente-financeiro" onchange="carregarFinanceiro()" class="bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2 text-xs text-zinc-900 focus:outline-none font-medium">
-                            <option value="">Todos os Clientes</option>
+                            <option value="">Todas as Marcas</option>
                         </select>
                     </div>
                     <button onclick="openModal('transaction-modal')" class="px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 rounded-xl shadow-md shadow-zinc-900/10 hover:bg-zinc-800 transition">+ Nova Fatura / Recebimento</button>
@@ -248,11 +248,11 @@
                         <h3 id="kpi-recebido" class="text-2xl font-bold text-emerald-600 tracking-tight">R$ 0,00</h3>
                     </div>
                     <div class="bg-white p-6 rounded-2xl border border-zinc-200/80 shadow-xs space-y-1">
-                        <span class="text-xs font-medium text-zinc-400">Pagamentos Pendentes</span>
+                        <span class="text-xs font-medium text-zinc-400">Cobranças Pendentes</span>
                         <h3 id="kpi-pendente" class="text-2xl font-bold text-amber-600 tracking-tight">R$ 0,00</h3>
                     </div>
                     <div class="bg-white p-6 rounded-2xl border border-zinc-200/80 shadow-xs space-y-1">
-                        <span class="text-xs font-medium text-zinc-400">Pagamentos Atrasados</span>
+                        <span class="text-xs font-medium text-zinc-400">Cobranças Atrasadas</span>
                         <h3 id="kpi-atrasado" class="text-2xl font-bold text-rose-600 tracking-tight">R$ 0,00</h3>
                     </div>
                 </div>
@@ -261,7 +261,7 @@
                     <table class="w-full text-left text-sm">
                         <thead class="bg-zinc-50/80 border-b border-zinc-200 text-zinc-400 font-semibold text-[11px] uppercase tracking-wider">
                             <tr>
-                                <th class="p-4 pl-6">Cliente / Empresa</th>
+                                <th class="p-4 pl-6">Marca / Cliente</th>
                                 <th class="p-4">Descrição</th>
                                 <th class="p-4">Vencimento</th>
                                 <th class="p-4">Valor (R$)</th>
@@ -280,17 +280,17 @@
             <section id="aba-comercial" class="tab-content hidden space-y-6">
                 <div class="flex justify-between items-center bg-white p-5 rounded-2xl border border-zinc-200/80 shadow-xs">
                     <div>
-                        <h3 class="font-semibold text-sm text-zinc-900">Gestão Comercial e Contratos</h3>
-                        <p class="text-xs text-zinc-400">Gerencie planos recorrentes e serviços avulsos de cada cliente.</p>
+                        <h3 class="font-semibold text-sm text-zinc-900">Planos & Contratos de Social Media</h3>
+                        <p class="text-xs text-zinc-400">Gerencie retainer mensal, pacotes de posts e acordos comerciais ativos.</p>
                     </div>
-                    <button onclick="openModal('contract-modal')" class="px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 rounded-xl shadow-md shadow-zinc-900/10 hover:bg-zinc-800 transition">+ Novo Contrato / Serviço</button>
+                    <button onclick="openModal('contract-modal')" class="px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 rounded-xl shadow-md shadow-zinc-900/10 hover:bg-zinc-800 transition">+ Novo Contrato</button>
                 </div>
                 <div class="bg-white border border-zinc-200/80 rounded-2xl shadow-xs overflow-hidden">
                     <table class="w-full text-left text-sm">
                         <thead class="bg-zinc-50/80 border-b border-zinc-200 text-zinc-400 font-semibold text-[11px] uppercase tracking-wider">
                             <tr>
-                                <th class="p-4 pl-6">Cliente / Empresa</th>
-                                <th class="p-4">Título do Contrato / Serviço</th>
+                                <th class="p-4 pl-6">Marca / Cliente</th>
+                                <th class="p-4">Título do Contrato / Pacote</th>
                                 <th class="p-4">Tipo</th>
                                 <th class="p-4">Valor (R$)</th>
                                 <th class="p-4">Status</th>
@@ -308,13 +308,13 @@
             <section id="aba-planos" class="tab-content hidden space-y-6">
                 <div class="flex justify-between items-center bg-white p-5 rounded-2xl border border-zinc-200/80 shadow-xs">
                     <div>
-                        <h3 class="font-semibold text-sm text-zinc-900">Planos e Pacotes Cadastrados</h3>
-                        <p class="text-xs text-zinc-400">Cadastre modelos de contratação para selecionar rapidamente na aba Comercial.</p>
+                        <h3 class="font-semibold text-sm text-zinc-900">Gestão de Pacotes de Serviços</h3>
+                        <p class="text-xs text-zinc-400">Configure modelos de pacotes de redes sociais para reutilizar nos contratos.</p>
                     </div>
-                    <button onclick="openModal('plan-modal')" class="px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 rounded-xl shadow-md shadow-zinc-900/10 hover:bg-zinc-800 transition">+ Novo Plano</button>
+                    <button onclick="openModal('plan-modal')" class="px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 rounded-xl shadow-md shadow-zinc-900/10 hover:bg-zinc-800 transition">+ Novo Pacote</button>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="grid-planos">
-                    <p class="text-xs text-zinc-400 col-span-3 text-center py-8">Carregando planos...</p>
+                    <p class="text-xs text-zinc-400 col-span-3 text-center py-8">Carregando pacotes...</p>
                 </div>
             </section>
 
@@ -333,29 +333,29 @@
     <div id="client-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
         <div class="bg-white border border-zinc-200 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
-                <h3 class="font-bold text-base text-zinc-900">Cadastrar Novo Cliente</h3>
+                <h3 class="font-bold text-base text-zinc-900">Cadastrar Nova Marca / Cliente</h3>
                 <button onclick="closeModal('client-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 transition">✕</button>
             </div>
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Nome da Empresa / Cliente</label>
-                    <input type="text" id="client-name" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 font-medium" placeholder="Ex: C-METAL">
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Nome da Marca / Empresa</label>
+                    <input type="text" id="client-name" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 font-medium" placeholder="Ex: Marca Exemplo">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Documento (CNPJ / CPF)</label>
                     <input type="text" id="client-doc" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 font-medium" placeholder="00.000.000/0001-00">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Cor de Identificação</label>
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Cor de Identificação no Kanban</label>
                     <div class="flex items-center gap-3 bg-zinc-50 p-3 rounded-xl border border-zinc-200">
                         <input type="color" id="client-color" value="#3498db" class="w-10 h-10 bg-transparent border-0 rounded-lg cursor-pointer p-0">
-                        <span class="text-xs text-zinc-500 font-medium">Cor para diferenciar os cartões no Kanban.</span>
+                        <span class="text-xs text-zinc-500 font-medium">Cor para destacar as etiquetas dos posts.</span>
                     </div>
                 </div>
             </div>
             <div class="flex justify-end gap-2 pt-2">
                 <button onclick="closeModal('client-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 rounded-xl transition">Cancelar</button>
-                <button onclick="salvarCliente()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl shadow-md transition">Salvar Cliente</button>
+                <button onclick="salvarCliente()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl shadow-md transition">Salvar Marca</button>
             </div>
         </div>
     </div>
@@ -364,13 +364,13 @@
     <div id="edit-client-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
         <div class="bg-white border border-zinc-200 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
-                <h3 class="font-bold text-base text-zinc-900">Editar Cliente</h3>
+                <h3 class="font-bold text-base text-zinc-900">Editar Marca / Cliente</h3>
                 <button onclick="closeModal('edit-client-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 transition">✕</button>
             </div>
             <input type="hidden" id="edit-client-id">
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Nome da Empresa / Cliente</label>
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Nome da Marca / Cliente</label>
                     <input type="text" id="edit-client-name" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
                 </div>
                 <div>
@@ -381,7 +381,7 @@
                     <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Cor de Identificação</label>
                     <div class="flex items-center gap-3 bg-zinc-50 p-3 rounded-xl border border-zinc-200">
                         <input type="color" id="edit-client-color" class="w-10 h-10 bg-transparent border-0 rounded-lg cursor-pointer p-0">
-                        <span class="text-xs text-zinc-500 font-medium">Altere a cor de identificação da empresa.</span>
+                        <span class="text-xs text-zinc-500 font-medium">Altere a cor de identificação da marca.</span>
                     </div>
                 </div>
             </div>
@@ -401,27 +401,27 @@
             </div>
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Cliente / Empresa</label>
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Marca / Cliente</label>
                     <select id="contract-client-select" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
-                        <option value="">Selecione um cliente...</option>
+                        <option value="">Selecione uma marca...</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Carregar dados de um Plano (Opcional)</label>
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Carregar dados de um Pacote (Opcional)</label>
                     <select id="contract-plan-select" onchange="selecionarPlanoNoContrato()" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
-                        <option value="">Selecione um plano pré-definido...</option>
+                        <option value="">Selecione um pacote pré-definido...</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Título do Contrato / Serviço</label>
-                    <input type="text" id="contract-title" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="Ex: Retainer Mensal / Cobertura Evento X">
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Título do Contrato / Pacote</label>
+                    <input type="text" id="contract-title" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="Ex: Retainer Mensal - 12 Posts / Mês">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Tipo</label>
                         <select id="contract-type" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
                             <option value="Plano">Plano (Recorrente)</option>
-                            <option value="Serviço Avulso">Serviço Avulso</option>
+                            <option value="Serviço Avulso">Serviço Pontual</option>
                         </select>
                     </div>
                     <div>
@@ -456,14 +456,14 @@
             </div>
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Cliente / Empresa</label>
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Marca / Cliente</label>
                     <select id="trans-client-select" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
-                        <option value="">Selecione um cliente...</option>
+                        <option value="">Selecione uma marca...</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Descrição</label>
-                    <input type="text" id="trans-desc" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="Ex: Mensalidade - Agosto/2026">
+                    <input type="text" id="trans-desc" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="Ex: Retainer Social Media - Agosto/2026">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
@@ -497,33 +497,33 @@
         </div>
     </div>
 
-    <!-- MODAL: Novo Projeto -->
+    <!-- MODAL: Novo Projeto (Campanha) -->
     <div id="project-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
         <div class="bg-white border border-zinc-200 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
-                <h3 class="font-bold text-base text-zinc-900">Cadastrar Novo Projeto</h3>
+                <h3 class="font-bold text-base text-zinc-900">Cadastrar Nova Campanha / Projeto</h3>
                 <button onclick="closeModal('project-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 transition">✕</button>
             </div>
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Cliente</label>
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Marca / Cliente</label>
                     <select id="project-client-select" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
-                        <option value="">Carregando clientes...</option>
+                        <option value="">Carregando marcas...</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Título do Projeto</label>
-                    <input type="text" id="project-title" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="Ex: Cobertura FEIMEC 2026">
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Título da Campanha / Projeto</label>
+                    <input type="text" id="project-title" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="Ex: Lançamento Coleção Inverno - Reels & Carrosséis">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Descrição / Escopo</label>
-                    <textarea id="project-desc" rows="2" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="Detalhes da produção..."></textarea>
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Descrição / Briefing</label>
+                    <textarea id="project-desc" rows="2" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="Orientações e cronograma de postagens..."></textarea>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Status (Coluna Kanban)</label>
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Status (Coluna do Kanban)</label>
                     <select id="project-status" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
                         <option value="Planejamento">Planejamento</option>
-                        <option value="Em execução">Em execução</option>
+                        <option value="Em execução">Em Produção</option>
                         <option value="Em Validação">Em Validação</option>
                         <option value="Aprovado">Aprovado</option>
                         <option value="Programado">Programado</option>
@@ -533,7 +533,7 @@
             </div>
             <div class="flex justify-end gap-2 pt-2">
                 <button onclick="closeModal('project-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 rounded-xl transition">Cancelar</button>
-                <button onclick="salvarProjeto()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl shadow-md transition">Criar Projeto</button>
+                <button onclick="salvarProjeto()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl shadow-md transition">Criar Campanha</button>
             </div>
         </div>
     </div>
@@ -542,24 +542,24 @@
     <div id="edit-project-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
         <div class="bg-white border border-zinc-200 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
-                <h3 class="font-bold text-base text-zinc-900">Editar Projeto</h3>
+                <h3 class="font-bold text-base text-zinc-900">Editar Campanha</h3>
                 <button onclick="closeModal('edit-project-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 transition">✕</button>
             </div>
             <input type="hidden" id="edit-project-id">
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Título do Projeto</label>
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Título da Campanha</label>
                     <input type="text" id="edit-project-title" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Descrição</label>
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Descrição / Briefing</label>
                     <textarea id="edit-project-desc" rows="2" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium"></textarea>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Status (Coluna Kanban)</label>
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Status (Coluna do Kanban)</label>
                     <select id="edit-project-status" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
                         <option value="Planejamento">Planejamento</option>
-                        <option value="Em execução">Em execução</option>
+                        <option value="Em execução">Em Produção</option>
                         <option value="Em Validação">Em Validação</option>
                         <option value="Aprovado">Aprovado</option>
                         <option value="Programado">Programado</option>
@@ -579,7 +579,7 @@
         <div class="bg-white border border-zinc-200 rounded-3xl w-full max-w-xl p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
                 <div>
-                    <h3 class="font-bold text-base text-zinc-900">Arquivos da Campanha</h3>
+                    <h3 class="font-bold text-base text-zinc-900">Peças e Criativos da Campanha</h3>
                     <p id="files-project-title" class="text-xs text-zinc-400">Projeto selecionado</p>
                 </div>
                 <button onclick="closeModal('files-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 transition">✕</button>
@@ -587,21 +587,21 @@
             <input type="hidden" id="current-file-project-id">
 
             <div class="bg-zinc-50 p-4 rounded-2xl border border-zinc-200/80 space-y-3">
-                <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-600">Enviar Nova Peça / Arquivo</h4>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-600">Enviar Nova Peça (Reels, Story, Arte)</h4>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <input type="text" id="piece-title" placeholder="Nome da peça (ex: Reels 01)" class="bg-white border border-zinc-200 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 focus:outline-none font-medium">
-                    <input type="text" id="piece-platform" placeholder="Plataforma (ex: Instagram)" class="bg-white border border-zinc-200 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 focus:outline-none font-medium">
+                    <input type="text" id="piece-title" placeholder="Título (ex: Reels Bastidores 01)" class="bg-white border border-zinc-200 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 focus:outline-none font-medium">
+                    <input type="text" id="piece-platform" placeholder="Formato (ex: Instagram / Reels)" class="bg-white border border-zinc-200 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 focus:outline-none font-medium">
                 </div>
                 <div>
                     <input type="file" id="piece-file" class="w-full text-xs text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-medium file:bg-zinc-900 file:text-white hover:file:bg-zinc-800 cursor-pointer">
                 </div>
-                <button onclick="uploadArquivoCampanha()" class="w-full py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium rounded-xl transition shadow-md">Fazer Upload e Cadastrar Peça</button>
+                <button onclick="uploadArquivoCampanha()" class="w-full py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium rounded-xl transition shadow-md">Fazer Upload e Enviar para Validação</button>
             </div>
 
             <div class="space-y-2">
-                <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-600">Peças Cadastradas</h4>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-600">Criativos Vinculados</h4>
                 <div id="pieces-list-container" class="max-h-48 overflow-y-auto space-y-2 text-xs divide-y divide-zinc-100">
-                    <p class="text-zinc-400 text-center py-6">Selecione um projeto para ver os arquivos.</p>
+                    <p class="text-zinc-400 text-center py-6">Selecione uma campanha para ver as peças.</p>
                 </div>
             </div>
         </div>
@@ -611,17 +611,17 @@
     <div id="plan-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
         <div class="bg-white border border-zinc-200 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
-                <h3 class="font-bold text-base text-zinc-900">Cadastrar Novo Plano / Pacote</h3>
+                <h3 class="font-bold text-base text-zinc-900">Cadastrar Novo Pacote de Serviços</h3>
                 <button onclick="closeModal('plan-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 transition">✕</button>
             </div>
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Nome do Plano</label>
-                    <input type="text" id="plan-name" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="Ex: Pacote Redes Sociais + Vídeos">
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Nome do Pacote</label>
+                    <input type="text" id="plan-name" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="Ex: Social Media Completo (12 Posts + Stories)">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Descrição / O que inclui</label>
-                    <textarea id="plan-description" rows="2" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="Ex: 4 Reels gravados + edições semanais + relatório"></textarea>
+                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Descrição / Detalhes</label>
+                    <textarea id="plan-description" rows="2" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="Ex: Criação de roteiros, edições para Reels e gestão de tráfego..."></textarea>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
@@ -642,7 +642,7 @@
             </div>
             <div class="flex justify-end gap-2 pt-2">
                 <button onclick="closeModal('plan-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 rounded-xl transition">Cancelar</button>
-                <button onclick="salvarPlano()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl shadow-md transition">Salvar Plano</button>
+                <button onclick="salvarPlano()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl shadow-md transition">Salvar Pacote</button>
             </div>
         </div>
     </div>
@@ -661,13 +661,13 @@
         <div class="bg-zinc-900 text-white px-5 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-2.5">
                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-                <span class="font-semibold text-xs tracking-wide">Copiloto Meu Aval (IA)</span>
+                <span class="font-semibold text-xs tracking-wide">Copiloto Social Media (IA)</span>
             </div>
             <button onclick="toggleChat()" class="text-zinc-400 hover:text-white text-sm">✕</button>
         </div>
         <div id="chat-messages" class="p-4 h-80 overflow-y-auto space-y-3 text-xs bg-zinc-50 flex flex-col">
             <div class="bg-white border border-zinc-200 text-zinc-700 p-3.5 rounded-2xl max-w-[85%] self-start shadow-2xs font-medium">
-                Olá! Sou o Copiloto do Meu Aval. Como posso ajudar na gestão hoje?
+                Olá! Sou o Copiloto do seu painel de redes sociais. Como posso ajudar nas campanhas hoje?
             </div>
         </div>
         <div class="p-3 bg-white border-t border-zinc-200/80 flex gap-2">
@@ -724,12 +724,12 @@
 
             if (modoCadastro) {
                 title.innerText = 'CRIAR CONTA';
-                subtitle.innerText = 'Cadastre-se para acessar o sistema';
+                subtitle.innerText = 'Cadastre-se para acessar o painel';
                 btn.innerText = 'Cadastrar Conta';
                 toggleBtn.innerHTML = 'Já tem uma conta? <span class="underline font-semibold">Fazer login</span>';
             } else {
                 title.innerText = 'MEU AVAL';
-                subtitle.innerText = 'Faça login para acessar a gestão de produção';
+                subtitle.innerText = 'Faça login para acessar o painel de redes sociais';
                 btn.innerText = 'Entrar no Sistema';
                 toggleBtn.innerHTML = 'Não tem uma conta? <span class="underline font-semibold">Criar cadastro</span>';
             }
@@ -801,12 +801,12 @@
             }
 
             const titulos = {
-                'projetos': 'Central de Projetos (Kanban)',
-                'conteudo': 'Peças de Conteúdo (WhatsApp & Validação)',
-                'clientes': 'Cadastro e Gestão de Clientes',
-                'financeiro': 'Controle de Ganhos e Fluxo de Caixa',
-                'comercial': 'Gestão Comercial e Contratos',
-                'planos': 'Administrativo - Planos e Assinaturas',
+                'projetos': 'Fluxo de Publicações (Kanban)',
+                'conteudo': 'Peças & Criativos (WhatsApp & Validação)',
+                'clientes': 'Marcas & Clientes Cadastrados',
+                'financeiro': 'Controle de Faturamento e Fluxo de Caixa',
+                'comercial': 'Planos & Contratos Ativos',
+                'planos': 'Administrativo - Gestão de Pacotes',
                 'configuracoes': 'Configurações do Sistema'
             };
             document.getElementById('titulo-aba').innerText = titulos[abaId] || 'Meu Aval';
@@ -832,7 +832,7 @@
             const { data, error } = await supabaseClient.from('plans').select('*');
 
             if (error || !data || data.length === 0) {
-                grid.innerHTML = `<p class="text-xs text-zinc-400 col-span-3 text-center py-12">Nenhum plano cadastrado.</p>`;
+                grid.innerHTML = `<p class="text-xs text-zinc-400 col-span-3 text-center py-12">Nenhum pacote cadastrado.</p>`;
                 listaPlanosGlobal = [];
                 return;
             }
@@ -865,15 +865,15 @@
             const price = document.getElementById('plan-price').value;
             const billing_cycle = document.getElementById('plan-cycle').value;
 
-            if (!name || !price) return alert('Informe o nome e o valor do plano.');
+            if (!name || !price) return alert('Informe o nome e o valor do pacote.');
 
             const { error } = await supabaseClient.from('plans').insert([{
                 name, description, price: parseFloat(price.replace(',', '.')), billing_cycle
             }]);
 
-            if (error) alert('Erro ao salvar plano: ' + error.message);
+            if (error) alert('Erro ao salvar pacote: ' + error.message);
             else {
-                alert('Plano cadastrado com sucesso!');
+                alert('Pacote cadastrado com sucesso!');
                 document.getElementById('plan-name').value = '';
                 document.getElementById('plan-description').value = '';
                 document.getElementById('plan-price').value = '';
@@ -883,7 +883,7 @@
         }
 
         async function deletarPlano(id) {
-            if (!confirm('Deseja excluir este plano?')) return;
+            if (!confirm('Deseja excluir este pacote?')) return;
             const { error } = await supabaseClient.from('plans').delete().eq('id', id);
             if (!error) carregarPlanos();
         }
@@ -892,7 +892,7 @@
             const select = document.getElementById('contract-plan-select');
             if (!select) return;
             const { data } = await supabaseClient.from('plans').select('*');
-            select.innerHTML = '<option value="">Selecione um plano pré-definido...</option>';
+            select.innerHTML = '<option value="">Selecione um pacote pré-definido...</option>';
             if (data && data.length > 0) {
                 listaPlanosGlobal = data;
                 data.forEach(p => {
@@ -938,7 +938,7 @@
                     `;
                 });
             } else {
-                tbodyClientes.innerHTML = `<tr><td colspan="3" class="p-8 text-center text-zinc-400">Nenhum cliente cadastrado.</td></tr>`;
+                tbodyClientes.innerHTML = `<tr><td colspan="3" class="p-8 text-center text-zinc-400">Nenhuma marca cadastrada.</td></tr>`;
             }
 
             let query = supabaseClient.from('projects').select('*, clients(name, color)');
@@ -985,7 +985,7 @@
                             </div>
                             <p class="text-[11px] text-zinc-400 line-clamp-2 leading-relaxed">${proj.description || 'Sem descrição'}</p>
                             <div class="flex items-center justify-between pt-2 border-t border-zinc-100 text-[11px]">
-                                <button onclick="abrirGerenciarArquivos('${proj.id}', '${proj.title}')" class="text-indigo-600 hover:underline font-semibold">Arquivos</button>
+                                <button onclick="abrirGerenciarArquivos('${proj.id}', '${proj.title}')" class="text-indigo-600 hover:underline font-semibold">Criativos</button>
                                 <div class="space-x-2">
                                     <button onclick="abrirEditarProjeto('${proj.id}', '${proj.title}', '${proj.description || ''}', '${proj.status}')" class="text-zinc-500 hover:text-zinc-900 font-medium">Editar</button>
                                     <button onclick="deletarProjeto('${proj.id}')" class="text-rose-500 hover:text-rose-700 font-medium">Excluir</button>
@@ -1001,7 +1001,10 @@
         async function carregarTodasPecas() {
             const tbody = document.getElementById('pieces-table-body');
             if(!tbody) return;
-            const { data, error } = await supabaseClient.from('content_pieces').select('*, projects(name)');
+            
+            const { data, error } = await supabaseClient
+                .from('content_pieces')
+                .select('*, projects(title, clients(name))');
 
             if (error || !data || data.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-zinc-400">Nenhuma peça cadastrada.</td></tr>`;
@@ -1011,17 +1014,26 @@
             tbody.innerHTML = '';
             data.forEach(p => {
                 let badgeStatus = 'bg-zinc-100 text-zinc-700';
-                if(p.status === 'approved') badgeStatus = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
-                if(p.status === 'pending_approval') badgeStatus = 'bg-purple-50 text-purple-700 border border-purple-200';
+                if(p.status === 'approved' || p.status === 'Aprovado') badgeStatus = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
+                if(p.status === 'pending_approval' || p.status === 'Pendente') badgeStatus = 'bg-purple-50 text-purple-700 border border-purple-200';
                 if(p.status === 'changes_requested') badgeStatus = 'bg-amber-50 text-amber-700 border border-amber-200';
+
+                const nomeProjeto = p.projects?.title || 'Campanha Geral';
+                const nomeCliente = p.projects?.clients?.name ? ` — ${p.projects.clients.name}` : '';
 
                 tbody.innerHTML += `
                     <tr class="hover:bg-zinc-50/80 transition">
-                        <td class="p-4 pl-6 font-semibold text-zinc-900">${p.title} <span class="text-zinc-400 font-normal block text-[11px]">${p.projects?.name || ''}</span></td>
+                        <td class="p-4 pl-6 font-semibold text-zinc-900">
+                            ${p.title} 
+                            <span class="text-zinc-400 font-normal block text-[11px]">${nomeProjeto}${nomeCliente}</span>
+                        </td>
                         <td class="p-4 text-zinc-500 uppercase text-[10px] font-bold">${p.piece_type || p.platform || 'Post'}</td>
-                        <td class="p-4 text-zinc-700 font-medium">Prioridade ${p.priority_order || 1}</td>
+                        <td class="p-4 text-zinc-700 font-medium">Ordem ${p.priority_order || 1}</td>
                         <td class="p-4"><span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${badgeStatus}">${p.status}</span></td>
-                        <td class="p-4 pr-6 text-right"><button onclick="deletarPecaGlobal('${p.id}')" class="text-rose-500 hover:text-rose-700 font-medium">Excluir</button></td>
+                        <td class="p-4 pr-6 text-right space-x-2">
+                            ${p.feed_preview_url || p.media_url ? `<a href="${p.feed_preview_url || p.media_url}" target="_blank" class="text-indigo-600 hover:underline font-semibold text-xs">Ver Arquivo</a>` : ''}
+                            <button onclick="deletarPecaGlobal('${p.id}')" class="text-rose-500 hover:text-rose-700 font-medium text-xs">Excluir</button>
+                        </td>
                     </tr>
                 `;
             });
@@ -1215,7 +1227,7 @@
 
                 if (!jaExisteNesteMes) {
                     await supabaseClient.from('transactions').insert([{
-                        client_id: contrato.client_id, description: `Mensalidade: ${contrato.title}`, amount: contrato.amount, due_date: diaVencimentoPadrao, status: 'Pendente', payment_method: 'Pix'
+                        client_id: contrato.client_id, description: `Contrato: ${contrato.title}`, amount: contrato.amount, due_date: diaVencimentoPadrao, status: 'Pendente', payment_method: 'Pix'
                     }]);
                 }
             }
@@ -1289,11 +1301,11 @@
             const clienteAtualFiltro = selectFiltro ? selectFiltro.value : '';
             const clienteAtualFin = selectFiltroFin ? selectFiltroFin.value : '';
 
-            if(selectProj) selectProj.innerHTML = '<option value="">Selecione um cliente...</option>';
-            if(selectContrato) selectContrato.innerHTML = '<option value="">Selecione um cliente...</option>';
-            if(selectTrans) selectTrans.innerHTML = '<option value="">Selecione um cliente...</option>';
-            if(selectFiltro) selectFiltro.innerHTML = '<option value="">Todos os Clientes</option>';
-            if(selectFiltroFin) selectFiltroFin.innerHTML = '<option value="">Todos os Clientes</option>';
+            if(selectProj) selectProj.innerHTML = '<option value="">Selecione uma marca...</option>';
+            if(selectContrato) selectContrato.innerHTML = '<option value="">Selecione uma marca...</option>';
+            if(selectTrans) selectTrans.innerHTML = '<option value="">Selecione uma marca...</option>';
+            if(selectFiltro) selectFiltro.innerHTML = '<option value="">Todas as Marcas</option>';
+            if(selectFiltroFin) selectFiltroFin.innerHTML = '<option value="">Todas as Marcas</option>';
 
             data.forEach(client => {
                 if(selectProj) selectProj.innerHTML += `<option value="${client.id}">${client.name}</option>`;
@@ -1311,12 +1323,12 @@
             const name = document.getElementById('client-name').value;
             const documentVal = document.getElementById('client-doc').value;
             const colorVal = document.getElementById('client-color').value;
-            if (!name) return alert('Informe o nome.');
+            if (!name) return alert('Informe o nome da marca.');
 
             const { error } = await supabaseClient.from('clients').insert([{ name, document: documentVal, color: colorVal }]);
             if (error) alert('Erro: ' + error.message);
             else {
-                alert('Cliente cadastrado com sucesso!');
+                alert('Marca cadastrada com sucesso!');
                 closeModal('client-modal');
                 carregarDados();
             }
@@ -1338,14 +1350,14 @@
 
             const { error } = await supabaseClient.from('clients').update({ name, document: documentVal, color }).eq('id', id);
             if (!error) {
-                alert('Cliente atualizado!');
+                alert('Marca atualizada!');
                 closeModal('edit-client-modal');
                 carregarDados();
             }
         }
 
         async function deletarCliente(id) {
-            if (!confirm('Deseja excluir este cliente?')) return;
+            if (!confirm('Deseja excluir esta marca?')) return;
             const { error } = await supabaseClient.from('clients').delete().eq('id', id);
             if (!error) carregarDados();
         }
@@ -1359,7 +1371,7 @@
 
             const { error } = await supabaseClient.from('projects').insert([{ client_id, title, description, status }]);
             if (!error) {
-                alert('Projeto criado!');
+                alert('Campanha criada!');
                 closeModal('project-modal');
                 carregarDados();
             }
@@ -1381,21 +1393,21 @@
 
             const { error } = await supabaseClient.from('projects').update({ title, description, status }).eq('id', id);
             if (!error) {
-                alert('Projeto atualizado!');
+                alert('Campanha atualizada!');
                 closeModal('edit-project-modal');
                 carregarDados();
             }
         }
 
         async function deletarProjeto(id) {
-            if (!confirm('Deseja excluir este projeto?')) return;
+            if (!confirm('Deseja excluir esta campanha?')) return;
             const { error } = await supabaseClient.from('projects').delete().eq('id', id);
             if (!error) carregarDados();
         }
 
         function abrirGerenciarArquivos(projectId, projectTitle) {
             document.getElementById('current-file-project-id').value = projectId;
-            document.getElementById('files-project-title').innerText = `Projeto: ${projectTitle}`;
+            document.getElementById('files-project-title').innerText = `Campanha: ${projectTitle}`;
             carregarPecas(projectId);
             openModal('files-modal');
         }
@@ -1405,7 +1417,7 @@
             const { data } = await supabaseClient.from('content_pieces').select('*').eq('project_id', projectId);
 
             if (!data || data.length === 0) {
-                container.innerHTML = `<p class="text-zinc-400 text-center py-6">Nenhuma peça ou arquivo enviado ainda.</p>`;
+                container.innerHTML = `<p class="text-zinc-400 text-center py-6">Nenhum criativo enviado ainda.</p>`;
                 return;
             }
 
@@ -1444,12 +1456,12 @@
             }
 
             const { error: insertError } = await supabaseClient.from('content_pieces').insert([{
-                project_id: projectId, title, piece_type: 'post', feed_preview_url: mediaUrl, status: 'pending_approval', priority_order: 1
+                project_id: projectId, title, piece_type: platform || 'post', feed_preview_url: mediaUrl, media_url: mediaUrl, status: 'pending_approval', priority_order: 1
             }]);
 
             if (insertError) alert('Erro ao registrar peça: ' + insertError.message);
             else {
-                alert('Peça cadastrada para validação!');
+                alert('Criativo cadastrado e enviado para validação!');
                 document.getElementById('piece-title').value = '';
                 document.getElementById('piece-platform').value = '';
                 fileInput.value = '';
