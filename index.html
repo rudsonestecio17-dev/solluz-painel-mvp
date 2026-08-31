@@ -25,7 +25,7 @@
 
     <!-- TELA DE LOGIN / CADASTRO -->
     <div id="login-screen" class="fixed inset-0 bg-zinc-900 z-50 flex items-center justify-center p-4">
-        <div class="bg-white border border-zinc-200 rounded-3xl w-full max-w-md p-8 shadow-2xl space-y-6 animate-in fade-in zoom-in-95 duration-200">
+        <div class="bg-white border border-zinc-200 rounded-3xl w-full max-w-md p-8 shadow-2xl space-y-6">
             <div class="flex flex-col items-center text-center space-y-2">
                 <div class="w-12 h-12 rounded-2xl bg-zinc-900 flex items-center justify-center text-white shadow-md shadow-zinc-900/20 mb-2">
                     <span class="w-3.5 h-3.5 rounded-full bg-emerald-400"></span>
@@ -51,7 +51,6 @@
                 <button id="auth-btn" onclick="executarAcaoAuth()" class="w-full py-3 text-xs font-semibold text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl shadow-md transition active:scale-95">
                     Entrar no Sistema
                 </button>
-                
                 <div class="text-center pt-2">
                     <button id="toggle-auth-mode" onclick="alternarModoAuth()" class="text-xs text-zinc-500 hover:text-zinc-900 font-medium transition">
                         Não tem uma conta? <span class="underline font-semibold">Criar cadastro</span>
@@ -76,6 +75,9 @@
             <nav class="space-y-1">
                 <button onclick="mudarAba('projetos')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium bg-zinc-900 text-white transition tab-btn flex items-center gap-3 shadow-sm shadow-zinc-900/10" data-tab="projetos">
                     <span class="text-sm">📁</span> Projetos (Kanban)
+                </button>
+                <button onclick="mudarAba('conteudo')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 transition tab-btn flex items-center gap-3" data-tab="conteudo">
+                    <span class="text-sm">📱</span> Peças de Conteúdo
                 </button>
                 <button onclick="mudarAba('clientes')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 transition tab-btn flex items-center gap-3" data-tab="clientes">
                     <span class="text-sm">👥</span> Clientes
@@ -169,6 +171,32 @@
                         <h3 class="text-[11px] font-bold uppercase tracking-wider text-emerald-700 mb-3 px-1 flex items-center justify-between">Concluído <span id="count-concluido" class="bg-white border border-zinc-200/80 text-zinc-700 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
                         <div class="flex-1 space-y-3 overflow-y-auto"></div>
                     </div>
+                </div>
+            </section>
+
+            <!-- ABA: PEÇAS DE CONTEÚDO (Integração WhatsApp / Bot) -->
+            <section id="aba-conteudo" class="tab-content hidden space-y-6">
+                <div class="flex justify-between items-center bg-white p-5 rounded-2xl border border-zinc-200/80 shadow-xs">
+                    <div>
+                        <h3 class="font-semibold text-sm text-zinc-900">Peças de Conteúdo (Fluxo de Aprovação)</h3>
+                        <p class="text-xs text-zinc-400">Gerencie posts e mídias integradas com prioridade para validação via WhatsApp.</p>
+                    </div>
+                </div>
+                <div class="bg-white border border-zinc-200/80 rounded-2xl shadow-xs overflow-hidden">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-zinc-50/80 border-b border-zinc-200 text-zinc-400 font-semibold text-[11px] uppercase tracking-wider">
+                            <tr>
+                                <th class="p-4 pl-6">Título da Peça</th>
+                                <th class="p-4">Tipo</th>
+                                <th class="p-4">Prioridade (Bot)</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4 pr-6 text-right">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pieces-table-body" class="divide-y divide-zinc-100 text-zinc-700 text-xs font-medium">
+                            <tr><td colspan="5" class="p-8 text-center text-zinc-400">Carregando peças...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </section>
 
@@ -671,7 +699,7 @@
         }
 
         async function verificarSessao() {
-            const { data: { session }, error } = await supabaseClient.auth.getSession();
+            const { data: { session } } = await supabaseClient.auth.getSession();
             const loginScreen = document.getElementById('login-screen');
 
             if (session) {
@@ -715,8 +743,6 @@
 
             errorDiv.classList.add('hidden');
             successDiv.classList.add('hidden');
-            errorDiv.innerText = '';
-            successDiv.innerText = '';
 
             if (!email || !password) {
                 errorDiv.innerText = 'Preencha o e-mail e a senha.';
@@ -725,34 +751,22 @@
             }
 
             if (modoCadastro) {
-                // Criar Novo Cadastro
-                const { data, error } = await supabaseClient.auth.signUp({
-                    email,
-                    password
-                });
-
+                const { error } = await supabaseClient.auth.signUp({ email, password });
                 if (error) {
                     errorDiv.innerText = 'Erro ao cadastrar: ' + error.message;
                     errorDiv.classList.remove('hidden');
                     return;
                 }
-
-                successDiv.innerText = 'Cadastro realizado com sucesso! Verifique seu e-mail se necessário ou faça login.';
+                successDiv.innerText = 'Cadastro realizado com sucesso! Faça login.';
                 successDiv.classList.remove('hidden');
                 setTimeout(() => alternarModoAuth(), 3000);
             } else {
-                // Realizar Login
-                const { data, error } = await supabaseClient.auth.signInWithPassword({
-                    email,
-                    password
-                });
-
+                const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
                 if (error) {
                     errorDiv.innerText = 'Credenciais inválidas. Verifique e tente novamente.';
                     errorDiv.classList.remove('hidden');
                     return;
                 }
-
                 document.getElementById('login-screen').style.display = 'none';
                 inicializarSistema();
             }
@@ -765,11 +779,11 @@
 
         async function inicializarSistema() {
             await supabaseClient.from('projects').update({ status: 'Planejamento' }).eq('status', 'ativo');
-            await supabaseClient.from('projects').update({ status: 'Planejamento' }).is('status', null);
             carregarDados();
             carregarContratos();
             carregarFinanceiro();
             carregarPlanos();
+            carregarTodasPecas();
         }
 
         function mudarAba(abaId) {
@@ -788,6 +802,7 @@
 
             const titulos = {
                 'projetos': 'Central de Projetos (Kanban)',
+                'conteudo': 'Peças de Conteúdo (WhatsApp & Validação)',
                 'clientes': 'Cadastro e Gestão de Clientes',
                 'financeiro': 'Controle de Ganhos e Fluxo de Caixa',
                 'comercial': 'Gestão Comercial e Contratos',
@@ -795,6 +810,7 @@
                 'configuracoes': 'Configurações do Sistema'
             };
             document.getElementById('titulo-aba').innerText = titulos[abaId] || 'Meu Aval';
+            if(abaId === 'conteudo') carregarTodasPecas();
         }
 
         function openModal(modalId) {
@@ -816,7 +832,7 @@
             const { data, error } = await supabaseClient.from('plans').select('*');
 
             if (error || !data || data.length === 0) {
-                grid.innerHTML = `<p class="text-xs text-zinc-400 col-span-3 text-center py-12">Nenhum plano cadastrado. Clique no botão acima para criar o primeiro.</p>`;
+                grid.innerHTML = `<p class="text-xs text-zinc-400 col-span-3 text-center py-12">Nenhum plano cadastrado.</p>`;
                 listaPlanosGlobal = [];
                 return;
             }
@@ -869,8 +885,7 @@
         async function deletarPlano(id) {
             if (!confirm('Deseja excluir este plano?')) return;
             const { error } = await supabaseClient.from('plans').delete().eq('id', id);
-            if (error) alert('Erro ao excluir plano: ' + error.message);
-            else carregarPlanos();
+            if (!error) carregarPlanos();
         }
 
         async function carregarSelectPlanos() {
@@ -940,7 +955,6 @@
             };
 
             const contadores = { 'Planejamento': 0, 'Em execução': 0, 'Em Validação': 0, 'Aprovado': 0, 'Programado': 0, 'Concluido': 0 };
-
             Object.values(colunasMapeamento).forEach(container => { if (container) container.innerHTML = ''; });
 
             if (error || !data || data.length === 0) {
@@ -984,12 +998,47 @@
             atualizarContadores(contadores);
         }
 
+        async function carregarTodasPecas() {
+            const tbody = document.getElementById('pieces-table-body');
+            if(!tbody) return;
+            const { data, error } = await supabaseClient.from('content_pieces').select('*, projects(name)');
+
+            if (error || !data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-zinc-400">Nenhuma peça cadastrada.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = '';
+            data.forEach(p => {
+                let badgeStatus = 'bg-zinc-100 text-zinc-700';
+                if(p.status === 'approved') badgeStatus = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
+                if(p.status === 'pending_approval') badgeStatus = 'bg-purple-50 text-purple-700 border border-purple-200';
+                if(p.status === 'changes_requested') badgeStatus = 'bg-amber-50 text-amber-700 border border-amber-200';
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-zinc-50/80 transition">
+                        <td class="p-4 pl-6 font-semibold text-zinc-900">${p.title} <span class="text-zinc-400 font-normal block text-[11px]">${p.projects?.name || ''}</span></td>
+                        <td class="p-4 text-zinc-500 uppercase text-[10px] font-bold">${p.piece_type || p.platform || 'Post'}</td>
+                        <td class="p-4 text-zinc-700 font-medium">Prioridade ${p.priority_order || 1}</td>
+                        <td class="p-4"><span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${badgeStatus}">${p.status}</span></td>
+                        <td class="p-4 pr-6 text-right"><button onclick="deletarPecaGlobal('${p.id}')" class="text-rose-500 hover:text-rose-700 font-medium">Excluir</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        async function deletarPecaGlobal(id) {
+            if (!confirm('Deseja excluir esta peça?')) return;
+            await supabaseClient.from('content_pieces').delete().eq('id', id);
+            carregarTodasPecas();
+        }
+
         async function carregarContratos() {
             const tbody = document.getElementById('contracts-table-body');
             const { data, error } = await supabaseClient.from('contracts').select('*, clients(name, color)');
 
             if (error || !data || data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-zinc-400">Nenhum contrato ou serviço cadastrado.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-zinc-400">Nenhum contrato cadastrado.</td></tr>`;
                 return;
             }
 
@@ -1043,9 +1092,6 @@
             }]);
 
             alert('Contrato cadastrado com sucesso!');
-            document.getElementById('contract-title').value = '';
-            document.getElementById('contract-amount').value = '';
-            document.getElementById('contract-cycle').value = '';
             closeModal('contract-modal');
             carregarContratos();
             carregarFinanceiro();
@@ -1054,8 +1100,7 @@
         async function deletarContrato(id) {
             if (!confirm('Deseja realmente excluir este contrato?')) return;
             const { error } = await supabaseClient.from('contracts').delete().eq('id', id);
-            if (error) alert('Erro ao excluir: ' + error.message);
-            else carregarContratos();
+            if (!error) carregarContratos();
         }
 
         function filtrarFinanceiro(periodo) {
@@ -1063,11 +1108,8 @@
             ['dia', 'semana', 'mes', 'ano'].forEach(p => {
                 const btn = document.getElementById(`btn-filtro-${p}`);
                 if(btn) {
-                    if(p === periodo) {
-                        btn.className = 'px-3 py-1.5 text-xs font-medium bg-white text-zinc-900 shadow-xs rounded-lg transition';
-                    } else {
-                        btn.className = 'px-3 py-1.5 text-xs font-medium text-zinc-600 rounded-lg transition';
-                    }
+                    if(p === periodo) btn.className = 'px-3 py-1.5 text-xs font-medium bg-white text-zinc-900 shadow-xs rounded-lg transition';
+                    else btn.className = 'px-3 py-1.5 text-xs font-medium text-zinc-600 rounded-lg transition';
                 }
             });
             carregarFinanceiro();
@@ -1196,9 +1238,6 @@
             if (error) alert('Erro ao salvar transação: ' + error.message);
             else {
                 alert('Fatura cadastrada com sucesso!');
-                document.getElementById('trans-desc').value = '';
-                document.getElementById('trans-amount').value = '';
-                document.getElementById('trans-duedate').value = '';
                 closeModal('transaction-modal');
                 carregarFinanceiro();
             }
@@ -1206,15 +1245,13 @@
 
         async function marcarComoPago(id) {
             const { error } = await supabaseClient.from('transactions').update({ status: 'Pago', payment_date: new Date().toISOString().split('T')[0] }).eq('id', id);
-            if (error) alert('Erro ao atualizar: ' + error.message);
-            else carregarFinanceiro();
+            if (!error) carregarFinanceiro();
         }
 
         async function deletarTransacao(id) {
             if (!confirm('Deseja excluir esta transação?')) return;
             const { error } = await supabaseClient.from('transactions').delete().eq('id', id);
-            if (error) alert('Erro ao excluir: ' + error.message);
-            else carregarFinanceiro();
+            if (!error) carregarFinanceiro();
         }
 
         function iniciarArraste(event, projectId) { event.dataTransfer.setData('text/plain', projectId); }
@@ -1228,8 +1265,7 @@
             if (!projectId) return;
 
             const { error } = await supabaseClient.from('projects').update({ status: novoStatus }).eq('id', projectId);
-            if (error) alert('Erro ao atualizar status: ' + error.message);
-            else carregarDados();
+            if (!error) carregarDados();
         }
 
         function atualizarContadores(contadores) {
@@ -1281,9 +1317,6 @@
             if (error) alert('Erro: ' + error.message);
             else {
                 alert('Cliente cadastrado com sucesso!');
-                document.getElementById('client-name').value = '';
-                document.getElementById('client-doc').value = '';
-                document.getElementById('client-color').value = '#3498db';
                 closeModal('client-modal');
                 carregarDados();
             }
@@ -1303,12 +1336,9 @@
             const documentVal = document.getElementById('edit-client-doc').value;
             const color = document.getElementById('edit-client-color').value;
 
-            if (!name) return alert('O nome do cliente é obrigatório.');
-
             const { error } = await supabaseClient.from('clients').update({ name, document: documentVal, color }).eq('id', id);
-            if (error) alert('Erro ao atualizar cliente: ' + error.message);
-            else {
-                alert('Cliente atualizado com sucesso!');
+            if (!error) {
+                alert('Cliente atualizado!');
                 closeModal('edit-client-modal');
                 carregarDados();
             }
@@ -1317,8 +1347,7 @@
         async function deletarCliente(id) {
             if (!confirm('Deseja excluir este cliente?')) return;
             const { error } = await supabaseClient.from('clients').delete().eq('id', id);
-            if (error) alert('Erro ao excluir cliente: ' + error.message);
-            else carregarDados();
+            if (!error) carregarDados();
         }
 
         async function salvarProjeto() {
@@ -1329,8 +1358,7 @@
             if (!client_id || !title) return alert('Preencha os campos obrigatórios.');
 
             const { error } = await supabaseClient.from('projects').insert([{ client_id, title, description, status }]);
-            if (error) alert('Erro: ' + error.message);
-            else {
+            if (!error) {
                 alert('Projeto criado!');
                 closeModal('project-modal');
                 carregarDados();
@@ -1352,9 +1380,8 @@
             const status = document.getElementById('edit-project-status').value;
 
             const { error } = await supabaseClient.from('projects').update({ title, description, status }).eq('id', id);
-            if (error) alert('Erro ao atualizar: ' + error.message);
-            else {
-                alert('Projeto atualizado com sucesso!');
+            if (!error) {
+                alert('Projeto atualizado!');
                 closeModal('edit-project-modal');
                 carregarDados();
             }
@@ -1387,9 +1414,9 @@
                 container.innerHTML += `
                     <div class="py-2.5 flex items-center justify-between">
                         <div>
-                            <span class="font-semibold text-zinc-900">${piece.title}</span> <span class="text-zinc-400 font-medium">(${piece.platform})</span>
+                            <span class="font-semibold text-zinc-900">${piece.title}</span> <span class="text-zinc-400 font-medium">(${piece.piece_type || piece.platform || 'Post'})</span>
                         </div>
-                        ${piece.media_url ? `<a href="${piece.media_url}" target="_blank" class="text-indigo-600 hover:underline font-semibold">Ver Arquivo</a>` : '<span class="text-zinc-400">Sem anexo</span>'}
+                        ${piece.feed_preview_url || piece.media_url ? `<a href="${piece.feed_preview_url || piece.media_url}" target="_blank" class="text-indigo-600 hover:underline font-semibold">Ver Arquivo</a>` : '<span class="text-zinc-400">Sem anexo</span>'}
                     </div>
                 `;
             });
@@ -1401,7 +1428,7 @@
             const platform = document.getElementById('piece-platform').value;
             const fileInput = document.getElementById('piece-file');
 
-            if (!title || !platform) return alert('Informe o nome e a plataforma da peça.');
+            if (!title) return alert('Informe o título da peça.');
             let mediaUrl = null;
 
             if (fileInput.files.length > 0) {
@@ -1417,16 +1444,17 @@
             }
 
             const { error: insertError } = await supabaseClient.from('content_pieces').insert([{
-                project_id: projectId, title, platform, media_url: mediaUrl, scheduled_date: new Date().toISOString().split('T')[0]
+                project_id: projectId, title, piece_type: 'post', feed_preview_url: mediaUrl, status: 'pending_approval', priority_order: 1
             }]);
 
             if (insertError) alert('Erro ao registrar peça: ' + insertError.message);
             else {
-                alert('Peça e arquivo cadastrados!');
+                alert('Peça cadastrada para validação!');
                 document.getElementById('piece-title').value = '';
                 document.getElementById('piece-platform').value = '';
                 fileInput.value = '';
                 carregarPecas(projectId);
+                carregarTodasPecas();
             }
         }
 
@@ -1463,7 +1491,7 @@
                     messages.innerHTML += `<div class="bg-white border border-zinc-200 text-zinc-700 p-3.5 rounded-2xl max-w-[85%] self-start shadow-2xs font-medium whitespace-pre-line">${data.reply}</div>`;
                     chatHistory.push({ role: 'user', text });
                     chatHistory.push({ role: 'assistant', text: data.reply });
-                    carregarDados(); carregarContratos(); carregarFinanceiro(); carregarPlanos();
+                    carregarDados(); carregarContratos(); carregarFinanceiro(); carregarPlanos(); carregarTodasPecas();
                 } else {
                     messages.innerHTML += `<div class="bg-white border border-zinc-200 text-rose-600 p-3.5 rounded-2xl max-w-[85%] self-start shadow-2xs font-medium">Erro: ${data.error || 'falha desconhecida'}</div>`;
                 }
