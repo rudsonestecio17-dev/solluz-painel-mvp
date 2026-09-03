@@ -845,60 +845,77 @@
         }
 
         // CALENDÁRIO VISUAL INTERATIVO
-        async function renderizarCalendario() {
-            const grid = document.getElementById('calendar-days-grid');
-            const titleEl = document.getElementById('calendar-month-title');
-            if(!grid) return;
+       async function renderizarCalendario() {
+    const grid = document.getElementById('calendar-days-grid');
+    const titleEl = document.getElementById('calendar-month-title');
+    if(!grid) return;
 
-            const mesesNomes = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-            titleEl.innerText = `${mesesNomes[mesAtualCal]} de ${anoAtualCal}`;
+    const mesesNomes = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+    titleEl.innerText = `${mesesNomes[mesAtualCal]} de ${anoAtualCal}`;
 
-            const primeiroDiaDoMes = new Date(anoAtualCal, mesAtualCal, 1).getDay();
-            const ultimoDiaDoMes = new Date(anoAtualCal, mesAtualCal + 1, 0).getDate();
+    const primeiroDiaDoMes = new Date(anoAtualCal, mesAtualCal, 1).getDay();
+    const ultimoDiaDoMes = new Date(anoAtualCal, mesAtualCal + 1, 0).getDate();
 
-            const inicioMesStr = `${anoAtualCal}-${String(mesAtualCal + 1).padStart(2, '0')}-01`;
-            const fimMesStr = `${anoAtualCal}-${String(mesAtualCal + 1).padStart(2, '0')}-${ultimoDiaDoMes}`;
+    const inicioMesStr = `${anoAtualCal}-${String(mesAtualCal + 1).padStart(2, '0')}-01`;
+    const fimMesStr = `${anoAtualCal}-${String(mesAtualCal + 1).padStart(2, '0')}-${ultimoDiaDoMes}`;
 
-            const { data: pecas } = await supabaseClient.from('content_pieces').select('*, projects(title)').gte('scheduled_date', inicioMesStr).lte('scheduled_date', fimMesStr);
-            const { data: tarefas } = await supabaseClient.from('agenda_tasks').select('*').gte('task_date', inicioMesStr).lte('task_date', fimMesStr);
+    // Consulta garantindo o nome exato da coluna sem espaços
+    const { data: pecas, error: errPecas } = await supabaseClient
+        .from('content_pieces')
+        .select('id, title, piece_type, media_url, scheduled_date, project_id, projects(title)')
+        .gte('scheduled_date', inicioMesStr)
+        .lte('scheduled_date', fimMesStr);
 
-            grid.innerHTML = '';
+    if (errPecas) {
+        console.error('Erro na query de peças do calendário:', errPecas.message);
+    }
 
-            for (let i = 0; i < primeiroDiaDoMes; i++) {
-                grid.innerHTML += `<div class="bg-zinc-50/50 dark:bg-zinc-900/20 rounded-xl min-h-[90px] opacity-30"></div>`;
-            }
+    const { data: tarefas, error: errTarefas } = await supabaseClient
+        .from('agenda_tasks')
+        .select('*')
+        .gte('task_date', inicioMesStr)
+        .lte('task_date', fimMesStr);
 
-            for (let dia = 1; dia <= ultimoDiaDoMes; dia++) {
-                const diaStr = String(dia).padStart(2, '0');
-                const mesStr = String(mesAtualCal + 1).padStart(2, '0');
-                const dataIso = `${anoAtualCal}-${mesStr}-${diaStr}`;
-                const hojeIso = new Date().toISOString().split('T')[0];
+    if (errTarefas) {
+        console.error('Erro na query de tarefas:', errTarefas.message);
+    }
 
-                const qtdPosts = pecas ? pecas.filter(p => p.scheduled_date === dataIso).length : 0;
-                const qtdTarefas = tarefas ? tarefas.filter(t => t.task_date === dataIso).length : 0;
+    grid.innerHTML = '';
 
-                const isHoje = dataIso === hojeIso;
-                const isSelecionado = dataIso === dataSelecionadaCal;
+    for (let i = 0; i < primeiroDiaDoMes; i++) {
+        grid.innerHTML += `<div class="bg-zinc-50/50 dark:bg-zinc-900/20 rounded-xl min-h-[90px] opacity-30"></div>`;
+    }
 
-                let bordaClasse = isSelecionado ? 'border-2 border-indigo-500' : 'border border-zinc-200 dark:border-zinc-800';
-                if(isHoje && !isSelecionado) bordaClasse = 'border-2 border-emerald-500';
+    for (let dia = 1; dia <= ultimoDiaDoMes; dia++) {
+        const diaStr = String(dia).padStart(2, '0');
+        const mesStr = String(mesAtualCal + 1).padStart(2, '0');
+        const dataIso = `${anoAtualCal}-${mesStr}-${diaStr}`;
+        const hojeIso = new Date().toISOString().split('T')[0];
 
-                grid.innerHTML += `
-                    <div onclick="selecionarDiaCalendario('${dataIso}')" class="bg-white dark:bg-[#1a1a1e] rounded-xl p-2.5 min-h-[90px] flex flex-col justify-between cursor-pointer hover:border-zinc-400 dark:hover:border-zinc-600 transition ${bordaClasse}">
-                        <div class="flex items-center justify-between">
-                            <span class="font-bold text-xs ${isHoje ? 'bg-emerald-500 text-white w-5 h-5 rounded-full flex items-center justify-center' : 'text-zinc-700 dark:text-zinc-300'}">${dia}</span>
-                        </div>
-                        <div class="space-y-1">
-                            ${qtdPosts > 0 ? `<div class="bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold text-[10px] px-1.5 py-0.5 rounded text-center">🎬 ${qtdPosts} Post${qtdPosts > 1 ? 's' : ''}</div>` : ''}
-                            ${qtdTarefas > 0 ? `<div class="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold text-[10px] px-1.5 py-0.5 rounded text-center">📝 ${qtdTarefas} Tarefa${qtdTarefas > 1 ? 's' : ''}</div>` : ''}
-                        </div>
-                    </div>
-                `;
-            }
+        const qtdPosts = pecas ? pecas.filter(p => p.scheduled_date === dataIso).length : 0;
+        const qtdTarefas = tarefas ? tarefas.filter(t => t.task_date === dataIso).length : 0;
 
-            carregarDetalhesDiaSelecionado();
-        }
+        const isHoje = dataIso === hojeIso;
+        const isSelecionado = dataIso === dataSelecionadaCal;
 
+        let bordaClasse = isSelecionado ? 'border-2 border-indigo-500' : 'border border-zinc-200 dark:border-zinc-800';
+        if(isHoje && !isSelecionado) bordaClasse = 'border-2 border-emerald-500';
+
+        grid.innerHTML += `
+            <div onclick="selecionarDiaCalendario('${dataIso}')" class="bg-white dark:bg-[#1a1a1e] rounded-xl p-2.5 min-h-[90px] flex flex-col justify-between cursor-pointer hover:border-zinc-400 dark:hover:border-zinc-600 transition ${bordaClasse}">
+                <div class="flex items-center justify-between">
+                    <span class="font-bold text-xs ${isHoje ? 'bg-emerald-500 text-white w-5 h-5 rounded-full flex items-center justify-center' : 'text-zinc-700 dark:text-zinc-300'}">${dia}</span>
+                </div>
+                <div class="space-y-1">
+                    ${qtdPosts > 0 ? `<div class="bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold text-[10px] px-1.5 py-0.5 rounded text-center">🎬 ${qtdPosts} Post${qtdPosts > 1 ? 's' : ''}</div>` : ''}
+                    ${qtdTarefas > 0 ? `<div class="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold text-[10px] px-1.5 py-0.5 rounded text-center">📝 ${qtdTarefas} Tarefa${qtdTarefas > 1 ? 's' : ''}</div>` : ''}
+                </div>
+            </div>
+        `;
+    }
+
+    carregarDetalhesDiaSelecionado();
+}
         function mudarMesCalendario(direcao) {
             mesAtualCal += direcao;
             if (mesAtualCal > 11) { mesAtualCal = 0; anoAtualCal++; }
