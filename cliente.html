@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal do Cliente — Acompanhamento de Campanhas</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Inter', sans-serif; }</style>
+</head>
+<body class="bg-[#121214] text-zinc-100 min-h-screen p-6 md:p-12">
+
+    <div class="max-w-4xl mx-auto space-y-8">
+        <!-- Cabeçalho da Marca -->
+        <div class="bg-[#1a1a1e] border border-zinc-800 rounded-3xl p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-xl">
+            <div class="space-y-1">
+                <span class="text-xs uppercase tracking-widest text-zinc-400 font-bold">Portal Exclusivo da Marca</span>
+                <h1 id="client-title" class="text-2xl font-bold tracking-tight text-white">Carregando marca...</h1>
+            </div>
+            <div id="client-badge" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-zinc-800 text-zinc-300 border border-zinc-700">
+                Acesso Seguro
+            </div>
+        </div>
+
+        <!-- Seção: Calendário / Publicações Agendadas -->
+        <div class="bg-[#1a1a1e] border border-zinc-800 rounded-3xl p-6 md:p-8 space-y-6 shadow-xl">
+            <h3 class="font-bold text-sm tracking-wide uppercase text-indigo-400">📅 Próximas Publicações & Calendário</h3>
+            <div id="client-posts-container" class="space-y-3">
+                <p class="text-xs text-zinc-400">Carregando cronograma de posts...</p>
+            </div>
+        </div>
+
+        <!-- Seção: Criativos Prontos para Baixar -->
+        <div class="bg-[#1a1a1e] border border-zinc-800 rounded-3xl p-6 md:p-8 space-y-6 shadow-xl">
+            <h3 class="font-bold text-sm tracking-wide uppercase text-emerald-400">🎬 Criativos e Arquivos Prontos</h3>
+            <div id="client-files-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <p class="text-xs text-zinc-400 col-span-2">Nenhum arquivo disponível no momento.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script de Carregamento dos Dados do Cliente -->
+    <script>
+        const SUPABASE_URL = 'https://wiktemdsjwhvzmpnbxmg.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_Uod7U-Su7MYBcwjWb4dr7w_dzeg2TfY';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function carregarPortalCliente() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+
+            if (!token) {
+                document.getElementById('client-title').innerText = 'Acesso Negado';
+                document.getElementById('client-posts-container').innerHTML = `<p class="text-xs text-rose-400">Token de acesso não informado na URL.</p>`;
+                return;
+            }
+
+            // 1. Busca a marca pelo token de acesso
+            const { data: clientData, error: clientErr } = await supabaseClient
+                .from('clients')
+                .select('*')
+                .eq('access_token', token)
+                .single();
+
+            if (clientErr || !clientData) {
+                document.getElementById('client-title').innerText = 'Marca não encontrada';
+                return;
+            }
+
+            document.getElementById('client-title').innerText = clientData.name;
+
+            // 2. Busca os projetos/campanhas desta marca
+            const { data: projects } = await supabaseClient
+                .from('projects')
+                .select('id, title')
+                .eq('client_id', clientData.id);
+
+            if (!projects || projects.length === 0) return;
+            const projectIds = projects.map(p => p.id);
+
+            // 3. Busca as peças de conteúdo vinculadas aos projetos da marca
+            const { data: pieces } = await supabaseClient
+                .from('content_pieces')
+                .select('*, projects(title)')
+                .in('project_id', projectIds)
+                .order('scheduled_date', { ascending: true });
+
+            const postsContainer = document.getElementById('client-posts-container');
+            const filesContainer = document.getElementById('client-files-container');
+
+            if (pieces && pieces.length > 0) {
+                postsContainer.innerHTML = '';
+                filesContainer.innerHTML = '';
+
+                pieces.forEach(p => {
+                    const dataFormatada = p.scheduled_date ? p.scheduled_date.split('-').reverse().join('/') : 'A definir';
+                    
+                    // Renderiza na lista de posts
+                    postsContainer.innerHTML += `
+                        <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-2xl flex items-center justify-between text-xs">
+                            <div class="space-y-1">
+                                <span class="font-bold text-white text-sm">${p.title}</span>
+                                <span class="text-zinc-400 block">Campanha: ${p.projects?.title || 'Geral'} | Formato: <strong class="uppercase text-zinc-300">${p.piece_type || 'Post'}</strong></span>
+                            </div>
+                            <span class="px-3 py-1 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-semibold rounded-xl">${dataFormatada}</span>
+                        </div>
+                    `;
+
+                    // Se tiver mídia, exibe no card de criativos para download/visualização
+                    if (p.media_url) {
+                        filesContainer.innerHTML += `
+                            <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-2xl flex flex-col justify-between space-y-3">
+                                <div>
+                                    <span class="font-bold text-white text-xs block">${p.title}</span>
+                                    <span class="text-zinc-400 text-[10px]">Formato: ${p.piece_type || 'Mídia'}</span>
+                                </div>
+                                <a href="${p.media_url}" target="_blank" class="w-full py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-center text-xs font-semibold rounded-xl transition">
+                                    Visualizar / Baixar Arquivo ↗
+                                </a>
+                            </div>
+                        `;
+                    }
+                });
+
+                if (filesContainer.innerHTML === '') {
+                    filesContainer.innerHTML = `<p class="text-xs text-zinc-400 col-span-2">Nenhum arquivo de mídia anexado ainda.</p>`;
+                }
+            } else {
+                postsContainer.innerHTML = `<p class="text-xs text-zinc-400">Nenhum post agendado no momento.</p>`;
+            }
+        }
+
+        carregarPortalCliente();
+    </script>
+</body>
+</html>
