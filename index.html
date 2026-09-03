@@ -35,6 +35,7 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #52525b; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
     </style>
 </head>
 <body class="bg-zinc-50 dark:bg-[#121214] text-zinc-900 dark:text-zinc-100 antialiased min-h-screen flex h-screen overflow-hidden transition-colors duration-200">
@@ -53,11 +54,11 @@
             <div class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">E-mail</label>
-                    <input type="email" id="login-email" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-zinc-500 font-medium transition" placeholder="seu@email.com">
+                    <input type="email" id="login-email" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="seu@email.com">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Senha</label>
-                    <input type="password" id="login-password" onkeypress="if(event.key === 'Enter') executarAcaoAuth()" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-zinc-500 font-medium transition" placeholder="••••••••">
+                    <input type="password" id="login-password" onkeypress="if(event.key === 'Enter') executarAcaoAuth()" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="••••••••">
                 </div>
                 <div id="login-error" class="text-rose-500 text-xs font-medium text-center hidden"></div>
                 <div id="login-success" class="text-emerald-500 text-xs font-medium text-center hidden"></div>
@@ -93,7 +94,7 @@
                     <span class="text-sm">📋</span> Quadro de Projetos
                 </button>
                 <button onclick="mudarAba('agenda')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white transition tab-btn flex items-center gap-3" data-tab="agenda">
-                    <span class="text-sm">📅</span> Agenda & Tarefas
+                    <span class="text-sm">📅</span> Calendário & Agenda
                 </button>
                 <button onclick="mudarAba('conteudo')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white transition tab-btn flex items-center gap-3" data-tab="conteudo">
                     <span class="text-sm">🎬</span> Peças & Criativos
@@ -194,37 +195,48 @@
                 </div>
             </section>
 
-            <!-- ABA: AGENDA & TAREFAS -->
+            <!-- ABA: CALENDÁRIO & AGENDA -->
             <section id="aba-agenda" class="tab-content hidden space-y-6">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white dark:bg-[#1a1a1e] p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs transition-colors">
-                    <div>
-                        <h3 class="font-semibold text-sm text-zinc-900 dark:text-white">Agenda de Publicações & Tarefas</h3>
-                        <p class="text-xs text-zinc-500 dark:text-zinc-400">Acompanhe posts agendados e organize suas tarefas diárias.</p>
+                    <div class="flex items-center gap-4">
+                        <div>
+                            <h3 id="calendar-month-title" class="font-bold text-base text-zinc-900 dark:text-white">Carregando calendário...</h3>
+                            <p class="text-xs text-zinc-500 dark:text-zinc-400">Clique em qualquer dia para ver os posts e tarefas agendadas.</p>
+                        </div>
                     </div>
-                    <div class="flex items-center gap-3 w-full md:w-auto">
-                        <input type="date" id="agenda-date-filter" onchange="carregarAgenda()" class="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
-                        <button onclick="openModal('task-modal')" class="px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 rounded-xl shadow-md hover:bg-zinc-800 dark:hover:bg-white transition">+ Nova Tarefa</button>
+                    <div class="flex items-center gap-2">
+                        <button onclick="mudarMesCalendario(-1)" class="px-3.5 py-2 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs font-semibold hover:bg-zinc-200 dark:hover:bg-zinc-800 transition">◀ Mês Anterior</button>
+                        <button onclick="irMesAtual()" class="px-3.5 py-2 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs font-semibold hover:bg-zinc-200 dark:hover:bg-zinc-800 transition">Hoje</button>
+                        <button onclick="mudarMesCalendario(1)" class="px-3.5 py-2 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs font-semibold hover:bg-zinc-200 dark:hover:bg-zinc-800 transition">Próximo Mês ▶</button>
+                        <button onclick="openModal('task-modal')" class="ml-2 px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 rounded-xl shadow-md hover:bg-zinc-800 dark:hover:bg-white transition">+ Nova Tarefa</button>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Posts Agendados para o Dia -->
-                    <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-xs space-y-4">
-                        <h4 class="font-bold text-xs uppercase tracking-wider text-indigo-600 dark:text-indigo-400 flex items-center gap-2">
-                            <span>🎬</span> Publicações Programadas
-                        </h4>
-                        <div id="agenda-posts-container" class="space-y-3 max-h-[450px] overflow-y-auto">
-                            <p class="text-xs text-zinc-400 text-center py-8">Nenhum post agendado para esta data.</p>
-                        </div>
+                <!-- Grid Visual do Calendário -->
+                <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-xs space-y-4">
+                    <div class="calendar-grid text-center font-bold text-xs uppercase tracking-wider text-zinc-400 pb-2 border-b border-zinc-100 dark:border-zinc-800">
+                        <div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div>
                     </div>
+                    <div id="calendar-days-grid" class="calendar-grid gap-2"></div>
+                </div>
 
-                    <!-- Tarefas do Dia -->
-                    <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-xs space-y-4">
-                        <h4 class="font-bold text-xs uppercase tracking-wider text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
-                            <span>📝</span> Tarefas & Lembretes
-                        </h4>
-                        <div id="agenda-tasks-container" class="space-y-3 max-h-[450px] overflow-y-auto">
-                            <p class="text-xs text-zinc-400 text-center py-8">Nenhuma tarefa cadastrada para esta data.</p>
+                <!-- Detalhes do Dia Selecionado -->
+                <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-xs space-y-4">
+                    <h4 id="selected-date-title" class="font-bold text-sm text-zinc-900 dark:text-white flex items-center justify-between">
+                        <span>Selecione um dia no calendário acima</span>
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">🎬 Publicações do Dia</span>
+                            <div id="day-posts-container" class="space-y-2 max-h-48 overflow-y-auto">
+                                <p class="text-xs text-zinc-400 py-4">Nenhum post agendado.</p>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <span class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">📝 Tarefas do Dia</span>
+                            <div id="day-tasks-container" class="space-y-2 max-h-48 overflow-y-auto">
+                                <p class="text-xs text-zinc-400 py-4">Nenhuma tarefa.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -385,6 +397,25 @@
         </div>
     </main>
 
+    <!-- MODAL: Agendamento Rápido ao Mover para Programado -->
+    <div id="schedule-modal" class="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-sm p-6 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="font-bold text-sm text-zinc-900 dark:text-white">📅 Programar Data de Postagem</h3>
+                <button onclick="fecharModalAgendamento()" class="text-zinc-400 hover:text-white text-xs font-bold w-7 h-7 rounded-full flex items-center justify-center bg-zinc-100 dark:bg-zinc-800">✕</button>
+            </div>
+            <input type="hidden" id="schedule-project-id">
+            <div>
+                <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Defina a Data de Publicação</label>
+                <input type="date" id="schedule-date-input" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="fecharModalAgendamento()" class="px-3.5 py-2 text-xs font-medium text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition">Cancelar</button>
+                <button onclick="salvarAgendamentoProjeto()" class="px-4 py-2 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl shadow-md transition">Confirmar Agendamento</button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL: Nova Tarefa na Agenda -->
     <div id="task-modal" class="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
         <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
@@ -395,7 +426,7 @@
             <div class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Descrição da Tarefa</label>
-                    <input type="text" id="task-title" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="Ex: Gravar stories de bastidores">
+                    <input type="text" id="task-title" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="Ex: Gravar stories">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Data da Tarefa</label>
@@ -455,32 +486,13 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Carregar de um Pacote (Opcional)</label>
-                    <select id="contract-plan-select" onchange="selecionarPlanoNoContrato()" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
-                        <option value="">Selecione um pacote...</option>
-                    </select>
-                </div>
-                <div>
                     <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Título do Contrato</label>
                     <input type="text" id="contract-title" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="Ex: Retainer Mensal">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Tipo</label>
-                        <select id="contract-type" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
-                            <option value="Plano">Plano (Recorrente)</option>
-                            <option value="Serviço Avulso">Serviço Pontual</option>
-                        </select>
-                    </div>
-                    <div>
                         <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Valor (R$)</label>
                         <input type="text" id="contract-amount" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="2500.00">
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Ciclo / Vencimento</label>
-                        <input type="text" id="contract-cycle" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="Mensal / Dia 10">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Data de Início</label>
@@ -521,20 +533,6 @@
                     <div>
                         <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Vencimento</label>
                         <input type="date" id="trans-duedate" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Status</label>
-                        <select id="trans-status" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
-                            <option value="Pendente">Pendente</option>
-                            <option value="Pago">Pago</option>
-                            <option value="Atrasado">Atrasado</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Forma de Pagamento</label>
-                        <input type="text" id="trans-method" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="Pix / Boleto">
                     </div>
                 </div>
             </div>
@@ -606,7 +604,7 @@
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-[10px] font-bold text-zinc-400 mb-1">Data de Publicação (Agenda)</label>
+                        <label class="block text-[10px] font-bold text-zinc-400 mb-1">Data de Publicação</label>
                         <input type="date" id="piece-scheduled-date" class="w-full bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
                     </div>
                     <div>
@@ -614,7 +612,7 @@
                         <input type="file" id="piece-file" class="w-full text-xs text-zinc-500 file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-[11px] file:font-medium file:bg-zinc-900 dark:file:bg-zinc-100 file:text-white dark:file:text-zinc-900 cursor-pointer">
                     </div>
                 </div>
-                <button onclick="uploadArquivoCampanha()" class="w-full py-2.5 bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white text-white text-xs font-medium rounded-xl transition shadow-md">Fazer Upload e Agendar na Agenda</button>
+                <button onclick="uploadArquivoCampanha()" class="w-full py-2.5 bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white text-white text-xs font-medium rounded-xl transition shadow-md">Fazer Upload e Salvar Peça</button>
             </div>
 
             <div class="space-y-2">
@@ -639,22 +637,8 @@
                     <input type="text" id="plan-name" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="Ex: Social Media Completo">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Descrição / Detalhes</label>
-                    <textarea id="plan-description" rows="2" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="Detalhes do pacote..."></textarea>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Valor (R$)</label>
-                        <input type="text" id="plan-price" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="2500.00">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Ciclo</label>
-                        <select id="plan-cycle" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
-                            <option value="Mensal">Mensal</option>
-                            <option value="Trimestral">Trimestral</option>
-                            <option value="Avulso">Pontual / Avulso</option>
-                        </select>
-                    </div>
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Valor (R$)</label>
+                    <input type="text" id="plan-price" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="2500.00">
                 </div>
             </div>
             <div class="flex justify-end gap-2 pt-2">
@@ -693,7 +677,7 @@
         </div>
     </div>
 
-    <!-- Script de Integração e Lógica Completa -->
+    <!-- Script de Integração -->
     <script>
         const SUPABASE_URL = 'https://wiktemdsjwhvzmpnbxmg.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_Uod7U-Su7MYBcwjWb4dr7w_dzeg2TfY';
@@ -705,13 +689,10 @@
         let listaPlanosGlobal = [];
         let modoCadastro = false;
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const dataHoje = new Date().toISOString().split('T')[0];
-            const campoAgenda = document.getElementById('agenda-date-filter');
-            const campoTarefa = document.getElementById('task-date');
-            if(campoAgenda) campoAgenda.value = dataHoje;
-            if(campoTarefa) campoTarefa.value = dataHoje;
-        });
+        // Controle do Calendário Visual
+        let anoAtualCal = new Date().getFullYear();
+        let mesAtualCal = new Date().getMonth();
+        let dataSelecionadaCal = new Date().toISOString().split('T')[0];
 
         if (localStorage.getItem('theme') === 'light') {
             document.documentElement.classList.remove('dark');
@@ -817,7 +798,7 @@
             carregarFinanceiro();
             carregarPlanos();
             carregarTodasPecas();
-            carregarAgenda();
+            renderizarCalendario();
         }
 
         function mudarAba(abaId) {
@@ -836,7 +817,7 @@
 
             const titulos = {
                 'projetos': 'Quadro de Projetos',
-                'agenda': 'Agenda & Tarefas Diárias',
+                'agenda': 'Calendário de Publicações & Agenda',
                 'conteudo': 'Peças & Criativos (WhatsApp & Validação)',
                 'clientes': 'Marcas & Clientes Cadastrados',
                 'financeiro': 'Controle de Faturamento e Fluxo de Caixa',
@@ -846,7 +827,7 @@
             };
             document.getElementById('titulo-aba').innerText = titulos[abaId] || 'Meu Aval';
             if(abaId === 'conteudo') carregarTodasPecas();
-            if(abaId === 'agenda') carregarAgenda();
+            if(abaId === 'agenda') renderizarCalendario();
             if(abaId === 'comercial') carregarContratos();
             if(abaId === 'planos') carregarPlanos();
             if(abaId === 'financeiro') carregarFinanceiro();
@@ -857,63 +838,131 @@
             if (modalId === 'project-modal' || modalId === 'client-modal' || modalId === 'contract-modal' || modalId === 'transaction-modal') {
                 carregarSelectClientes();
             }
-            if (modalId === 'contract-modal') {
-                carregarSelectPlanos();
-            }
         }
 
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
         }
 
-        // AGENDA
-        async function carregarAgenda() {
-            const dataFiltro = document.getElementById('agenda-date-filter').value;
-            const containerPosts = document.getElementById('agenda-posts-container');
-            const containerTasks = document.getElementById('agenda-tasks-container');
-            if(!dataFiltro) return;
+        // CALENDÁRIO VISUAL INTERATIVO
+        async function renderizarCalendario() {
+            const grid = document.getElementById('calendar-days-grid');
+            const titleEl = document.getElementById('calendar-month-title');
+            if(!grid) return;
 
-            const { data: pecasData } = await supabaseClient
-                .from('content_pieces')
-                .select('*, projects(title, clients(name))')
-                .eq('scheduled_date', dataFiltro);
+            const mesesNomes = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+            titleEl.innerText = `${mesesNomes[mesAtualCal]} de ${anoAtualCal}`;
 
-            if (!pecasData || pecasData.length === 0) {
-                containerPosts.innerHTML = `<p class="text-xs text-zinc-400 text-center py-6">Nenhum post agendado para esta data.</p>`;
+            const primeiroDiaDoMes = new Date(anoAtualCal, mesAtualCal, 1).getDay();
+            const ultimoDiaDoMes = new Date(anoAtualCal, mesAtualCal + 1, 0).getDate();
+
+            // Buscar peças agendadas e tarefas do mês
+            const inicioMesStr = `${anoAtualCal}-${String(mesAtualCal + 1).padStart(2, '0')}-01`;
+            const fimMesStr = `${anoAtualCal}-${String(mesAtualCal + 1).padStart(2, '0')}-${ultimoDiaDoMes}`;
+
+            const { data: pecas } = await supabaseClient.from('content_pieces').select('*, projects(title)').gte('scheduled_date', inicioMesStr).lte('scheduled_date', fimMesStr);
+            const { data: tarefas } = await supabaseClient.from('agenda_tasks').select('*').gte('task_date', inicioMesStr).lte('task_date', fimMesStr);
+
+            grid.innerHTML = '';
+
+            // Espaços vazios iniciais
+            for (let i = 0; i < primeiroDiaDoMes; i++) {
+                grid.innerHTML += `<div class="bg-zinc-50/50 dark:bg-zinc-900/20 rounded-xl min-h-[90px] opacity-30"></div>`;
+            }
+
+            // Dias do mês
+            for (let dia = 1; dia <= ultimoDiaDoMes; dia++) {
+                const diaStr = String(dia).padStart(2, '0');
+                const mesStr = String(mesAtualCal + 1).padStart(2, '0');
+                const dataIso = `${anoAtualCal}-${mesStr}-${diaStr}`;
+                const hojeIso = new Date().toISOString().split('T')[0];
+
+                const qtdPosts = pecas ? pecas.filter(p => p.scheduled_date === dataIso).length : 0;
+                const qtdTarefas = tarefas ? tarefas.filter(t => t.task_date === dataIso).length : 0;
+
+                const isHoje = dataIso === hojeIso;
+                const isSelecionado = dataIso === dataSelecionadaCal;
+
+                let bordaClasse = isSelecionado ? 'border-2 border-indigo-500' : 'border border-zinc-200 dark:border-zinc-800';
+                if(isHoje && !isSelecionado) bordaClasse = 'border-2 border-emerald-500';
+
+                grid.innerHTML += `
+                    <div onclick="selecionarDiaCalendario('${dataIso}')" class="bg-white dark:bg-[#1a1a1e] rounded-xl p-2.5 min-h-[90px] flex flex-col justify-between cursor-pointer hover:border-zinc-400 dark:hover:border-zinc-600 transition ${bordaClasse}">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-xs ${isHoje ? 'bg-emerald-500 text-white w-5 h-5 rounded-full flex items-center justify-center' : 'text-zinc-700 dark:text-zinc-300'}">${dia}</span>
+                        </div>
+                        <div class="space-y-1">
+                            ${qtdPosts > 0 ? `<div class="bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold text-[10px] px-1.5 py-0.5 rounded text-center">🎬 ${qtdPosts} Post${qtdPosts > 1 ? 's' : ''}</div>` : ''}
+                            ${qtdTarefas > 0 ? `<div class="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold text-[10px] px-1.5 py-0.5 rounded text-center">📝 ${qtdTarefas} Tarefa${qtdTarefas > 1 ? 's' : ''}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+
+            carregarDetalhesDiaSelecionado();
+        }
+
+        function mudarMesCalendario(direcao) {
+            mesAtualCal += direcao;
+            if (mesAtualCal > 11) { mesAtualCal = 0; anoAtualCal++; }
+            if (mesAtualCal < 0) { mesAtualCal = 11; anoAtualCal--; }
+            renderizarCalendario();
+        }
+
+        function irMesAtual() {
+            const agora = new Date();
+            anoAtualCal = agora.getFullYear();
+            mesAtualCal = agora.getMonth();
+            dataSelecionadaCal = agora.toISOString().split('T')[0];
+            renderizarCalendario();
+        }
+
+        function selecionarDiaCalendario(dataIso) {
+            dataSelecionadaCal = dataIso;
+            renderizarCalendario();
+        }
+
+        async function carregarDetalhesDiaSelecionado() {
+            const titleEl = document.getElementById('selected-date-title');
+            const containerPosts = document.getElementById('day-posts-container');
+            const containerTasks = document.getElementById('day-tasks-container');
+
+            const partes = dataSelecionadaCal.split('-');
+            titleEl.innerHTML = `<span>📅 Itens para o dia ${partes[2]}/${partes[1]}/${partes[0]}</span>`;
+
+            // Posts
+            const { data: pecas } = await supabaseClient.from('content_pieces').select('*, projects(title, clients(name))').eq('scheduled_date', dataSelecionadaCal);
+            if (!pecas || pecas.length === 0) {
+                containerPosts.innerHTML = `<p class="text-xs text-zinc-400">Nenhum post agendado para esta data.</p>`;
             } else {
                 containerPosts.innerHTML = '';
-                pecasData.forEach(p => {
-                    const nomeProj = p.projects?.title || 'Campanha';
-                    const nomeMarca = p.projects?.clients?.name ? `(${p.projects.clients.name})` : '';
+                pecas.forEach(p => {
                     containerPosts.innerHTML += `
-                        <div class="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3.5 rounded-xl flex items-center justify-between text-xs">
+                        <div class="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl flex items-center justify-between text-xs">
                             <div>
-                                <span class="font-bold text-zinc-900 dark:text-white block">${p.title}</span>
-                                <span class="text-zinc-400 text-[11px]">${nomeProj} ${nomeMarca} — <strong class="uppercase">${p.piece_type || 'Post'}</strong></span>
+                                <span class="font-bold text-zinc-900 dark:text-white">${p.title}</span>
+                                <span class="text-zinc-400 block text-[10px]">${p.projects?.title || 'Campanha'} — <strong class="uppercase">${p.piece_type || 'Post'}</strong></span>
                             </div>
-                            ${p.media_url ? `<a href="${p.media_url}" target="_blank" class="text-indigo-600 dark:text-indigo-400 font-semibold text-[11px] hover:underline">Ver Peça</a>` : ''}
+                            ${p.media_url ? `<a href="${p.media_url}" target="_blank" class="text-indigo-400 font-semibold text-[11px] hover:underline">Ver</a>` : ''}
                         </div>
                     `;
                 });
             }
 
-            const { data: tasksData, error: taskErr } = await supabaseClient
-                .from('agenda_tasks')
-                .select('*')
-                .eq('task_date', dataFiltro);
-
-            if (taskErr || !tasksData || tasksData.length === 0) {
-                containerTasks.innerHTML = `<p class="text-xs text-zinc-400 text-center py-6">Nenhuma tarefa para este dia.</p>`;
+            // Tarefas
+            const { data: tarefas } = await supabaseClient.from('agenda_tasks').select('*').eq('task_date', dataSelecionadaCal);
+            if (!tarefas || tarefas.length === 0) {
+                containerTasks.innerHTML = `<p class="text-xs text-zinc-400">Nenhuma tarefa para esta data.</p>`;
             } else {
                 containerTasks.innerHTML = '';
-                tasksData.forEach(t => {
+                tarefas.forEach(t => {
                     containerTasks.innerHTML += `
-                        <div class="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3.5 rounded-xl flex items-center justify-between text-xs">
-                            <div class="flex items-center gap-2.5">
-                                <input type="checkbox" ${t.status === 'Concluída' ? 'checked' : ''} onchange="alternarStatusTarefa('${t.id}', this.checked)" class="w-4 h-4 rounded cursor-pointer">
+                        <div class="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl flex items-center justify-between text-xs">
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" ${t.status === 'Concluída' ? 'checked' : ''} onchange="alternarStatusTarefa('${t.id}', this.checked)" class="w-3.5 h-3.5 rounded cursor-pointer">
                                 <span class="font-semibold text-zinc-900 dark:text-white ${t.status === 'Concluída' ? 'line-through text-zinc-400' : ''}">${t.title}</span>
                             </div>
-                            <button onclick="deletarTarefa('${t.id}')" class="text-rose-500 hover:text-rose-700 text-[11px] font-medium">Excluir</button>
+                            <button onclick="deletarTarefa('${t.id}')" class="text-rose-500 font-medium text-[11px]">Excluir</button>
                         </div>
                     `;
                 });
@@ -929,23 +978,23 @@
             else {
                 document.getElementById('task-title').value = '';
                 closeModal('task-modal');
-                carregarAgenda();
+                renderizarCalendario();
             }
         }
 
         async function alternarStatusTarefa(id, concluida) {
             const status = concluida ? 'Concluída' : 'Pendente';
             await supabaseClient.from('agenda_tasks').update({ status }).eq('id', id);
-            carregarAgenda();
+            carregarDetalhesDiaSelecionado();
         }
 
         async function deletarTarefa(id) {
-            if(!confirm('Deseja excluir esta tarefa?')) return;
+            if(!confirm('Excluir tarefa?')) return;
             await supabaseClient.from('agenda_tasks').delete().eq('id', id);
-            carregarAgenda();
+            renderizarCalendario();
         }
 
-        // QUADRO DE PROJETOS & CLIENTES
+        // QUADRO DE PROJETOS & DRAG AND DROP COM AGENDAMENTO RÁPIDO
         async function carregarDados() {
             await carregarSelectClientes();
             const clienteFiltro = document.getElementById('filtro-cliente').value;
@@ -1026,246 +1075,6 @@
             atualizarContadores(contadores);
         }
 
-        // PEÇAS / CRIATIVOS
-        async function carregarTodasPecas() {
-            const tbody = document.getElementById('pieces-table-body');
-            if(!tbody) return;
-            const { data, error } = await supabaseClient.from('content_pieces').select('*, projects(title, clients(name))');
-            if (error || !data || data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-zinc-400">Nenhuma peça cadastrada.</td></tr>`;
-                return;
-            }
-            tbody.innerHTML = '';
-            data.forEach(p => {
-                const dataFormatada = p.scheduled_date ? p.scheduled_date.split('-').reverse().join('/') : 'Não agendada';
-                tbody.innerHTML += `
-                    <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
-                        <td class="p-4 pl-6 font-semibold text-zinc-900 dark:text-white">${p.title}</td>
-                        <td class="p-4 text-zinc-500 uppercase text-[10px] font-bold">${p.piece_type || 'Post'}</td>
-                        <td class="p-4 text-zinc-700 dark:text-zinc-300 font-medium">${dataFormatada}</td>
-                        <td class="p-4"><span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">${p.status}</span></td>
-                        <td class="p-4 pr-6 text-right">
-                            ${p.media_url ? `<a href="${p.media_url}" target="_blank" class="text-indigo-600 dark:text-indigo-400 hover:underline font-semibold text-xs mr-3">Ver Arquivo</a>` : ''}
-                            <button onclick="deletarPecaGlobal('${p.id}')" class="text-rose-500 font-medium text-xs">Excluir</button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        async function deletarPecaGlobal(id) {
-            if (!confirm('Deseja excluir esta peça?')) return;
-            await supabaseClient.from('content_pieces').delete().eq('id', id);
-            carregarTodasPecas();
-            carregarAgenda();
-        }
-
-        // CONTRATOS & PLANOS
-        async function carregarContratos() {
-            const tbody = document.getElementById('contracts-table-body');
-            if(!tbody) return;
-            const { data } = await supabaseClient.from('contracts').select('*, clients(name, color)');
-            if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-zinc-400">Nenhum contrato cadastrado.</td></tr>`; return; }
-            tbody.innerHTML = '';
-            data.forEach(c => {
-                const valorFormatado = Number(c.amount).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-                tbody.innerHTML += `
-                    <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
-                        <td class="p-4 pl-6 font-semibold text-zinc-900 dark:text-white">${c.clients?.name || 'Geral'}</td>
-                        <td class="p-4 font-semibold">${c.title}</td>
-                        <td class="p-4">${c.type}</td>
-                        <td class="p-4 font-bold">${valorFormatado}</td>
-                        <td class="p-4">${c.status || 'Ativo'}</td>
-                        <td class="p-4 pr-6 text-right"><button onclick="deletarContrato('${c.id}')" class="text-rose-500 font-medium">Excluir</button></td>
-                    </tr>
-                `;
-            });
-        }
-
-        async function salvarContrato() {
-            const client_id = document.getElementById('contract-client-select').value;
-            const title = document.getElementById('contract-title').value;
-            const type = document.getElementById('contract-type').value;
-            const amount = document.getElementById('contract-amount').value;
-            const billing_cycle = document.getElementById('contract-cycle').value;
-            const start_date = document.getElementById('contract-date').value;
-
-            if (!client_id || !title || !amount) return alert('Preencha os campos obrigatórios.');
-
-            const { error } = await supabaseClient.from('contracts').insert([{
-                client_id, title, type, amount: parseFloat(amount.replace(',', '.')), billing_cycle: billing_cycle || 'Mensal', start_date: start_date || null, status: 'Ativo'
-            }]);
-
-            if (error) return alert('Erro: ' + error.message);
-            alert('Contrato salvo com sucesso!');
-            closeModal('contract-modal');
-            carregarContratos();
-            carregarFinanceiro();
-        }
-
-        async function deletarContrato(id) {
-            if (!confirm('Deseja excluir este contrato?')) return;
-            await supabaseClient.from('contracts').delete().eq('id', id);
-            carregarContratos();
-        }
-
-        async function carregarPlanos() {
-            const grid = document.getElementById('grid-planos');
-            if(!grid) return;
-            const { data } = await supabaseClient.from('plans').select('*');
-            if (!data || data.length === 0) { grid.innerHTML = `<p class="text-xs text-zinc-400 col-span-3 text-center py-8">Nenhum pacote.</p>`; return; }
-            grid.innerHTML = '';
-            data.forEach(p => {
-                grid.innerHTML += `
-                    <div class="bg-white dark:bg-[#1a1a1e] p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-4">
-                        <h4 class="font-semibold text-sm">${p.name}</h4>
-                        <p class="text-xs text-zinc-400">${p.description || ''}</p>
-                        <span class="text-sm font-bold block">R$ ${p.price} (${p.billing_cycle || 'Mensal'})</span>
-                        <button onclick="deletarPlano('${p.id}')" class="text-xs text-rose-500 block font-medium">Excluir</button>
-                    </div>
-                `;
-            });
-        }
-
-        async function salvarPlano() {
-            const name = document.getElementById('plan-name').value;
-            const description = document.getElementById('plan-description').value;
-            const price = document.getElementById('plan-price').value;
-            const billing_cycle = document.getElementById('plan-cycle').value;
-            if (!name || !price) return alert('Informe nome e valor.');
-
-            await supabaseClient.from('plans').insert([{ name, description, price: parseFloat(price.replace(',', '.')), billing_cycle }]);
-            closeModal('plan-modal');
-            carregarPlanos();
-        }
-
-        async function deletarPlano(id) {
-            await supabaseClient.from('plans').delete().eq('id', id);
-            carregarPlanos();
-        }
-
-        async function carregarSelectPlanos() {
-            const select = document.getElementById('contract-plan-select');
-            if (!select) return;
-            const { data } = await supabaseClient.from('plans').select('*');
-            select.innerHTML = '<option value="">Selecione um pacote...</option>';
-            if (data) {
-                listaPlanosGlobal = data;
-                data.forEach(p => select.innerHTML += `<option value="${p.id}">${p.name} - R$ ${p.price}</option>`);
-            }
-        }
-
-        function selecionarPlanoNoContrato() {
-            const planId = document.getElementById('contract-plan-select').value;
-            if (!planId) return;
-            const plano = listaPlanosGlobal.find(p => p.id === planId);
-            if (plano) {
-                document.getElementById('contract-title').value = plano.name;
-                document.getElementById('contract-amount').value = plano.price;
-                document.getElementById('contract-cycle').value = plano.billing_cycle || 'Mensal';
-            }
-        }
-
-        // FINANCEIRO
-        function filtrarFinanceiro(periodo) {
-            filtroPeriodoAtual = periodo;
-            ['dia', 'semana', 'mes', 'ano'].forEach(p => {
-                const btn = document.getElementById(`btn-filtro-${p}`);
-                if(btn) {
-                    if(p === periodo) btn.className = 'px-3 py-1.5 text-xs font-medium bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-xs rounded-lg transition';
-                    else btn.className = 'px-3 py-1.5 text-xs font-medium text-zinc-600 dark:text-zinc-400 rounded-lg transition';
-                }
-            });
-            carregarFinanceiro();
-        }
-
-        async function carregarFinanceiro() {
-            const tbody = document.getElementById('transactions-table-body');
-            if(!tbody) return;
-            const clienteFiltroFin = document.getElementById('filtro-cliente-financeiro').value;
-
-            let query = supabaseClient.from('transactions').select('*, clients(name, color)');
-            if (clienteFiltroFin) query = query.eq('client_id', clienteFiltroFin);
-
-            const { data } = await query;
-            if (!data || data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-zinc-400">Nenhum registro financeiro.</td></tr>`;
-                document.getElementById('kpi-recebido').innerText = 'R$ 0,00';
-                document.getElementById('kpi-pendente').innerText = 'R$ 0,00';
-                document.getElementById('kpi-atrasado').innerText = 'R$ 0,00';
-                return;
-            }
-
-            const hoje = new Date();
-            hoje.setHours(0,0,0,0);
-
-            const dadosFiltrados = data.filter(t => {
-                if(!t.due_date) return true;
-                const dataVenc = new Date(t.due_date + 'T00:00:00');
-                if (filtroPeriodoAtual === 'dia') return dataVenc.toDateString() === hoje.toDateString();
-                if (filtroPeriodoAtual === 'mes') return dataVenc.getMonth() === hoje.getMonth() && dataVenc.getFullYear() === hoje.getFullYear();
-                if (filtroPeriodoAtual === 'ano') return dataVenc.getFullYear() === hoje.getFullYear();
-                return true;
-            });
-
-            tbody.innerHTML = '';
-            let rec = 0, pend = 0, atrasado = 0;
-
-            dadosFiltrados.forEach(t => {
-                const val = Number(t.amount);
-                if(t.status === 'Pago') rec += val;
-                else if(t.status === 'Atrasado') atrasado += val;
-                else pend += val;
-
-                tbody.innerHTML += `
-                    <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
-                        <td class="p-4 pl-6 font-semibold">${t.clients?.name || 'Geral'}</td>
-                        <td class="p-4">${t.description}</td>
-                        <td class="p-4">${t.due_date ? t.due_date.split('-').reverse().join('/') : '-'}</td>
-                        <td class="p-4 font-bold">R$ ${val.toFixed(2)}</td>
-                        <td class="p-4">${t.status}</td>
-                        <td class="p-4 pr-6 text-right">
-                            ${t.status !== 'Pago' ? `<button onclick="marcarComoPago('${t.id}')" class="text-emerald-400 font-semibold mr-3">Receber</button>` : ''}
-                            <button onclick="deletarTransacao('${t.id}')" class="text-rose-500 font-medium">Excluir</button>
-                        </td>
-                    </tr>
-                `;
-            });
-
-            document.getElementById('kpi-recebido').innerText = `R$ ${rec.toFixed(2)}`;
-            document.getElementById('kpi-pendente').innerText = `R$ ${pend.toFixed(2)}`;
-            document.getElementById('kpi-atrasado').innerText = `R$ ${atrasado.toFixed(2)}`;
-        }
-
-        async function salvarTransacao() {
-            const client_id = document.getElementById('trans-client-select').value;
-            const description = document.getElementById('trans-desc').value;
-            const amount = document.getElementById('trans-amount').value;
-            const due_date = document.getElementById('trans-duedate').value;
-            const status = document.getElementById('trans-status').value;
-            const payment_method = document.getElementById('trans-method').value;
-
-            if (!client_id || !description || !amount || !due_date) return alert('Preencha os campos.');
-
-            await supabaseClient.from('transactions').insert([{
-                client_id, description, amount: parseFloat(amount.replace(',', '.')), due_date, status, payment_method: payment_method || 'Pix'
-            }]);
-
-            closeModal('transaction-modal');
-            carregarFinanceiro();
-        }
-
-        async function marcarComoPago(id) {
-            await supabaseClient.from('transactions').update({ status: 'Pago', payment_date: new Date().toISOString().split('T')[0] }).eq('id', id);
-            carregarFinanceiro();
-        }
-
-        async function deletarTransacao(id) {
-            await supabaseClient.from('transactions').delete().eq('id', id);
-            carregarFinanceiro();
-        }
-
-        // DRAG & DROP DO QUADRO
         function iniciarArraste(event, projectId) { event.dataTransfer.setData('text/plain', projectId); }
         function permitirDrop(event) { event.preventDefault(); event.currentTarget.classList.add('drag-over'); }
         function removerDestaque(event) { event.currentTarget.classList.remove('drag-over'); }
@@ -1275,7 +1084,44 @@
             event.currentTarget.classList.remove('drag-over');
             const projectId = event.dataTransfer.getData('text/plain');
             if (!projectId) return;
-            await supabaseClient.from('projects').update({ status: novoStatus }).eq('id', projectId);
+
+            // Se for movido para "Programado", abre o modal limpo pedindo APENAS a data
+            if (novoStatus === 'Programado') {
+                document.getElementById('schedule-project-id').value = projectId;
+                document.getElementById('schedule-date-input').value = new Date().toISOString().split('T')[0];
+                document.getElementById('schedule-modal').style.display = 'flex';
+                // Atualiza provisoriamente o status no banco
+                await supabaseClient.from('projects').update({ status: novoStatus }).eq('id', projectId);
+            } else {
+                await supabaseClient.from('projects').update({ status: novoStatus }).eq('id', projectId);
+                carregarDados();
+            }
+        }
+
+        async function salvarAgendamentoProjeto() {
+            const projectId = document.getElementById('schedule-project-id').value;
+            const scheduledDate = document.getElementById('schedule-date-input').value;
+            if(!scheduledDate) return alert('Informe a data.');
+
+            // Cria automaticamente uma peça vinculada com o título da campanha e a data exata
+            const { data: proj } = await supabaseClient.from('projects').select('title').eq('id', projectId).single();
+            if (proj) {
+                await supabaseClient.from('content_pieces').insert([{
+                    project_id: projectId,
+                    title: proj.title,
+                    piece_type: 'post',
+                    status: 'approved',
+                    scheduled_date: scheduledDate
+                }]);
+            }
+
+            fecharModalAgendamento();
+            carregarDados();
+            renderizarCalendario();
+        }
+
+        function fecharModalAgendamento() {
+            document.getElementById('schedule-modal').style.display = 'none';
             carregarDados();
         }
 
@@ -1375,16 +1221,158 @@
             }
 
             await supabaseClient.from('content_pieces').insert([{
-                project_id: projectId, title, piece_type: platform || 'post', feed_preview_url: mediaUrl, media_url: mediaUrl, status: 'pending_approval', scheduled_date: scheduled_date || null
+                project_id: projectId, title, piece_type: platform || 'post', feed_preview_url: mediaUrl, media_url: mediaUrl, status: 'approved', scheduled_date: scheduled_date || null
             }]);
 
-            alert('Peça agendada com sucesso!');
+            alert('Peça salva e agendada!');
             document.getElementById('piece-title').value = '';
             document.getElementById('piece-scheduled-date').value = '';
             fileInput.value = '';
             carregarPecasProjetoModal(projectId);
+            renderizarCalendario();
+        }
+
+        // DEMAIS FUNÇÕES (Financeiro, Contratos, Planos, Chat)
+        async function carregarTodasPecas() {
+            const tbody = document.getElementById('pieces-table-body');
+            if(!tbody) return;
+            const { data } = await supabaseClient.from('content_pieces').select('*, projects(title, clients(name))');
+            if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-zinc-400">Nenhuma peça cadastrada.</td></tr>`; return; }
+            tbody.innerHTML = '';
+            data.forEach(p => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
+                        <td class="p-4 pl-6 font-semibold">${p.title}</td>
+                        <td class="p-4 uppercase text-[10px] font-bold">${p.piece_type || 'Post'}</td>
+                        <td class="p-4">${p.scheduled_date ? p.scheduled_date.split('-').reverse().join('/') : '-'}</td>
+                        <td class="p-4">${p.status}</td>
+                        <td class="p-4 pr-6 text-right"><button onclick="deletarPecaGlobal('${p.id}')" class="text-rose-500 font-medium">Excluir</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        async function deletarPecaGlobal(id) {
+            await supabaseClient.from('content_pieces').delete().eq('id', id);
             carregarTodasPecas();
-            carregarAgenda();
+            renderizarCalendario();
+        }
+
+        async function carregarContratos() {
+            const tbody = document.getElementById('contracts-table-body');
+            if(!tbody) return;
+            const { data } = await supabaseClient.from('contracts').select('*, clients(name)');
+            if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-zinc-400">Nenhum contrato.</td></tr>`; return; }
+            tbody.innerHTML = '';
+            data.forEach(c => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
+                        <td class="p-4 pl-6 font-semibold">${c.clients?.name || 'Geral'}</td>
+                        <td class="p-4 font-semibold">${c.title}</td>
+                        <td class="p-4">${c.type}</td>
+                        <td class="p-4 font-bold">R$ ${c.amount}</td>
+                        <td class="p-4">${c.status || 'Ativo'}</td>
+                        <td class="p-4 pr-6 text-right"><button onclick="deletarContrato('${c.id}')" class="text-rose-500">Excluir</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        async function salvarContrato() {
+            const client_id = document.getElementById('contract-client-select').value;
+            const title = document.getElementById('contract-title').value;
+            const amount = document.getElementById('contract-amount').value;
+            const start_date = document.getElementById('contract-date').value;
+            if (!client_id || !title || !amount) return alert('Preencha os campos.');
+            await supabaseClient.from('contracts').insert([{ client_id, title, type: 'Plano', amount: parseFloat(amount.replace(',', '.')), start_date: start_date || null, status: 'Ativo' }]);
+            closeModal('contract-modal');
+            carregarContratos();
+        }
+
+        async function deletarContrato(id) {
+            await supabaseClient.from('contracts').delete().eq('id', id);
+            carregarContratos();
+        }
+
+        async function carregarPlanos() {
+            const grid = document.getElementById('grid-planos');
+            if(!grid) return;
+            const { data } = await supabaseClient.from('plans').select('*');
+            if (!data || data.length === 0) { grid.innerHTML = `<p class="text-xs text-zinc-400 col-span-3 text-center py-8">Nenhum pacote.</p>`; return; }
+            grid.innerHTML = '';
+            data.forEach(p => {
+                grid.innerHTML += `
+                    <div class="bg-white dark:bg-[#1a1a1e] p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-4">
+                        <h4 class="font-semibold text-sm">${p.name}</h4>
+                        <span class="text-sm font-bold block">R$ ${p.price}</span>
+                        <button onclick="deletarPlano('${p.id}')" class="text-xs text-rose-500 font-medium">Excluir</button>
+                    </div>
+                `;
+            });
+        }
+
+        async function salvarPlano() {
+            const name = document.getElementById('plan-name').value;
+            const price = document.getElementById('plan-price').value;
+            if (!name || !price) return alert('Informe nome e valor.');
+            await supabaseClient.from('plans').insert([{ name, price: parseFloat(price.replace(',', '.')) }]);
+            closeModal('plan-modal');
+            carregarPlanos();
+        }
+
+        async function deletarPlano(id) {
+            await supabaseClient.from('plans').delete().eq('id', id);
+            carregarPlanos();
+        }
+
+        function filtrarFinanceiro(periodo) {
+            filtroPeriodoAtual = periodo;
+            ['dia', 'semana', 'mes', 'ano'].forEach(p => {
+                const btn = document.getElementById(`btn-filtro-${p}`);
+                if(btn) btn.className = p === periodo ? 'px-3 py-1.5 text-xs font-medium bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-xs rounded-lg transition' : 'px-3 py-1.5 text-xs font-medium text-zinc-600 dark:text-zinc-400 rounded-lg transition';
+            });
+            carregarFinanceiro();
+        }
+
+        async function carregarFinanceiro() {
+            const tbody = document.getElementById('transactions-table-body');
+            if(!tbody) return;
+            const { data } = await supabaseClient.from('transactions').select('*, clients(name)');
+            if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-zinc-400">Nenhum registro.</td></tr>`; return; }
+            tbody.innerHTML = '';
+            let rec = 0, pend = 0;
+            data.forEach(t => {
+                const val = Number(t.amount);
+                if(t.status === 'Pago') rec += val; else pend += val;
+                tbody.innerHTML += `
+                    <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
+                        <td class="p-4 pl-6 font-semibold">${t.clients?.name || 'Geral'}</td>
+                        <td class="p-4">${t.description}</td>
+                        <td class="p-4">${t.due_date || '-'}</td>
+                        <td class="p-4 font-bold">R$ ${val.toFixed(2)}</td>
+                        <td class="p-4">${t.status}</td>
+                        <td class="p-4 pr-6 text-right"><button onclick="deletarTransacao('${t.id}')" class="text-rose-500">Excluir</button></td>
+                    </tr>
+                `;
+            });
+            document.getElementById('kpi-recebido').innerText = `R$ ${rec.toFixed(2)}`;
+            document.getElementById('kpi-pendente').innerText = `R$ ${pend.toFixed(2)}`;
+        }
+
+        async function salvarTransacao() {
+            const client_id = document.getElementById('trans-client-select').value;
+            const description = document.getElementById('trans-desc').value;
+            const amount = document.getElementById('trans-amount').value;
+            const due_date = document.getElementById('trans-duedate').value;
+            if (!client_id || !description || !amount || !due_date) return alert('Preencha os campos.');
+            await supabaseClient.from('transactions').insert([{ client_id, description, amount: parseFloat(amount.replace(',', '.')), due_date, status: 'Pendente' }]);
+            closeModal('transaction-modal');
+            carregarFinanceiro();
+        }
+
+        async function deletarTransacao(id) {
+            await supabaseClient.from('transactions').delete().eq('id', id);
+            carregarFinanceiro();
         }
 
         function toggleChat() {
@@ -1397,11 +1385,9 @@
             const messages = document.getElementById('chat-messages');
             const text = input.value.trim();
             if (!text) return;
-
             messages.innerHTML += `<div class="bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 p-3.5 rounded-2xl max-w-[85%] self-end font-medium">${text}</div>`;
             input.value = '';
             messages.scrollTop = messages.scrollHeight;
-
             try {
                 const response = await fetch(COPILOTO_FUNCTION_URL, {
                     method: 'POST',
@@ -1412,7 +1398,7 @@
                 if (data.reply) {
                     messages.innerHTML += `<div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 p-3.5 rounded-2xl max-w-[85%] self-start font-medium">${data.reply}</div>`;
                     chatHistory.push({ role: 'user', text }, { role: 'assistant', text: data.reply });
-                    carregarDados(); carregarAgenda(); carregarTodasPecas(); carregarContratos(); carregarFinanceiro(); carregarPlanos();
+                    carregarDados(); renderizarCalendario(); carregarTodasPecas();
                 }
             } catch (err) {
                 messages.innerHTML += `<div class="text-rose-500">Erro de conexão com o Copiloto.</div>`;
