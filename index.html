@@ -1,58 +1,75 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Aval — Gestão de Redes Sociais</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            bg: '#121214',
+                            card: '#1a1a1e',
+                            border: '#27272a',
+                            hover: '#27272a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Google Fonts Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .kanban-col { min-height: 550px; transition: all 0.25s ease; }
-        .kanban-col.drag-over { background-color: rgba(244, 244, 245, 0.9); border-color: #a1a1aa; transform: scale(1.01); }
+        .kanban-col { min-height: 580px; transition: all 0.25s ease; }
+        .kanban-col.drag-over { background-color: rgba(39, 39, 42, 0.5); border-color: #52525b; transform: scale(1.01); }
         /* Scrollbar customizada e elegante */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #e4e4e7; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #d4d4d8; }
+        ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #52525b; }
     </style>
 </head>
-<body class="bg-zinc-900/5 text-zinc-900 antialiased min-h-screen flex h-screen overflow-hidden">
+<body class="bg-zinc-50 dark:bg-[#121214] text-zinc-900 dark:text-zinc-100 antialiased min-h-screen flex h-screen overflow-hidden transition-colors duration-200">
 
     <!-- TELA DE LOGIN / CADASTRO -->
-    <div id="login-screen" class="fixed inset-0 bg-zinc-900 z-50 flex items-center justify-center p-4">
-        <div class="bg-white border border-zinc-200 rounded-3xl w-full max-w-md p-8 shadow-2xl space-y-6">
+    <div id="login-screen" class="fixed inset-0 bg-zinc-900/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-8 shadow-2xl space-y-6">
             <div class="flex flex-col items-center text-center space-y-2">
-                <div class="w-12 h-12 rounded-2xl bg-zinc-900 flex items-center justify-center text-white shadow-md shadow-zinc-900/20 mb-2">
-                    <span class="w-3.5 h-3.5 rounded-full bg-emerald-400"></span>
+                <div class="w-14 h-14 rounded-2xl bg-zinc-900 dark:bg-zinc-800 flex items-center justify-center text-white shadow-lg mb-2">
+                    <span class="w-4 h-4 rounded-full bg-emerald-400 animate-pulse"></span>
                 </div>
-                <h1 id="auth-title" class="font-bold text-lg tracking-tight text-zinc-900">MEU AVAL</h1>
-                <p id="auth-subtitle" class="text-xs text-zinc-400">Faça login para acessar o painel de redes sociais</p>
+                <h1 id="auth-title" class="font-bold text-xl tracking-tight text-zinc-900 dark:text-white">MEU AVAL</h1>
+                <p id="auth-subtitle" class="text-xs text-zinc-500 dark:text-zinc-400">Faça login para gerenciar suas redes sociais</p>
             </div>
 
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">E-mail</label>
-                    <input type="email" id="login-email" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 font-medium" placeholder="seu@email.com">
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">E-mail</label>
+                    <input type="email" id="login-email" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-zinc-500 font-medium transition" placeholder="seu@email.com">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Senha</label>
-                    <input type="password" id="login-password" onkeypress="if(event.key === 'Enter') executarAcaoAuth()" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 font-medium" placeholder="••••••••">
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Senha</label>
+                    <input type="password" id="login-password" onkeypress="if(event.key === 'Enter') executarAcaoAuth()" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-zinc-500 font-medium transition" placeholder="••••••••">
                 </div>
-                <div id="login-error" class="text-rose-600 text-xs font-medium text-center hidden"></div>
-                <div id="login-success" class="text-emerald-600 text-xs font-medium text-center hidden"></div>
+                <div id="login-error" class="text-rose-500 text-xs font-medium text-center hidden"></div>
+                <div id="login-success" class="text-emerald-500 text-xs font-medium text-center hidden"></div>
             </div>
 
             <div class="space-y-3">
-                <button id="auth-btn" onclick="executarAcaoAuth()" class="w-full py-3 text-xs font-semibold text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl shadow-md transition active:scale-95">
+                <button id="auth-btn" onclick="executarAcaoAuth()" class="w-full py-3 text-xs font-semibold text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white rounded-xl shadow-lg transition active:scale-95">
                     Entrar no Sistema
                 </button>
                 <div class="text-center pt-2">
-                    <button id="toggle-auth-mode" onclick="alternarModoAuth()" class="text-xs text-zinc-500 hover:text-zinc-900 font-medium transition">
+                    <button id="toggle-auth-mode" onclick="alternarModoAuth()" class="text-xs text-zinc-500 hover:text-zinc-900 dark:hover:text-white font-medium transition">
                         Não tem uma conta? <span class="underline font-semibold">Criar cadastro</span>
                     </button>
                 </div>
@@ -61,28 +78,28 @@
     </div>
 
     <!-- MENU LATERAL / ABAS -->
-    <aside class="w-72 bg-white border-r border-zinc-200/80 flex flex-col justify-between z-30 shadow-sm">
+    <aside class="w-72 bg-white dark:bg-[#1a1a1e] border-r border-zinc-200 dark:border-zinc-800/80 flex flex-col justify-between z-30 transition-colors duration-200 shadow-sm">
         <div class="p-6 overflow-y-auto space-y-6">
             <div class="flex items-center space-x-3 px-1">
-                <div class="w-8 h-8 rounded-xl bg-zinc-900 flex items-center justify-center text-white shadow-md shadow-zinc-900/20">
-                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                <div class="w-9 h-9 rounded-xl bg-zinc-900 dark:bg-zinc-800 flex items-center justify-center text-white shadow-md">
+                    <span class="w-3 h-3 rounded-full bg-emerald-400"></span>
                 </div>
                 <div>
-                    <h1 class="font-bold text-sm tracking-tight text-zinc-900">MEU AVAL</h1>
+                    <h1 class="font-bold text-sm tracking-tight text-zinc-900 dark:text-white">MEU AVAL</h1>
                     <p class="text-[10px] text-zinc-400 font-medium tracking-wide uppercase">Gestão de Mídia & Social</p>
                 </div>
             </div>
             <nav class="space-y-1">
-                <button onclick="mudarAba('projetos')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium bg-zinc-900 text-white transition tab-btn flex items-center gap-3 shadow-sm shadow-zinc-900/10" data-tab="projetos">
-                    <span class="text-sm">📋</span> Fluxo de Publicações
+                <button onclick="mudarAba('projetos')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium bg-zinc-900 dark:bg-zinc-800 text-white transition tab-btn flex items-center gap-3 shadow-sm" data-tab="projetos">
+                    <span class="text-sm">📋</span> Quadro de Projetos
                 </button>
-                <button onclick="mudarAba('conteudo')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 transition tab-btn flex items-center gap-3" data-tab="conteudo">
+                <button onclick="mudarAba('conteudo')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white transition tab-btn flex items-center gap-3" data-tab="conteudo">
                     <span class="text-sm">🎬</span> Peças & Criativos
                 </button>
-                <button onclick="mudarAba('clientes')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 transition tab-btn flex items-center gap-3" data-tab="clientes">
+                <button onclick="mudarAba('clientes')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white transition tab-btn flex items-center gap-3" data-tab="clientes">
                     <span class="text-sm">🏢</span> Marcas & Clientes
                 </button>
-                <button onclick="mudarAba('financeiro')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 transition tab-btn flex items-center gap-3" data-tab="financeiro">
+                <button onclick="mudarAba('financeiro')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white transition tab-btn flex items-center gap-3" data-tab="financeiro">
                     <span class="text-sm">💰</span> Fluxo de Caixa
                 </button>
 
@@ -90,42 +107,46 @@
                 <div class="pt-5 pb-2 px-1">
                     <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Comercial & Gestão</span>
                 </div>
-                <button onclick="mudarAba('comercial')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 transition tab-btn flex items-center gap-3 pl-5" data-tab="comercial">
+                <button onclick="mudarAba('comercial')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white transition tab-btn flex items-center gap-3 pl-5" data-tab="comercial">
                     <span class="text-sm">📝</span> Planos & Contratos
                 </button>
-                <button onclick="mudarAba('planos')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 transition tab-btn flex items-center gap-3 pl-5" data-tab="planos">
+                <button onclick="mudarAba('planos')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white transition tab-btn flex items-center gap-3 pl-5" data-tab="planos">
                     <span class="text-sm">🏷️</span> Gestão de Pacotes
                 </button>
 
                 <div class="pt-4"></div>
-                <button onclick="mudarAba('configuracoes')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 transition tab-btn flex items-center gap-3" data-tab="configuracoes">
+                <button onclick="mudarAba('configuracoes')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white transition tab-btn flex items-center gap-3" data-tab="configuracoes">
                     <span class="text-sm">🔧</span> Configurações
                 </button>
             </nav>
         </div>
-        <div class="p-4 mx-4 mb-4 rounded-xl bg-zinc-50 border border-zinc-200/60 flex flex-col gap-2 text-xs">
+        <div class="p-4 mx-4 mb-4 rounded-2xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex flex-col gap-2.5 text-xs">
             <div class="flex items-center justify-between">
                 <span class="text-zinc-500 font-medium">Status DB:</span>
-                <span id="db-status" class="px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-zinc-200 text-zinc-700">Conectando...</span>
+                <span id="db-status" class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">Conectando...</span>
             </div>
-            <button onclick="realizarLogout()" class="w-full mt-1 py-1.5 bg-zinc-200 hover:bg-rose-100 hover:text-rose-700 text-zinc-700 font-semibold rounded-lg transition text-[11px]">Sair da Conta</button>
+            <button onclick="realizarLogout()" class="w-full mt-1 py-2 bg-zinc-200 dark:bg-zinc-800 hover:bg-rose-100 hover:text-rose-700 dark:hover:bg-rose-950 dark:hover:text-rose-300 text-zinc-700 dark:text-zinc-300 font-semibold rounded-xl transition text-[11px]">Sair da Conta</button>
         </div>
     </aside>
 
     <!-- CONTEÚDO PRINCIPAL -->
-    <main class="flex-1 flex flex-col overflow-y-auto bg-zinc-50/50">
+    <main class="flex-1 flex flex-col overflow-y-auto bg-zinc-50 dark:bg-[#121214]">
         
         <!-- Header Polido -->
-        <header class="border-b border-zinc-200/80 bg-white/80 backdrop-blur-md sticky top-0 z-20 px-8 h-18 flex items-center justify-between shadow-xs">
+        <header class="border-b border-zinc-200 dark:border-zinc-800/80 bg-white/80 dark:bg-[#1a1a1e]/80 backdrop-blur-md sticky top-0 z-20 px-8 h-18 flex items-center justify-between transition-colors duration-200 shadow-xs">
             <div>
-                <h2 id="titulo-aba" class="font-bold text-base tracking-tight text-zinc-900">Fluxo de Publicações (Kanban)</h2>
-                <p class="text-xs text-zinc-400">Gerencie campanhas, prazos e aprovações de conteúdo com agilidade.</p>
+                <h2 id="titulo-aba" class="font-bold text-base tracking-tight text-zinc-900 dark:text-white">Quadro de Projetos</h2>
+                <p class="text-xs text-zinc-500 dark:text-zinc-400">Gerencie campanhas, prazos e aprovações de conteúdo com agilidade.</p>
             </div>
             <div class="flex items-center gap-3">
-                <button onclick="openModal('client-modal')" class="inline-flex items-center justify-center px-4 py-2.5 text-xs font-medium text-zinc-700 bg-white border border-zinc-200 rounded-xl shadow-xs hover:bg-zinc-50 hover:border-zinc-300 transition active:scale-95">
+                <!-- Botão Alternar Modo Escuro -->
+                <button onclick="alternarDarkMode()" class="w-10 h-10 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:scale-105 transition shadow-xs" title="Alternar Modo Escuro">
+                    <span id="dark-mode-icon" class="text-sm">🌙</span>
+                </button>
+                <button onclick="openModal('client-modal')" class="inline-flex items-center justify-center px-4 py-2.5 text-xs font-medium text-zinc-700 dark:text-zinc-200 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-xs hover:bg-zinc-50 dark:hover:bg-zinc-700 transition active:scale-95">
                     + Nova Marca
                 </button>
-                <button onclick="openModal('project-modal')" class="inline-flex items-center justify-center px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 rounded-xl shadow-md shadow-zinc-900/20 hover:bg-zinc-800 transition active:scale-95">
+                <button onclick="openModal('project-modal')" class="inline-flex items-center justify-center px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 rounded-xl shadow-md hover:bg-zinc-800 dark:hover:bg-white transition active:scale-95">
                     + Nova Campanha
                 </button>
             </div>
@@ -134,57 +155,57 @@
         <!-- Seções / Abas do Sistema -->
         <div class="p-8 flex-1 max-w-7xl w-full mx-auto space-y-6">
 
-            <!-- ABA: PROJETOS (KANBAN) -->
+            <!-- ABA: PROJETOS (QUADRO DE PROJETOS) -->
             <section id="aba-projetos" class="tab-content space-y-6">
-                <!-- Filtro por Cliente -->
-                <div class="flex items-center gap-3 bg-white p-4 rounded-2xl border border-zinc-200/80 shadow-xs">
-                    <label for="filtro-cliente" class="text-xs font-medium text-zinc-500">Filtrar por Marca:</label>
-                    <select id="filtro-cliente" onchange="carregarDados()" class="bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2 text-xs text-zinc-900 focus:outline-none focus:border-zinc-400 font-medium">
+                <!-- Filtro por Marca -->
+                <div class="flex items-center gap-3 bg-white dark:bg-[#1a1a1e] p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs transition-colors">
+                    <label for="filtro-cliente" class="text-xs font-medium text-zinc-500 dark:text-zinc-400">Filtrar por Marca:</label>
+                    <select id="filtro-cliente" onchange="carregarDados()" class="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-zinc-500 font-medium">
                         <option value="">Todas as Marcas</option>
                     </select>
-                    <button onclick="carregarDados()" class="text-xs text-zinc-500 hover:text-zinc-900 ml-auto font-medium transition px-3 py-1.5 rounded-lg hover:bg-zinc-100">Atualizar Dados ⟳</button>
+                    <button onclick="carregarDados()" class="text-xs text-zinc-500 hover:text-zinc-900 dark:hover:text-white ml-auto font-medium transition px-3 py-1.5 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800">Atualizar Dados ⟳</button>
                 </div>
 
-                <!-- Quadro Kanban com suporte a Drag & Drop -->
+                <!-- Quadro de Projetos com suporte a Drag & Drop -->
                 <div class="grid grid-cols-1 md:grid-cols-6 gap-4 min-h-[600px] pb-4">
-                    <div class="bg-zinc-100/60 border border-zinc-200/70 rounded-2xl p-3.5 flex flex-col kanban-col shadow-xs" id="col-planejamento" data-status="Planejamento" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Planejamento')">
-                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-amber-700 mb-3 px-1 flex items-center justify-between">Planejamento <span id="count-planejamento" class="bg-white border border-zinc-200/80 text-zinc-700 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
+                    <div class="bg-zinc-100/70 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 rounded-2xl p-3.5 flex flex-col kanban-col shadow-xs" id="col-planejamento" data-status="Planejamento" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Planejamento')">
+                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 mb-3 px-1 flex items-center justify-between">Planejamento <span id="count-planejamento" class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
                         <div class="flex-1 space-y-3 overflow-y-auto"></div>
                     </div>
-                    <div class="bg-zinc-100/60 border border-zinc-200/70 rounded-2xl p-3.5 flex flex-col kanban-col shadow-xs" id="col-em-execucao" data-status="Em execução" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Em execução')">
-                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-blue-700 mb-3 px-1 flex items-center justify-between">Em Produção <span id="count-em-execucao" class="bg-white border border-zinc-200/80 text-zinc-700 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
+                    <div class="bg-zinc-100/70 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 rounded-2xl p-3.5 flex flex-col kanban-col shadow-xs" id="col-em-execucao" data-status="Em execução" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Em execução')">
+                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 mb-3 px-1 flex items-center justify-between">Em Produção <span id="count-em-execucao" class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
                         <div class="flex-1 space-y-3 overflow-y-auto"></div>
                     </div>
-                    <div class="bg-zinc-100/60 border border-zinc-200/70 rounded-2xl p-3.5 flex flex-col kanban-col shadow-xs" id="col-em-validacao" data-status="Em Validação" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Em Validação')">
-                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-purple-700 mb-3 px-1 flex items-center justify-between">Validação (Zap) <span id="count-em-validacao" class="bg-white border border-zinc-200/80 text-zinc-700 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
+                    <div class="bg-zinc-100/70 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 rounded-2xl p-3.5 flex flex-col kanban-col shadow-xs" id="col-em-validacao" data-status="Em Validação" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Em Validação')">
+                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400 mb-3 px-1 flex items-center justify-between">Validação (Zap) <span id="count-em-validacao" class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
                         <div class="flex-1 space-y-3 overflow-y-auto"></div>
                     </div>
-                    <div class="bg-zinc-100/60 border border-zinc-200/70 rounded-2xl p-3.5 flex flex-col kanban-col shadow-xs" id="col-aprovado" data-status="Aprovado" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Aprovado')">
-                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-teal-700 mb-3 px-1 flex items-center justify-between">Aprovados <span id="count-aprovado" class="bg-white border border-zinc-200/80 text-zinc-700 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
+                    <div class="bg-zinc-100/70 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 rounded-2xl p-3.5 flex flex-col kanban-col shadow-xs" id="col-aprovado" data-status="Aprovado" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Aprovado')">
+                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400 mb-3 px-1 flex items-center justify-between">Aprovados <span id="count-aprovado" class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
                         <div class="flex-1 space-y-3 overflow-y-auto"></div>
                     </div>
-                    <div class="bg-zinc-100/60 border border-zinc-200/70 rounded-2xl p-3.5 flex flex-col kanban-col shadow-xs" id="col-programado" data-status="Programado" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Programado')">
-                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-indigo-700 mb-3 px-1 flex items-center justify-between">Agendados <span id="count-programado" class="bg-white border border-zinc-200/80 text-zinc-700 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
+                    <div class="bg-zinc-100/70 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 rounded-2xl p-3.5 flex flex-col kanban-col shadow-xs" id="col-programado" data-status="Programado" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Programado')">
+                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-3 px-1 flex items-center justify-between">Agendados <span id="count-programado" class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
                         <div class="flex-1 space-y-3 overflow-y-auto"></div>
                     </div>
-                    <div class="bg-zinc-100/60 border border-zinc-200/70 rounded-2xl p-3.5 flex flex-col kanban-col shadow-xs" id="col-concluido" data-status="Concluido" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Concluido')">
-                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-emerald-700 mb-3 px-1 flex items-center justify-between">Publicados <span id="count-concluido" class="bg-white border border-zinc-200/80 text-zinc-700 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
+                    <div class="bg-zinc-100/70 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 rounded-2xl p-3.5 flex flex-col kanban-col shadow-xs" id="col-concluido" data-status="Concluido" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Concluido')">
+                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-3 px-1 flex items-center justify-between">Publicados <span id="count-concluido" class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
                         <div class="flex-1 space-y-3 overflow-y-auto"></div>
                     </div>
                 </div>
             </section>
 
-            <!-- ABA: PEÇAS DE CONTEÚDO (Integração WhatsApp / Bot) -->
+            <!-- ABA: PEÇAS DE CONTEÚDO -->
             <section id="aba-conteudo" class="tab-content hidden space-y-6">
-                <div class="flex justify-between items-center bg-white p-5 rounded-2xl border border-zinc-200/80 shadow-xs">
+                <div class="flex justify-between items-center bg-white dark:bg-[#1a1a1e] p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs transition-colors">
                     <div>
-                        <h3 class="font-semibold text-sm text-zinc-900">Peças & Criativos (Fluxo de Aprovação)</h3>
-                        <p class="text-xs text-zinc-400">Monitore todos os criativos cadastrados para validação no WhatsApp dos clientes.</p>
+                        <h3 class="font-semibold text-sm text-zinc-900 dark:text-white">Peças & Criativos (Fluxo de Aprovação)</h3>
+                        <p class="text-xs text-zinc-500 dark:text-zinc-400">Monitore todos os criativos cadastrados para validação no WhatsApp.</p>
                     </div>
                 </div>
-                <div class="bg-white border border-zinc-200/80 rounded-2xl shadow-xs overflow-hidden">
+                <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xs overflow-hidden transition-colors">
                     <table class="w-full text-left text-sm">
-                        <thead class="bg-zinc-50/80 border-b border-zinc-200 text-zinc-400 font-semibold text-[11px] uppercase tracking-wider">
+                        <thead class="bg-zinc-50 dark:bg-zinc-900/50 border-b border-zinc-200 dark:border-zinc-800 text-zinc-400 font-semibold text-[11px] uppercase tracking-wider">
                             <tr>
                                 <th class="p-4 pl-6">Título da Peça / Campanha</th>
                                 <th class="p-4">Plataforma / Formato</th>
@@ -193,7 +214,7 @@
                                 <th class="p-4 pr-6 text-right">Ações</th>
                             </tr>
                         </thead>
-                        <tbody id="pieces-table-body" class="divide-y divide-zinc-100 text-zinc-700 text-xs font-medium">
+                        <tbody id="pieces-table-body" class="divide-y divide-zinc-100 dark:divide-zinc-800/60 text-zinc-700 dark:text-zinc-300 text-xs font-medium">
                             <tr><td colspan="5" class="p-8 text-center text-zinc-400">Carregando peças...</td></tr>
                         </tbody>
                     </table>
@@ -202,23 +223,23 @@
 
             <!-- ABA: CLIENTES -->
             <section id="aba-clientes" class="tab-content hidden space-y-6">
-                <div class="flex justify-between items-center bg-white p-5 rounded-2xl border border-zinc-200/80 shadow-xs">
+                <div class="flex justify-between items-center bg-white dark:bg-[#1a1a1e] p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs transition-colors">
                     <div>
-                        <h3 class="font-semibold text-sm text-zinc-900">Marcas & Clientes</h3>
-                        <p class="text-xs text-zinc-400">Gerencie perfis de marcas, contas e identidades visuais associadas.</p>
+                        <h3 class="font-semibold text-sm text-zinc-900 dark:text-white">Marcas & Clientes</h3>
+                        <p class="text-xs text-zinc-500 dark:text-zinc-400">Gerencie perfis de marcas, contas e identidades visuais associadas.</p>
                     </div>
-                    <button onclick="openModal('client-modal')" class="px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 rounded-xl shadow-md shadow-zinc-900/10 hover:bg-zinc-800 transition">+ Nova Marca</button>
+                    <button onclick="openModal('client-modal')" class="px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 rounded-xl shadow-md hover:bg-zinc-800 dark:hover:bg-white transition">+ Nova Marca</button>
                 </div>
-                <div class="bg-white border border-zinc-200/80 rounded-2xl shadow-xs overflow-hidden">
+                <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xs overflow-hidden transition-colors">
                     <table class="w-full text-left text-sm">
-                        <thead class="bg-zinc-50/80 border-b border-zinc-200 text-zinc-400 font-semibold text-[11px] uppercase tracking-wider">
+                        <thead class="bg-zinc-50 dark:bg-zinc-900/50 border-b border-zinc-200 dark:border-zinc-800 text-zinc-400 font-semibold text-[11px] uppercase tracking-wider">
                             <tr>
                                 <th class="p-4 pl-6">Marca / Cliente</th>
                                 <th class="p-4">Documento (CNPJ/CPF)</th>
                                 <th class="p-4 pr-6 text-right">Ações</th>
                             </tr>
                         </thead>
-                        <tbody id="clients-table-body" class="divide-y divide-zinc-100 text-zinc-700 text-xs font-medium">
+                        <tbody id="clients-table-body" class="divide-y divide-zinc-100 dark:divide-zinc-800/60 text-zinc-700 dark:text-zinc-300 text-xs font-medium">
                             <tr><td colspan="3" class="p-8 text-center text-zinc-400">Carregando marcas...</td></tr>
                         </tbody>
                     </table>
@@ -227,39 +248,39 @@
 
             <!-- ABA: FINANCEIRO -->
             <section id="aba-financeiro" class="tab-content hidden space-y-6">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-5 rounded-2xl border border-zinc-200/80 shadow-xs">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-[#1a1a1e] p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs transition-colors">
                     <div class="flex flex-wrap items-center gap-2">
-                        <div class="flex items-center gap-1 bg-zinc-100 p-1 rounded-xl border border-zinc-200/60">
-                            <button onclick="filtrarFinanceiro('dia')" id="btn-filtro-dia" class="px-3 py-1.5 text-xs font-medium text-zinc-600 rounded-lg transition">Hoje</button>
-                            <button onclick="filtrarFinanceiro('semana')" id="btn-filtro-semana" class="px-3 py-1.5 text-xs font-medium text-zinc-600 rounded-lg transition">Esta Semana</button>
-                            <button onclick="filtrarFinanceiro('mes')" id="btn-filtro-mes" class="px-3 py-1.5 text-xs font-medium bg-white text-zinc-900 shadow-xs rounded-lg transition">Este Mês</button>
-                            <button onclick="filtrarFinanceiro('ano')" id="btn-filtro-ano" class="px-3 py-1.5 text-xs font-medium text-zinc-600 rounded-lg transition">Este Ano</button>
+                        <div class="flex items-center gap-1 bg-zinc-100 dark:bg-zinc-900 p-1 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                            <button onclick="filtrarFinanceiro('dia')" id="btn-filtro-dia" class="px-3 py-1.5 text-xs font-medium text-zinc-600 dark:text-zinc-400 rounded-lg transition">Hoje</button>
+                            <button onclick="filtrarFinanceiro('semana')" id="btn-filtro-semana" class="px-3 py-1.5 text-xs font-medium text-zinc-600 dark:text-zinc-400 rounded-lg transition">Esta Semana</button>
+                            <button onclick="filtrarFinanceiro('mes')" id="btn-filtro-mes" class="px-3 py-1.5 text-xs font-medium bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-xs rounded-lg transition">Este Mês</button>
+                            <button onclick="filtrarFinanceiro('ano')" id="btn-filtro-ano" class="px-3 py-1.5 text-xs font-medium text-zinc-600 dark:text-zinc-400 rounded-lg transition">Este Ano</button>
                         </div>
-                        <select id="filtro-cliente-financeiro" onchange="carregarFinanceiro()" class="bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2 text-xs text-zinc-900 focus:outline-none font-medium">
+                        <select id="filtro-cliente-financeiro" onchange="carregarFinanceiro()" class="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
                             <option value="">Todas as Marcas</option>
                         </select>
                     </div>
-                    <button onclick="openModal('transaction-modal')" class="px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 rounded-xl shadow-md shadow-zinc-900/10 hover:bg-zinc-800 transition">+ Nova Fatura / Recebimento</button>
+                    <button onclick="openModal('transaction-modal')" class="px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 rounded-xl shadow-md hover:bg-zinc-800 dark:hover:bg-white transition">+ Nova Fatura / Recebimento</button>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="bg-white p-6 rounded-2xl border border-zinc-200/80 shadow-xs space-y-1">
+                    <div class="bg-white dark:bg-[#1a1a1e] p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-1 transition-colors">
                         <span class="text-xs font-medium text-zinc-400">Recebido no Período</span>
-                        <h3 id="kpi-recebido" class="text-2xl font-bold text-emerald-600 tracking-tight">R$ 0,00</h3>
+                        <h3 id="kpi-recebido" class="text-2xl font-bold text-emerald-600 dark:text-emerald-400 tracking-tight">R$ 0,00</h3>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl border border-zinc-200/80 shadow-xs space-y-1">
+                    <div class="bg-white dark:bg-[#1a1a1e] p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-1 transition-colors">
                         <span class="text-xs font-medium text-zinc-400">Cobranças Pendentes</span>
-                        <h3 id="kpi-pendente" class="text-2xl font-bold text-amber-600 tracking-tight">R$ 0,00</h3>
+                        <h3 id="kpi-pendente" class="text-2xl font-bold text-amber-600 dark:text-amber-400 tracking-tight">R$ 0,00</h3>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl border border-zinc-200/80 shadow-xs space-y-1">
+                    <div class="bg-white dark:bg-[#1a1a1e] p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-1 transition-colors">
                         <span class="text-xs font-medium text-zinc-400">Cobranças Atrasadas</span>
-                        <h3 id="kpi-atrasado" class="text-2xl font-bold text-rose-600 tracking-tight">R$ 0,00</h3>
+                        <h3 id="kpi-atrasado" class="text-2xl font-bold text-rose-600 dark:text-rose-400 tracking-tight">R$ 0,00</h3>
                     </div>
                 </div>
 
-                <div class="bg-white border border-zinc-200/80 rounded-2xl shadow-xs overflow-hidden">
+                <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xs overflow-hidden transition-colors">
                     <table class="w-full text-left text-sm">
-                        <thead class="bg-zinc-50/80 border-b border-zinc-200 text-zinc-400 font-semibold text-[11px] uppercase tracking-wider">
+                        <thead class="bg-zinc-50 dark:bg-zinc-900/50 border-b border-zinc-200 dark:border-zinc-800 text-zinc-400 font-semibold text-[11px] uppercase tracking-wider">
                             <tr>
                                 <th class="p-4 pl-6">Marca / Cliente</th>
                                 <th class="p-4">Descrição</th>
@@ -269,7 +290,7 @@
                                 <th class="p-4 pr-6 text-right">Ações</th>
                             </tr>
                         </thead>
-                        <tbody id="transactions-table-body" class="divide-y divide-zinc-100 text-zinc-700 text-xs font-medium">
+                        <tbody id="transactions-table-body" class="divide-y divide-zinc-100 dark:divide-zinc-800/60 text-zinc-700 dark:text-zinc-300 text-xs font-medium">
                             <tr><td colspan="6" class="p-8 text-center text-zinc-400">Carregando transações...</td></tr>
                         </tbody>
                     </table>
@@ -278,16 +299,16 @@
 
             <!-- ABA: COMERCIAL / CONTRATOS -->
             <section id="aba-comercial" class="tab-content hidden space-y-6">
-                <div class="flex justify-between items-center bg-white p-5 rounded-2xl border border-zinc-200/80 shadow-xs">
+                <div class="flex justify-between items-center bg-white dark:bg-[#1a1a1e] p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs transition-colors">
                     <div>
-                        <h3 class="font-semibold text-sm text-zinc-900">Planos & Contratos de Social Media</h3>
-                        <p class="text-xs text-zinc-400">Gerencie retainer mensal, pacotes de posts e acordos comerciais ativos.</p>
+                        <h3 class="font-semibold text-sm text-zinc-900 dark:text-white">Planos & Contratos de Social Media</h3>
+                        <p class="text-xs text-zinc-500 dark:text-zinc-400">Gerencie retainer mensal, pacotes de posts e acordos comerciais ativos.</p>
                     </div>
-                    <button onclick="openModal('contract-modal')" class="px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 rounded-xl shadow-md shadow-zinc-900/10 hover:bg-zinc-800 transition">+ Novo Contrato</button>
+                    <button onclick="openModal('contract-modal')" class="px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 rounded-xl shadow-md hover:bg-zinc-800 dark:hover:bg-white transition">+ Novo Contrato</button>
                 </div>
-                <div class="bg-white border border-zinc-200/80 rounded-2xl shadow-xs overflow-hidden">
+                <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xs overflow-hidden transition-colors">
                     <table class="w-full text-left text-sm">
-                        <thead class="bg-zinc-50/80 border-b border-zinc-200 text-zinc-400 font-semibold text-[11px] uppercase tracking-wider">
+                        <thead class="bg-zinc-50 dark:bg-zinc-900/50 border-b border-zinc-200 dark:border-zinc-800 text-zinc-400 font-semibold text-[11px] uppercase tracking-wider">
                             <tr>
                                 <th class="p-4 pl-6">Marca / Cliente</th>
                                 <th class="p-4">Título do Contrato / Pacote</th>
@@ -297,7 +318,7 @@
                                 <th class="p-4 pr-6 text-right">Ações</th>
                             </tr>
                         </thead>
-                        <tbody id="contracts-table-body" class="divide-y divide-zinc-100 text-zinc-700 text-xs font-medium">
+                        <tbody id="contracts-table-body" class="divide-y divide-zinc-100 dark:divide-zinc-800/60 text-zinc-700 dark:text-zinc-300 text-xs font-medium">
                             <tr><td colspan="6" class="p-8 text-center text-zinc-400">Carregando contratos...</td></tr>
                         </tbody>
                     </table>
@@ -306,12 +327,12 @@
 
             <!-- ABA: PLANOS & ASSINATURAS -->
             <section id="aba-planos" class="tab-content hidden space-y-6">
-                <div class="flex justify-between items-center bg-white p-5 rounded-2xl border border-zinc-200/80 shadow-xs">
+                <div class="flex justify-between items-center bg-white dark:bg-[#1a1a1e] p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs transition-colors">
                     <div>
-                        <h3 class="font-semibold text-sm text-zinc-900">Gestão de Pacotes de Serviços</h3>
-                        <p class="text-xs text-zinc-400">Configure modelos de pacotes de redes sociais para reutilizar nos contratos.</p>
+                        <h3 class="font-semibold text-sm text-zinc-900 dark:text-white">Gestão de Pacotes de Serviços</h3>
+                        <p class="text-xs text-zinc-500 dark:text-zinc-400">Configure modelos de pacotes de redes sociais para reutilizar nos contratos.</p>
                     </div>
-                    <button onclick="openModal('plan-modal')" class="px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 rounded-xl shadow-md shadow-zinc-900/10 hover:bg-zinc-800 transition">+ Novo Pacote</button>
+                    <button onclick="openModal('plan-modal')" class="px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 rounded-xl shadow-md hover:bg-zinc-800 dark:hover:bg-white transition">+ Novo Pacote</button>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="grid-planos">
                     <p class="text-xs text-zinc-400 col-span-3 text-center py-8">Carregando pacotes...</p>
@@ -320,9 +341,9 @@
 
             <!-- ABA: CONFIGURAÇÕES -->
             <section id="aba-configuracoes" class="tab-content hidden space-y-6">
-                <div class="bg-white p-6 rounded-2xl border border-zinc-200/80 shadow-xs space-y-2">
-                    <h3 class="font-semibold text-sm text-zinc-900">Configurações do Sistema</h3>
-                    <p class="text-xs text-zinc-400">Ajustes gerais da aplicação, chaves de API e conexões com Supabase.</p>
+                <div class="bg-white dark:bg-[#1a1a1e] p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-2 transition-colors">
+                    <h3 class="font-semibold text-sm text-zinc-900 dark:text-white">Configurações do Sistema</h3>
+                    <p class="text-xs text-zinc-500 dark:text-zinc-400">Ajustes gerais da aplicação, chaves de API e conexões com Supabase.</p>
                 </div>
             </section>
 
@@ -330,198 +351,198 @@
     </main>
 
     <!-- MODAL: Novo Cliente -->
-    <div id="client-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white border border-zinc-200 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
+    <div id="client-modal" class="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
-                <h3 class="font-bold text-base text-zinc-900">Cadastrar Nova Marca / Cliente</h3>
-                <button onclick="closeModal('client-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 transition">✕</button>
+                <h3 class="font-bold text-base text-zinc-900 dark:text-white">Cadastrar Nova Marca / Cliente</h3>
+                <button onclick="closeModal('client-modal')" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">✕</button>
             </div>
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Nome da Marca / Empresa</label>
-                    <input type="text" id="client-name" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 font-medium" placeholder="Ex: Marca Exemplo">
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Nome da Marca / Empresa</label>
+                    <input type="text" id="client-name" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="Ex: Marca Exemplo">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Documento (CNPJ / CPF)</label>
-                    <input type="text" id="client-doc" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 font-medium" placeholder="00.000.000/0001-00">
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Documento (CNPJ / CPF)</label>
+                    <input type="text" id="client-doc" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="00.000.000/0001-00">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Cor de Identificação no Kanban</label>
-                    <div class="flex items-center gap-3 bg-zinc-50 p-3 rounded-xl border border-zinc-200">
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Cor de Identificação</label>
+                    <div class="flex items-center gap-3 bg-zinc-50 dark:bg-zinc-900 p-3 rounded-xl border border-zinc-200 dark:border-zinc-800">
                         <input type="color" id="client-color" value="#3498db" class="w-10 h-10 bg-transparent border-0 rounded-lg cursor-pointer p-0">
-                        <span class="text-xs text-zinc-500 font-medium">Cor para destacar as etiquetas dos posts.</span>
+                        <span class="text-xs text-zinc-500 font-medium">Cor para destacar os posts no quadro.</span>
                     </div>
                 </div>
             </div>
             <div class="flex justify-end gap-2 pt-2">
-                <button onclick="closeModal('client-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 rounded-xl transition">Cancelar</button>
-                <button onclick="salvarCliente()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl shadow-md transition">Salvar Marca</button>
+                <button onclick="closeModal('client-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition">Cancelar</button>
+                <button onclick="salvarCliente()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white rounded-xl shadow-md transition">Salvar Marca</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL: Editar Cliente -->
-    <div id="edit-client-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white border border-zinc-200 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
+    <div id="edit-client-modal" class="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
-                <h3 class="font-bold text-base text-zinc-900">Editar Marca / Cliente</h3>
-                <button onclick="closeModal('edit-client-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 transition">✕</button>
+                <h3 class="font-bold text-base text-zinc-900 dark:text-white">Editar Marca / Cliente</h3>
+                <button onclick="closeModal('edit-client-modal')" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">✕</button>
             </div>
             <input type="hidden" id="edit-client-id">
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Nome da Marca / Cliente</label>
-                    <input type="text" id="edit-client-name" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Nome da Marca / Cliente</label>
+                    <input type="text" id="edit-client-name" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Documento (CNPJ / CPF)</label>
-                    <input type="text" id="edit-client-doc" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Documento (CNPJ / CPF)</label>
+                    <input type="text" id="edit-client-doc" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Cor de Identificação</label>
-                    <div class="flex items-center gap-3 bg-zinc-50 p-3 rounded-xl border border-zinc-200">
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Cor de Identificação</label>
+                    <div class="flex items-center gap-3 bg-zinc-50 dark:bg-zinc-900 p-3 rounded-xl border border-zinc-200 dark:border-zinc-800">
                         <input type="color" id="edit-client-color" class="w-10 h-10 bg-transparent border-0 rounded-lg cursor-pointer p-0">
-                        <span class="text-xs text-zinc-500 font-medium">Altere a cor de identificação da marca.</span>
+                        <span class="text-xs text-zinc-500 font-medium">Altere a cor da marca.</span>
                     </div>
                 </div>
             </div>
             <div class="flex justify-end gap-2 pt-2">
-                <button onclick="closeModal('edit-client-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 rounded-xl transition">Cancelar</button>
-                <button onclick="atualizarCliente()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl shadow-md transition">Salvar Alterações</button>
+                <button onclick="closeModal('edit-client-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition">Cancelar</button>
+                <button onclick="atualizarCliente()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white rounded-xl shadow-md transition">Salvar Alterações</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL: Novo Contrato / Serviço (Comercial) -->
-    <div id="contract-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white border border-zinc-200 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
+    <!-- MODAL: Novo Contrato / Serviço -->
+    <div id="contract-modal" class="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
-                <h3 class="font-bold text-base text-zinc-900">Novo Contrato ou Serviço</h3>
-                <button onclick="closeModal('contract-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 transition">✕</button>
+                <h3 class="font-bold text-base text-zinc-900 dark:text-white">Novo Contrato ou Serviço</h3>
+                <button onclick="closeModal('contract-modal')" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">✕</button>
             </div>
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Marca / Cliente</label>
-                    <select id="contract-client-select" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Marca / Cliente</label>
+                    <select id="contract-client-select" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
                         <option value="">Selecione uma marca...</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Carregar dados de um Pacote (Opcional)</label>
-                    <select id="contract-plan-select" onchange="selecionarPlanoNoContrato()" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Carregar dados de um Pacote (Opcional)</label>
+                    <select id="contract-plan-select" onchange="selecionarPlanoNoContrato()" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
                         <option value="">Selecione um pacote pré-definido...</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Título do Contrato / Pacote</label>
-                    <input type="text" id="contract-title" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="Ex: Retainer Mensal - 12 Posts / Mês">
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Título do Contrato / Pacote</label>
+                    <input type="text" id="contract-title" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="Ex: Retainer Mensal - 12 Posts / Mês">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Tipo</label>
-                        <select id="contract-type" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
+                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Tipo</label>
+                        <select id="contract-type" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
                             <option value="Plano">Plano (Recorrente)</option>
                             <option value="Serviço Avulso">Serviço Pontual</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Valor (R$)</label>
-                        <input type="text" id="contract-amount" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="2500.00">
+                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Valor (R$)</label>
+                        <input type="text" id="contract-amount" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="2500.00">
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Ciclo / Vencimento</label>
-                        <input type="text" id="contract-cycle" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="Ex: Mensal / Dia 10">
+                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Ciclo / Vencimento</label>
+                        <input type="text" id="contract-cycle" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="Ex: Mensal / Dia 10">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Data de Início</label>
-                        <input type="date" id="contract-date" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
+                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Data de Início</label>
+                        <input type="date" id="contract-date" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
                     </div>
                 </div>
             </div>
             <div class="flex justify-end gap-2 pt-2">
-                <button onclick="closeModal('contract-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 rounded-xl transition">Cancelar</button>
-                <button onclick="salvarContrato()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl shadow-md transition">Salvar Contrato</button>
+                <button onclick="closeModal('contract-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition">Cancelar</button>
+                <button onclick="salvarContrato()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white rounded-xl shadow-md transition">Salvar Contrato</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL: Nova Transação / Fatura (Financeiro) -->
-    <div id="transaction-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white border border-zinc-200 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
+    <!-- MODAL: Nova Transação / Fatura -->
+    <div id="transaction-modal" class="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
-                <h3 class="font-bold text-base text-zinc-900">Registrar Recebimento / Fatura</h3>
-                <button onclick="closeModal('transaction-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 transition">✕</button>
+                <h3 class="font-bold text-base text-zinc-900 dark:text-white">Registrar Recebimento / Fatura</h3>
+                <button onclick="closeModal('transaction-modal')" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">✕</button>
             </div>
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Marca / Cliente</label>
-                    <select id="trans-client-select" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Marca / Cliente</label>
+                    <select id="trans-client-select" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
                         <option value="">Selecione uma marca...</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Descrição</label>
-                    <input type="text" id="trans-desc" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="Ex: Retainer Social Media - Agosto/2026">
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Descrição</label>
+                    <input type="text" id="trans-desc" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="Ex: Retainer Social Media - Agosto/2026">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Valor (R$)</label>
-                        <input type="text" id="trans-amount" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="2500.00">
+                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Valor (R$)</label>
+                        <input type="text" id="trans-amount" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="2500.00">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Vencimento</label>
-                        <input type="date" id="trans-duedate" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
+                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Vencimento</label>
+                        <input type="date" id="trans-duedate" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Status</label>
-                        <select id="trans-status" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
+                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Status</label>
+                        <select id="trans-status" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
                             <option value="Pendente">Pendente</option>
                             <option value="Pago">Pago</option>
                             <option value="Atrasado">Atrasado</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Forma de Pagamento</label>
-                        <input type="text" id="trans-method" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="Ex: Pix / Boleto">
+                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Forma de Pagamento</label>
+                        <input type="text" id="trans-method" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="Ex: Pix / Boleto">
                     </div>
                 </div>
             </div>
             <div class="flex justify-end gap-2 pt-2">
-                <button onclick="closeModal('transaction-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 rounded-xl transition">Cancelar</button>
-                <button onclick="salvarTransacao()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl shadow-md transition">Salvar Fatura</button>
+                <button onclick="closeModal('transaction-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition">Cancelar</button>
+                <button onclick="salvarTransacao()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white rounded-xl shadow-md transition">Salvar Fatura</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL: Novo Projeto (Campanha) -->
-    <div id="project-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white border border-zinc-200 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
+    <!-- MODAL: Nova Campanha / Projeto -->
+    <div id="project-modal" class="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
-                <h3 class="font-bold text-base text-zinc-900">Cadastrar Nova Campanha / Projeto</h3>
-                <button onclick="closeModal('project-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 transition">✕</button>
+                <h3 class="font-bold text-base text-zinc-900 dark:text-white">Cadastrar Nova Campanha / Projeto</h3>
+                <button onclick="closeModal('project-modal')" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">✕</button>
             </div>
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Marca / Cliente</label>
-                    <select id="project-client-select" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Marca / Cliente</label>
+                    <select id="project-client-select" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
                         <option value="">Carregando marcas...</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Título da Campanha / Projeto</label>
-                    <input type="text" id="project-title" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="Ex: Lançamento Coleção Inverno - Reels & Carrosséis">
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Título da Campanha / Projeto</label>
+                    <input type="text" id="project-title" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="Ex: Lançamento Coleção Inverno - Reels & Carrosséis">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Descrição / Briefing</label>
-                    <textarea id="project-desc" rows="2" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="Orientações e cronograma de postagens..."></textarea>
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Descrição / Briefing</label>
+                    <textarea id="project-desc" rows="2" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="Orientações e cronograma de postagens..."></textarea>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Status (Coluna do Kanban)</label>
-                    <select id="project-status" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Status (Coluna do Quadro)</label>
+                    <select id="project-status" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
                         <option value="Planejamento">Planejamento</option>
                         <option value="Em execução">Em Produção</option>
                         <option value="Em Validação">Em Validação</option>
@@ -532,32 +553,32 @@
                 </div>
             </div>
             <div class="flex justify-end gap-2 pt-2">
-                <button onclick="closeModal('project-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 rounded-xl transition">Cancelar</button>
-                <button onclick="salvarProjeto()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl shadow-md transition">Criar Campanha</button>
+                <button onclick="closeModal('project-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition">Cancelar</button>
+                <button onclick="salvarProjeto()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white rounded-xl shadow-md transition">Criar Campanha</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL: Editar Projeto -->
-    <div id="edit-project-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white border border-zinc-200 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
+    <div id="edit-project-modal" class="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
-                <h3 class="font-bold text-base text-zinc-900">Editar Campanha</h3>
-                <button onclick="closeModal('edit-project-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 transition">✕</button>
+                <h3 class="font-bold text-base text-zinc-900 dark:text-white">Editar Campanha</h3>
+                <button onclick="closeModal('edit-project-modal')" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">✕</button>
             </div>
             <input type="hidden" id="edit-project-id">
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Título da Campanha</label>
-                    <input type="text" id="edit-project-title" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Título da Campanha</label>
+                    <input type="text" id="edit-project-title" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Descrição / Briefing</label>
-                    <textarea id="edit-project-desc" rows="2" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium"></textarea>
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Descrição / Briefing</label>
+                    <textarea id="edit-project-desc" rows="2" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium"></textarea>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Status (Coluna do Kanban)</label>
-                    <select id="edit-project-status" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Status (Coluna do Quadro)</label>
+                    <select id="edit-project-status" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
                         <option value="Planejamento">Planejamento</option>
                         <option value="Em execução">Em Produção</option>
                         <option value="Em Validação">Em Validação</option>
@@ -568,69 +589,69 @@
                 </div>
             </div>
             <div class="flex justify-end gap-2 pt-2">
-                <button onclick="closeModal('edit-project-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 rounded-xl transition">Cancelar</button>
-                <button onclick="atualizarProjeto()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl shadow-md transition">Salvar Alterações</button>
+                <button onclick="closeModal('edit-project-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition">Cancelar</button>
+                <button onclick="atualizarProjeto()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white rounded-xl shadow-md transition">Salvar Alterações</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL: Gerenciar Arquivos / Peças -->
-    <div id="files-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white border border-zinc-200 rounded-3xl w-full max-w-xl p-6 shadow-2xl space-y-5">
+    <div id="files-modal" class="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-xl p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
                 <div>
-                    <h3 class="font-bold text-base text-zinc-900">Peças e Criativos da Campanha</h3>
+                    <h3 class="font-bold text-base text-zinc-900 dark:text-white">Peças e Criativos da Campanha</h3>
                     <p id="files-project-title" class="text-xs text-zinc-400">Projeto selecionado</p>
                 </div>
-                <button onclick="closeModal('files-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 transition">✕</button>
+                <button onclick="closeModal('files-modal')" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">✕</button>
             </div>
             <input type="hidden" id="current-file-project-id">
 
-            <div class="bg-zinc-50 p-4 rounded-2xl border border-zinc-200/80 space-y-3">
-                <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-600">Enviar Nova Peça (Reels, Story, Arte)</h4>
+            <div class="bg-zinc-50 dark:bg-zinc-900 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 space-y-3">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">Enviar Nova Peça (Reels, Story, Arte)</h4>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <input type="text" id="piece-title" placeholder="Título (ex: Reels Bastidores 01)" class="bg-white border border-zinc-200 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 focus:outline-none font-medium">
-                    <input type="text" id="piece-platform" placeholder="Formato (ex: Instagram / Reels)" class="bg-white border border-zinc-200 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 focus:outline-none font-medium">
+                    <input type="text" id="piece-title" placeholder="Título (ex: Reels Bastidores 01)" class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
+                    <input type="text" id="piece-platform" placeholder="Formato (ex: Instagram / Reels)" class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
                 </div>
                 <div>
-                    <input type="file" id="piece-file" class="w-full text-xs text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-medium file:bg-zinc-900 file:text-white hover:file:bg-zinc-800 cursor-pointer">
+                    <input type="file" id="piece-file" class="w-full text-xs text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-medium file:bg-zinc-900 dark:file:bg-zinc-100 file:text-white dark:file:text-zinc-900 cursor-pointer">
                 </div>
-                <button onclick="uploadArquivoCampanha()" class="w-full py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium rounded-xl transition shadow-md">Fazer Upload e Enviar para Validação</button>
+                <button onclick="uploadArquivoCampanha()" class="w-full py-2.5 bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white text-white text-xs font-medium rounded-xl transition shadow-md">Fazer Upload e Enviar para Validação</button>
             </div>
 
             <div class="space-y-2">
-                <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-600">Criativos Vinculados</h4>
-                <div id="pieces-list-container" class="max-h-48 overflow-y-auto space-y-2 text-xs divide-y divide-zinc-100">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">Criativos Vinculados</h4>
+                <div id="pieces-list-container" class="max-h-48 overflow-y-auto space-y-2 text-xs divide-y divide-zinc-100 dark:divide-zinc-800">
                     <p class="text-zinc-400 text-center py-6">Selecione uma campanha para ver as peças.</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL: Novo Plano (Administrativo) -->
-    <div id="plan-modal" class="fixed inset-0 bg-zinc-950/40 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white border border-zinc-200 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
+    <!-- MODAL: Novo Pacote -->
+    <div id="plan-modal" class="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
-                <h3 class="font-bold text-base text-zinc-900">Cadastrar Novo Pacote de Serviços</h3>
-                <button onclick="closeModal('plan-modal')" class="text-zinc-400 hover:text-zinc-700 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 transition">✕</button>
+                <h3 class="font-bold text-base text-zinc-900 dark:text-white">Cadastrar Novo Pacote de Serviços</h3>
+                <button onclick="closeModal('plan-modal')" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">✕</button>
             </div>
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Nome do Pacote</label>
-                    <input type="text" id="plan-name" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="Ex: Social Media Completo (12 Posts + Stories)">
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Nome do Pacote</label>
+                    <input type="text" id="plan-name" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="Ex: Social Media Completo (12 Posts + Stories)">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Descrição / Detalhes</label>
-                    <textarea id="plan-description" rows="2" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="Ex: Criação de roteiros, edições para Reels e gestão de tráfego..."></textarea>
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Descrição / Detalhes</label>
+                    <textarea id="plan-description" rows="2" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="Ex: Criação de roteiros, edições para Reels e gestão..."></textarea>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Valor (R$)</label>
-                        <input type="text" id="plan-price" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium" placeholder="2500.00">
+                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Valor (R$)</label>
+                        <input type="text" id="plan-price" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="2500.00">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-zinc-600 mb-1.5">Ciclo de Cobrança</label>
-                        <select id="plan-cycle" class="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 focus:outline-none font-medium">
+                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Ciclo de Cobrança</label>
+                        <select id="plan-cycle" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
                             <option value="Mensal">Mensal</option>
                             <option value="Trimestral">Trimestral</option>
                             <option value="Semestral">Semestral</option>
@@ -641,15 +662,15 @@
                 </div>
             </div>
             <div class="flex justify-end gap-2 pt-2">
-                <button onclick="closeModal('plan-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 hover:bg-zinc-100 rounded-xl transition">Cancelar</button>
-                <button onclick="salvarPlano()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl shadow-md transition">Salvar Pacote</button>
+                <button onclick="closeModal('plan-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition">Cancelar</button>
+                <button onclick="salvarPlano()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white rounded-xl shadow-md transition">Salvar Pacote</button>
             </div>
         </div>
     </div>
 
     <!-- Botão Flutuante do Robô (Copiloto) -->
     <div class="fixed bottom-6 right-6 z-50">
-        <button onclick="toggleChat()" class="w-14 h-14 bg-zinc-900 hover:bg-zinc-800 text-white rounded-2xl shadow-xl shadow-zinc-900/30 flex items-center justify-center transition transform hover:scale-105 active:scale-95 focus:outline-none">
+        <button onclick="toggleChat()" class="w-14 h-14 bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white text-white rounded-2xl shadow-xl flex items-center justify-center transition transform hover:scale-105 active:scale-95 focus:outline-none">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-1.072 1.922L6.75 11.85m7.5-8.746v5.714a2.25 2.25 0 001.072 1.922l1.928 1.11M12 15.75v3.75m-4.5-9h9M7.5 12h9a2.25 2.25 0 012.25 2.25v4.5A2.25 2.25 0 0116.5 21h-9a2.25 2.25 0 01-2.25-2.25v-4.5A2.25 2.25 0 017.5 12z" />
             </svg>
@@ -657,22 +678,22 @@
     </div>
 
     <!-- Janela Pop-up do Chat / Copiloto -->
-    <div id="chat-window" class="fixed bottom-24 right-6 w-96 bg-white border border-zinc-200/80 rounded-3xl shadow-2xl z-50 hidden flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-        <div class="bg-zinc-900 text-white px-5 py-4 flex items-center justify-between">
+    <div id="chat-window" class="fixed bottom-24 right-6 w-96 bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-2xl z-50 hidden flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+        <div class="bg-zinc-900 dark:bg-zinc-800 text-white px-5 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-2.5">
                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
                 <span class="font-semibold text-xs tracking-wide">Copiloto Social Media (IA)</span>
             </div>
             <button onclick="toggleChat()" class="text-zinc-400 hover:text-white text-sm">✕</button>
         </div>
-        <div id="chat-messages" class="p-4 h-80 overflow-y-auto space-y-3 text-xs bg-zinc-50 flex flex-col">
-            <div class="bg-white border border-zinc-200 text-zinc-700 p-3.5 rounded-2xl max-w-[85%] self-start shadow-2xs font-medium">
-                Olá! Sou o Copiloto do seu painel de redes sociais. Como posso ajudar nas campanhas hoje?
+        <div id="chat-messages" class="p-4 h-80 overflow-y-auto space-y-3 text-xs bg-zinc-50 dark:bg-zinc-900/50 flex flex-col">
+            <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 p-3.5 rounded-2xl max-w-[85%] self-start shadow-2xs font-medium">
+                Olá! Sou o Copiloto do seu painel. Como posso ajudar nas campanhas hoje?
             </div>
         </div>
-        <div class="p-3 bg-white border-t border-zinc-200/80 flex gap-2">
-            <input type="text" id="chat-input" placeholder="Pergunte algo à IA..." onkeypress="if(event.key === 'Enter') sendMessage()" class="flex-1 bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 focus:outline-none font-medium">
-            <button onclick="sendMessage()" class="bg-zinc-900 hover:bg-zinc-800 text-white px-4 py-2.5 rounded-xl text-xs font-medium transition shadow-sm">Enviar</button>
+        <div class="p-3 bg-white dark:bg-[#1a1a1e] border-t border-zinc-200 dark:border-zinc-800 flex gap-2">
+            <input type="text" id="chat-input" placeholder="Pergunte algo à IA..." onkeypress="if(event.key === 'Enter') sendMessage()" class="flex-1 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
+            <button onclick="sendMessage()" class="bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white text-white px-4 py-2.5 rounded-xl text-xs font-medium transition shadow-sm">Enviar</button>
         </div>
     </div>
 
@@ -688,14 +709,37 @@
         let listaPlanosGlobal = [];
         let modoCadastro = false;
 
+        // Inicialização do Tema (Modo Escuro / Claro)
+        if (localStorage.getItem('theme') === 'light') {
+            document.documentElement.classList.remove('dark');
+            document.getElementById('dark-mode-icon').innerText = '☀️';
+        } else {
+            document.documentElement.classList.add('dark');
+            document.getElementById('dark-mode-icon').innerText = '🌙';
+        }
+
+        function alternarDarkMode() {
+            const html = document.documentElement;
+            const icon = document.getElementById('dark-mode-icon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                icon.innerText = '☀️';
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                icon.innerText = '🌙';
+            }
+        }
+
         try {
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             document.getElementById('db-status').innerText = 'Conectado';
-            document.getElementById('db-status').className = 'px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold';
+            document.getElementById('db-status').className = 'px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-semibold';
             verificarSessao();
         } catch (e) {
             document.getElementById('db-status').innerText = 'Erro';
-            document.getElementById('db-status').className = 'px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 font-semibold';
+            document.getElementById('db-status').className = 'px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-600 border border-rose-500/20 font-semibold';
         }
 
         async function verificarSessao() {
@@ -729,7 +773,7 @@
                 toggleBtn.innerHTML = 'Já tem uma conta? <span class="underline font-semibold">Fazer login</span>';
             } else {
                 title.innerText = 'MEU AVAL';
-                subtitle.innerText = 'Faça login para acessar o painel de redes sociais';
+                subtitle.innerText = 'Faça login para gerenciar suas redes sociais';
                 btn.innerText = 'Entrar no Sistema';
                 toggleBtn.innerHTML = 'Não tem uma conta? <span class="underline font-semibold">Criar cadastro</span>';
             }
@@ -789,19 +833,19 @@
         function mudarAba(abaId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => {
-                el.classList.remove('bg-zinc-900', 'text-white', 'shadow-sm', 'shadow-zinc-900/10');
-                el.classList.add('text-zinc-600', 'hover:bg-zinc-50', 'hover:text-zinc-900');
+                el.classList.remove('bg-zinc-900', 'dark:bg-zinc-800', 'text-white', 'shadow-sm');
+                el.classList.add('text-zinc-600', 'dark:text-zinc-400', 'hover:bg-zinc-100', 'dark:hover:bg-zinc-800/50', 'hover:text-zinc-900', 'dark:hover:text-white');
             });
 
             document.getElementById(`aba-${abaId}`).classList.remove('hidden');
             const btnAtivo = document.querySelector(`[data-tab="${abaId}"]`);
             if(btnAtivo) {
-                btnAtivo.classList.add('bg-zinc-900', 'text-white', 'shadow-sm', 'shadow-zinc-900/10');
-                btnAtivo.classList.remove('text-zinc-600', 'hover:bg-zinc-50', 'hover:text-zinc-900');
+                btnAtivo.classList.add('bg-zinc-900', 'dark:bg-zinc-800', 'text-white', 'shadow-sm');
+                btnAtivo.classList.remove('text-zinc-600', 'dark:text-zinc-400', 'hover:bg-zinc-100', 'dark:hover:bg-zinc-800/50', 'hover:text-zinc-900', 'dark:hover:text-white');
             }
 
             const titulos = {
-                'projetos': 'Fluxo de Publicações (Kanban)',
+                'projetos': 'Quadro de Projetos',
                 'conteudo': 'Peças & Criativos (WhatsApp & Validação)',
                 'clientes': 'Marcas & Clientes Cadastrados',
                 'financeiro': 'Controle de Faturamento e Fluxo de Caixa',
@@ -842,16 +886,16 @@
             data.forEach(p => {
                 const valorFormatado = Number(p.price).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
                 grid.innerHTML += `
-                    <div class="bg-white p-6 rounded-2xl border border-zinc-200/80 shadow-xs space-y-4 flex flex-col justify-between hover:border-zinc-300 transition">
+                    <div class="bg-white dark:bg-[#1a1a1e] p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-4 flex flex-col justify-between hover:border-zinc-300 dark:hover:border-zinc-700 transition">
                         <div>
                             <div class="flex justify-between items-start">
-                                <h4 class="font-semibold text-sm text-zinc-900">${p.name}</h4>
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-100 text-zinc-700 border border-zinc-200">${p.billing_cycle || 'Mensal'}</span>
+                                <h4 class="font-semibold text-sm text-zinc-900 dark:text-white">${p.name}</h4>
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700">${p.billing_cycle || 'Mensal'}</span>
                             </div>
-                            <p class="text-xs text-zinc-400 mt-1.5 leading-relaxed">${p.description || 'Sem descrição.'}</p>
+                            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1.5 leading-relaxed">${p.description || 'Sem descrição.'}</p>
                         </div>
-                        <div class="flex items-center justify-between pt-4 border-t border-zinc-100">
-                            <span class="text-sm font-bold text-zinc-900">${valorFormatado}</span>
+                        <div class="flex items-center justify-between pt-4 border-t border-zinc-100 dark:border-zinc-800">
+                            <span class="text-sm font-bold text-zinc-900 dark:text-white">${valorFormatado}</span>
                             <button onclick="deletarPlano('${p.id}')" class="text-xs text-rose-500 hover:text-rose-700 font-medium transition">Excluir</button>
                         </div>
                     </div>
@@ -924,14 +968,14 @@
                 clientesData.forEach(c => {
                     const corHex = c.color || '#3498db';
                     tbodyClientes.innerHTML += `
-                        <tr class="hover:bg-zinc-50/80 transition">
-                            <td class="p-4 pl-6 font-semibold text-zinc-900 flex items-center gap-3">
+                        <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
+                            <td class="p-4 pl-6 font-semibold text-zinc-900 dark:text-white flex items-center gap-3">
                                 <span class="w-3.5 h-3.5 rounded-full inline-block shrink-0 shadow-xs" style="background-color: ${corHex};"></span>
                                 ${c.name}
                             </td>
                             <td class="p-4 text-zinc-500">${c.document || 'Não informado'}</td>
                             <td class="p-4 pr-6 text-right space-x-3">
-                                <button onclick="abrirEditarCliente('${c.id}', '${c.name}', '${c.document || ''}', '${corHex}')" class="text-zinc-600 hover:text-zinc-900 font-medium transition">Editar</button>
+                                <button onclick="abrirEditarCliente('${c.id}', '${c.name}', '${c.document || ''}', '${corHex}')" class="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white font-medium transition">Editar</button>
                                 <button onclick="deletarCliente('${c.id}')" class="text-rose-500 hover:text-rose-700 font-medium transition">Excluir</button>
                             </td>
                         </tr>
@@ -978,16 +1022,16 @@
                 if (targetContainer) {
                     if (targetContainer.innerHTML.includes('Vazio')) targetContainer.innerHTML = '';
                     targetContainer.innerHTML += `
-                        <div draggable="true" ondragstart="iniciarArraste(event, '${proj.id}')" class="bg-white border border-zinc-200/80 rounded-2xl p-4 shadow-2xs space-y-3 hover:border-zinc-300 transition cursor-grab active:cursor-grabbing" style="border-left: 4px solid ${clienteCor};">
+                        <div draggable="true" ondragstart="iniciarArraste(event, '${proj.id}')" class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 shadow-xs space-y-3 hover:border-zinc-300 dark:hover:border-zinc-700 transition cursor-grab active:cursor-grabbing" style="border-left: 4px solid ${clienteCor};">
                             <div class="flex justify-between items-start gap-2">
-                                <span class="font-semibold text-zinc-900 text-xs tracking-tight">${proj.title}</span>
-                                <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full text-zinc-600 bg-zinc-50 border border-zinc-200/60 shrink-0">${clienteNome}</span>
+                                <span class="font-semibold text-zinc-900 dark:text-white text-xs tracking-tight">${proj.title}</span>
+                                <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full text-zinc-600 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shrink-0">${clienteNome}</span>
                             </div>
-                            <p class="text-[11px] text-zinc-400 line-clamp-2 leading-relaxed">${proj.description || 'Sem descrição'}</p>
-                            <div class="flex items-center justify-between pt-2 border-t border-zinc-100 text-[11px]">
-                                <button onclick="abrirGerenciarArquivos('${proj.id}', '${proj.title}')" class="text-indigo-600 hover:underline font-semibold">Criativos</button>
+                            <p class="text-[11px] text-zinc-500 dark:text-zinc-400 line-clamp-2 leading-relaxed">${proj.description || 'Sem descrição'}</p>
+                            <div class="flex items-center justify-between pt-2 border-t border-zinc-100 dark:border-zinc-800 text-[11px]">
+                                <button onclick="abrirGerenciarArquivos('${proj.id}', '${proj.title}')" class="text-indigo-600 dark:text-indigo-400 hover:underline font-semibold">Criativos</button>
                                 <div class="space-x-2">
-                                    <button onclick="abrirEditarProjeto('${proj.id}', '${proj.title}', '${proj.description || ''}', '${proj.status}')" class="text-zinc-500 hover:text-zinc-900 font-medium">Editar</button>
+                                    <button onclick="abrirEditarProjeto('${proj.id}', '${proj.title}', '${proj.description || ''}', '${proj.status}')" class="text-zinc-500 hover:text-zinc-300 font-medium">Editar</button>
                                     <button onclick="deletarProjeto('${proj.id}')" class="text-rose-500 hover:text-rose-700 font-medium">Excluir</button>
                                 </div>
                             </div>
@@ -1014,24 +1058,24 @@
             tbody.innerHTML = '';
             data.forEach(p => {
                 let badgeStatus = 'bg-zinc-100 text-zinc-700';
-                if(p.status === 'approved' || p.status === 'Aprovado') badgeStatus = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
-                if(p.status === 'pending_approval' || p.status === 'Pendente') badgeStatus = 'bg-purple-50 text-purple-700 border border-purple-200';
-                if(p.status === 'changes_requested') badgeStatus = 'bg-amber-50 text-amber-700 border border-amber-200';
+                if(p.status === 'approved' || p.status === 'Aprovado') badgeStatus = 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20';
+                if(p.status === 'pending_approval' || p.status === 'Pendente') badgeStatus = 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20';
+                if(p.status === 'changes_requested') badgeStatus = 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20';
 
                 const nomeProjeto = p.projects?.title || 'Campanha Geral';
                 const nomeCliente = p.projects?.clients?.name ? ` — ${p.projects.clients.name}` : '';
 
                 tbody.innerHTML += `
-                    <tr class="hover:bg-zinc-50/80 transition">
-                        <td class="p-4 pl-6 font-semibold text-zinc-900">
+                    <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
+                        <td class="p-4 pl-6 font-semibold text-zinc-900 dark:text-white">
                             ${p.title} 
                             <span class="text-zinc-400 font-normal block text-[11px]">${nomeProjeto}${nomeCliente}</span>
                         </td>
                         <td class="p-4 text-zinc-500 uppercase text-[10px] font-bold">${p.piece_type || p.platform || 'Post'}</td>
-                        <td class="p-4 text-zinc-700 font-medium">Ordem ${p.priority_order || 1}</td>
+                        <td class="p-4 text-zinc-700 dark:text-zinc-300 font-medium">Ordem ${p.priority_order || 1}</td>
                         <td class="p-4"><span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${badgeStatus}">${p.status}</span></td>
                         <td class="p-4 pr-6 text-right space-x-2">
-                            ${p.feed_preview_url || p.media_url ? `<a href="${p.feed_preview_url || p.media_url}" target="_blank" class="text-indigo-600 hover:underline font-semibold text-xs">Ver Arquivo</a>` : ''}
+                            ${p.feed_preview_url || p.media_url ? `<a href="${p.feed_preview_url || p.media_url}" target="_blank" class="text-indigo-600 dark:text-indigo-400 hover:underline font-semibold text-xs">Ver Arquivo</a>` : ''}
                             <button onclick="deletarPecaGlobal('${p.id}')" class="text-rose-500 hover:text-rose-700 font-medium text-xs">Excluir</button>
                         </td>
                     </tr>
@@ -1061,18 +1105,18 @@
                 const valorFormatado = Number(c.amount).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
                 tbody.innerHTML += `
-                    <tr class="hover:bg-zinc-50/80 transition">
-                        <td class="p-4 pl-6 font-semibold text-zinc-900 flex items-center gap-3">
+                    <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
+                        <td class="p-4 pl-6 font-semibold text-zinc-900 dark:text-white flex items-center gap-3">
                             <span class="w-3.5 h-3.5 rounded-full inline-block shrink-0 shadow-xs" style="background-color: ${clienteCor};"></span>
                             ${clienteNome}
                         </td>
-                        <td class="p-4 text-zinc-900 font-semibold">${c.title}</td>
+                        <td class="p-4 text-zinc-900 dark:text-white font-semibold">${c.title}</td>
                         <td class="p-4">
-                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${c.type === 'Plano' ? 'bg-indigo-50 text-indigo-700 border border-indigo-200/60' : 'bg-amber-50 text-amber-700 border border-amber-200/60'}">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${c.type === 'Plano' ? 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20' : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'}">
                                 ${c.type}
                             </span>
                         </td>
-                        <td class="p-4 text-zinc-700 font-bold">${valorFormatado}</td>
+                        <td class="p-4 text-zinc-700 dark:text-zinc-300 font-bold">${valorFormatado}</td>
                         <td class="p-4 text-zinc-400 font-medium">${c.status || 'Ativo'}</td>
                         <td class="p-4 pr-6 text-right">
                             <button onclick="deletarContrato('${c.id}')" class="text-rose-500 hover:text-rose-700 font-semibold transition">Excluir</button>
@@ -1120,8 +1164,8 @@
             ['dia', 'semana', 'mes', 'ano'].forEach(p => {
                 const btn = document.getElementById(`btn-filtro-${p}`);
                 if(btn) {
-                    if(p === periodo) btn.className = 'px-3 py-1.5 text-xs font-medium bg-white text-zinc-900 shadow-xs rounded-lg transition';
-                    else btn.className = 'px-3 py-1.5 text-xs font-medium text-zinc-600 rounded-lg transition';
+                    if(p === periodo) btn.className = 'px-3 py-1.5 text-xs font-medium bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-xs rounded-lg transition';
+                    else btn.className = 'px-3 py-1.5 text-xs font-medium text-zinc-600 dark:text-zinc-400 rounded-lg transition';
                 }
             });
             carregarFinanceiro();
@@ -1178,22 +1222,22 @@
                     else if (t.status === 'Atrasado') totalAtrasado += valorNum;
 
                     let badgeStatus = 'bg-zinc-100 text-zinc-700';
-                    if (t.status === 'Pago') badgeStatus = 'bg-emerald-50 text-emerald-700 border border-emerald-200/60';
-                    if (t.status === 'Pendente') badgeStatus = 'bg-amber-50 text-amber-700 border border-amber-200/60';
-                    if (t.status === 'Atrasado') badgeStatus = 'bg-rose-50 text-rose-700 border border-rose-200/60';
+                    if (t.status === 'Pago') badgeStatus = 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20';
+                    if (t.status === 'Pendente') badgeStatus = 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20';
+                    if (t.status === 'Atrasado') badgeStatus = 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20';
 
                     tbody.innerHTML += `
-                        <tr class="hover:bg-zinc-50/80 transition">
-                            <td class="p-4 pl-6 font-semibold text-zinc-900 flex items-center gap-3">
+                        <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
+                            <td class="p-4 pl-6 font-semibold text-zinc-900 dark:text-white flex items-center gap-3">
                                 <span class="w-3.5 h-3.5 rounded-full inline-block shrink-0 shadow-xs" style="background-color: ${clienteCor};"></span>
                                 ${clienteNome}
                             </td>
-                            <td class="p-4 text-zinc-900 font-semibold">${t.description}</td>
+                            <td class="p-4 text-zinc-900 dark:text-white font-semibold">${t.description}</td>
                             <td class="p-4 text-zinc-400 font-medium">${dataFormatada}</td>
-                            <td class="p-4 text-zinc-700 font-bold">${valorFormatado}</td>
+                            <td class="p-4 text-zinc-700 dark:text-zinc-300 font-bold">${valorFormatado}</td>
                             <td class="p-4"><span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${badgeStatus}">${t.status}</span></td>
                             <td class="p-4 pr-6 text-right space-x-2">
-                                ${t.status !== 'Pago' ? `<button onclick="marcarComoPago('${t.id}')" class="text-emerald-600 hover:underline font-semibold transition">Receber</button>` : ''}
+                                ${t.status !== 'Pago' ? `<button onclick="marcarComoPago('${t.id}')" class="text-emerald-600 dark:text-emerald-400 hover:underline font-semibold transition">Receber</button>` : ''}
                                 <button onclick="deletarTransacao('${t.id}')" class="text-rose-500 hover:text-rose-700 font-semibold transition">Excluir</button>
                             </td>
                         </tr>
@@ -1426,9 +1470,9 @@
                 container.innerHTML += `
                     <div class="py-2.5 flex items-center justify-between">
                         <div>
-                            <span class="font-semibold text-zinc-900">${piece.title}</span> <span class="text-zinc-400 font-medium">(${piece.piece_type || piece.platform || 'Post'})</span>
+                            <span class="font-semibold text-zinc-900 dark:text-white">${piece.title}</span> <span class="text-zinc-400 font-medium">(${piece.piece_type || piece.platform || 'Post'})</span>
                         </div>
-                        ${piece.feed_preview_url || piece.media_url ? `<a href="${piece.feed_preview_url || piece.media_url}" target="_blank" class="text-indigo-600 hover:underline font-semibold">Ver Arquivo</a>` : '<span class="text-zinc-400">Sem anexo</span>'}
+                        ${piece.feed_preview_url || piece.media_url ? `<a href="${piece.feed_preview_url || piece.media_url}" target="_blank" class="text-indigo-600 dark:text-indigo-400 hover:underline font-semibold">Ver Arquivo</a>` : '<span class="text-zinc-400">Sem anexo</span>'}
                     </div>
                 `;
             });
@@ -1481,12 +1525,12 @@
             const text = input.value.trim();
             if (!text) return;
 
-            messages.innerHTML += `<div class="bg-zinc-900 text-white p-3.5 rounded-2xl max-w-[85%] self-end font-medium shadow-2xs">${text}</div>`;
+            messages.innerHTML += `<div class="bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 p-3.5 rounded-2xl max-w-[85%] self-end font-medium shadow-2xs">${text}</div>`;
             input.value = '';
             messages.scrollTop = messages.scrollHeight;
 
             const loadingId = 'loading-' + Date.now();
-            messages.innerHTML += `<div id="${loadingId}" class="bg-white border border-zinc-200 text-zinc-400 p-3.5 rounded-2xl max-w-[85%] self-start shadow-2xs font-medium">IA pensando...</div>`;
+            messages.innerHTML += `<div id="${loadingId}" class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 text-zinc-400 p-3.5 rounded-2xl max-w-[85%] self-start shadow-2xs font-medium">IA pensando...</div>`;
             messages.scrollTop = messages.scrollHeight;
 
             try {
@@ -1500,16 +1544,16 @@
                 document.getElementById(loadingId).remove();
 
                 if (data.reply) {
-                    messages.innerHTML += `<div class="bg-white border border-zinc-200 text-zinc-700 p-3.5 rounded-2xl max-w-[85%] self-start shadow-2xs font-medium whitespace-pre-line">${data.reply}</div>`;
+                    messages.innerHTML += `<div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 p-3.5 rounded-2xl max-w-[85%] self-start shadow-2xs font-medium whitespace-pre-line">${data.reply}</div>`;
                     chatHistory.push({ role: 'user', text });
                     chatHistory.push({ role: 'assistant', text: data.reply });
                     carregarDados(); carregarContratos(); carregarFinanceiro(); carregarPlanos(); carregarTodasPecas();
                 } else {
-                    messages.innerHTML += `<div class="bg-white border border-zinc-200 text-rose-600 p-3.5 rounded-2xl max-w-[85%] self-start shadow-2xs font-medium">Erro: ${data.error || 'falha desconhecida'}</div>`;
+                    messages.innerHTML += `<div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 text-rose-500 p-3.5 rounded-2xl max-w-[85%] self-start shadow-2xs font-medium">Erro: ${data.error || 'falha desconhecida'}</div>`;
                 }
             } catch (err) {
                 document.getElementById(loadingId).remove();
-                messages.innerHTML += `<div class="bg-white border border-zinc-200 text-rose-600 p-3.5 rounded-2xl max-w-[85%] self-start shadow-sm font-medium">Erro de conexão com o Copiloto.</div>`;
+                messages.innerHTML += `<div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 text-rose-500 p-3.5 rounded-2xl max-w-[85%] self-start shadow-sm font-medium">Erro de conexão com o Copiloto.</div>`;
             }
             messages.scrollTop = messages.scrollHeight;
         }
