@@ -584,7 +584,7 @@
         </div>
     </div>
 
-    <!-- MODAL: Gerenciar Criativos (Atualizado) -->
+    <!-- MODAL: Gerenciar Criativos -->
     <div id="files-modal" class="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
         <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-xl p-6 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center">
@@ -688,10 +688,8 @@
         let chatHistory = [];
         let supabaseClient = null;
         let filtroPeriodoAtual = 'mes';
-        let listaPlanosGlobal = [];
         let modoCadastro = false;
 
-        // Controle do Calendário Visual
         let anoAtualCal = new Date().getFullYear();
         let mesAtualCal = new Date().getMonth();
         let dataSelecionadaCal = new Date().toISOString().split('T')[0];
@@ -1100,18 +1098,23 @@
 
             const { data: proj } = await supabaseClient.from('projects').select('title').eq('id', projectId).single();
             if (proj) {
-                await supabaseClient.from('content_pieces').insert([{
+                const { error } = await supabaseClient.from('content_pieces').insert([{
                     project_id: projectId,
                     title: proj.title,
                     piece_type: 'post',
                     status: 'approved',
                     scheduled_date: scheduledDate
                 }]);
+                if(error) {
+                    alert('Erro ao salvar na agenda: ' + error.message);
+                    return;
+                }
             }
 
             fecharModalAgendamento();
             carregarDados();
             renderizarCalendario();
+            carregarTodasPecas();
         }
 
         function fecharModalAgendamento() {
@@ -1226,21 +1229,39 @@
 
             if (fileInput.files.length > 0) {
                 const file = fileInput.files[0];
-                const fileName = `${Date.now()}_${file.name}`;
+                const fileName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+                
                 const { error: upErr } = await supabaseClient.storage.from('campaign-files').upload(fileName, file);
-                if (upErr) return alert('Erro: ' + upErr.message);
+                if (upErr) {
+                    alert('Erro no Storage: ' + upErr.message);
+                    return;
+                }
+                
                 const { data: pubData } = supabaseClient.storage.from('campaign-files').getPublicUrl(fileName);
                 mediaUrl = pubData.publicUrl;
             }
 
-            await supabaseClient.from('content_pieces').insert([{
-                project_id: projectId, title, piece_type: platform || 'post', feed_preview_url: mediaUrl, media_url: mediaUrl, status: 'approved', scheduled_date: scheduled_date || null
+            const { error: insertErr } = await supabaseClient.from('content_pieces').insert([{
+                project_id: projectId, 
+                title: title, 
+                piece_type: platform || 'post', 
+                feed_preview_url: mediaUrl, 
+                media_url: mediaUrl, 
+                status: 'approved', 
+                scheduled_date: scheduled_date || null
             }]);
 
-            alert('Peça salva e agendada!');
+            if (insertErr) {
+                alert('Erro ao salvar peça no banco: ' + insertErr.message);
+                return;
+            }
+
+            alert('Peça salva com sucesso!');
             document.getElementById('piece-title').value = '';
+            document.getElementById('piece-platform').value = '';
             document.getElementById('piece-scheduled-date').value = '';
             fileInput.value = '';
+            
             carregarPecasProjetoModal(projectId);
             renderizarCalendario();
             carregarTodasPecas();
