@@ -584,20 +584,29 @@
         </div>
     </div>
 
-    <!-- MODAL: Gerenciar Arquivos / Peças -->
+    <!-- MODAL: Gerenciar Criativos (Atualizado) -->
     <div id="files-modal" class="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-xl p-6 shadow-2xl space-y-5">
+        <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-xl p-6 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center">
                 <div>
-                    <h3 class="font-bold text-base text-zinc-900 dark:text-white">Peças e Criativos da Campanha</h3>
+                    <h3 class="font-bold text-base text-zinc-900 dark:text-white">Gerenciar Criativos da Campanha</h3>
                     <p id="files-project-title" class="text-xs text-zinc-400">Projeto selecionado</p>
                 </div>
                 <button onclick="closeModal('files-modal')" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">✕</button>
             </div>
             <input type="hidden" id="current-file-project-id">
 
+            <!-- Lista de Criativos Já Cadastrados -->
+            <div class="space-y-2">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">Criativos Vinculados</h4>
+                <div id="pieces-list-container" class="divide-y divide-zinc-100 dark:divide-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-3 bg-zinc-50 dark:bg-zinc-900/50 max-h-48 overflow-y-auto">
+                    <p class="text-zinc-400 text-center py-4 text-xs">Carregando criativos...</p>
+                </div>
+            </div>
+
+            <!-- Seção para Adicionar Novo Criativo -->
             <div class="bg-zinc-50 dark:bg-zinc-900 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 space-y-3">
-                <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">Enviar Nova Peça (Reels, Story, Arte)</h4>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">+ Adicionar Novo Criativo</h4>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <input type="text" id="piece-title" placeholder="Título (ex: Reels Bastidores 01)" class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
                     <input type="text" id="piece-platform" placeholder="Formato (ex: Instagram / Reels)" class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
@@ -608,18 +617,11 @@
                         <input type="date" id="piece-scheduled-date" class="w-full bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold text-zinc-400 mb-1">Arquivo</label>
+                        <label class="block text-[10px] font-bold text-zinc-400 mb-1">Arquivo (Opcional)</label>
                         <input type="file" id="piece-file" class="w-full text-xs text-zinc-500 file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-[11px] file:font-medium file:bg-zinc-900 dark:file:bg-zinc-100 file:text-white dark:file:text-zinc-900 cursor-pointer">
                     </div>
                 </div>
-                <button onclick="uploadArquivoCampanha()" class="w-full py-2.5 bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white text-white text-xs font-medium rounded-xl transition shadow-md">Fazer Upload e Salvar Peça</button>
-            </div>
-
-            <div class="space-y-2">
-                <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">Criativos Vinculados</h4>
-                <div id="pieces-list-container" class="max-h-48 overflow-y-auto space-y-2 text-xs divide-y divide-zinc-100 dark:divide-zinc-800">
-                    <p class="text-zinc-400 text-center py-6">Selecione uma campanha para ver as peças.</p>
-                </div>
+                <button onclick="uploadArquivoCampanha()" class="w-full py-2.5 bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white text-white text-xs font-medium rounded-xl transition shadow-md">Salvar e Vincular Criativo</button>
             </div>
         </div>
     </div>
@@ -856,7 +858,6 @@
             const primeiroDiaDoMes = new Date(anoAtualCal, mesAtualCal, 1).getDay();
             const ultimoDiaDoMes = new Date(anoAtualCal, mesAtualCal + 1, 0).getDate();
 
-            // Buscar peças agendadas e tarefas do mês
             const inicioMesStr = `${anoAtualCal}-${String(mesAtualCal + 1).padStart(2, '0')}-01`;
             const fimMesStr = `${anoAtualCal}-${String(mesAtualCal + 1).padStart(2, '0')}-${ultimoDiaDoMes}`;
 
@@ -865,12 +866,10 @@
 
             grid.innerHTML = '';
 
-            // Espaços vazios iniciais
             for (let i = 0; i < primeiroDiaDoMes; i++) {
                 grid.innerHTML += `<div class="bg-zinc-50/50 dark:bg-zinc-900/20 rounded-xl min-h-[90px] opacity-30"></div>`;
             }
 
-            // Dias do mês
             for (let dia = 1; dia <= ultimoDiaDoMes; dia++) {
                 const diaStr = String(dia).padStart(2, '0');
                 const mesStr = String(mesAtualCal + 1).padStart(2, '0');
@@ -930,7 +929,6 @@
             const partes = dataSelecionadaCal.split('-');
             titleEl.innerHTML = `<span>📅 Itens para o dia ${partes[2]}/${partes[1]}/${partes[0]}</span>`;
 
-            // Posts
             const { data: pecas } = await supabaseClient.from('content_pieces').select('*, projects(title, clients(name))').eq('scheduled_date', dataSelecionadaCal);
             if (!pecas || pecas.length === 0) {
                 containerPosts.innerHTML = `<p class="text-xs text-zinc-400">Nenhum post agendado para esta data.</p>`;
@@ -949,7 +947,6 @@
                 });
             }
 
-            // Tarefas
             const { data: tarefas } = await supabaseClient.from('agenda_tasks').select('*').eq('task_date', dataSelecionadaCal);
             if (!tarefas || tarefas.length === 0) {
                 containerTasks.innerHTML = `<p class="text-xs text-zinc-400">Nenhuma tarefa para esta data.</p>`;
@@ -1085,15 +1082,13 @@
             const projectId = event.dataTransfer.getData('text/plain');
             if (!projectId) return;
 
-            // Se for movido para "Programado", abre o modal limpo pedindo APENAS a data
+            await supabaseClient.from('projects').update({ status: novoStatus }).eq('id', projectId);
+
             if (novoStatus === 'Programado') {
                 document.getElementById('schedule-project-id').value = projectId;
                 document.getElementById('schedule-date-input').value = new Date().toISOString().split('T')[0];
                 document.getElementById('schedule-modal').style.display = 'flex';
-                // Atualiza provisoriamente o status no banco
-                await supabaseClient.from('projects').update({ status: novoStatus }).eq('id', projectId);
             } else {
-                await supabaseClient.from('projects').update({ status: novoStatus }).eq('id', projectId);
                 carregarDados();
             }
         }
@@ -1103,7 +1098,6 @@
             const scheduledDate = document.getElementById('schedule-date-input').value;
             if(!scheduledDate) return alert('Informe a data.');
 
-            // Cria automaticamente uma peça vinculada com o título da campanha e a data exata
             const { data: proj } = await supabaseClient.from('projects').select('title').eq('id', projectId).single();
             if (proj) {
                 await supabaseClient.from('content_pieces').insert([{
@@ -1189,16 +1183,35 @@
         async function carregarPecasProjetoModal(projectId) {
             const container = document.getElementById('pieces-list-container');
             const { data } = await supabaseClient.from('content_pieces').select('*').eq('project_id', projectId);
-            if (!data || data.length === 0) { container.innerHTML = `<p class="text-zinc-400 text-center py-6">Nenhum criativo.</p>`; return; }
+            
+            if (!data || data.length === 0) {
+                container.innerHTML = `<p class="text-zinc-400 text-center py-4 text-xs">Nenhum criativo cadastrado para esta campanha.</p>`;
+                return;
+            }
+            
             container.innerHTML = '';
             data.forEach(p => {
                 container.innerHTML += `
-                    <div class="py-2.5 flex items-center justify-between">
-                        <span class="font-semibold">${p.title} (${p.scheduled_date || 'Sem data'})</span>
-                        ${p.media_url ? `<a href="${p.media_url}" target="_blank" class="text-indigo-400 font-semibold">Ver Arquivo</a>` : ''}
+                    <div class="py-2.5 px-2 flex items-center justify-between text-xs">
+                        <div>
+                            <span class="font-bold text-zinc-900 dark:text-white block">${p.title}</span>
+                            <span class="text-zinc-400 text-[10px] uppercase font-semibold">Formato: ${p.piece_type || 'Post'} | Data: ${p.scheduled_date || 'Não definida'}</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            ${p.media_url ? `<a href="${p.media_url}" target="_blank" class="text-indigo-400 font-semibold hover:underline">Ver Mídia</a>` : ''}
+                            <button onclick="deletarPecaDeDentroDoModal('${p.id}', '${projectId}')" class="text-rose-500 hover:text-rose-700 font-medium">Excluir</button>
+                        </div>
                     </div>
                 `;
             });
+        }
+
+        async function deletarPecaDeDentroDoModal(pecaId, projectId) {
+            if(!confirm('Deseja excluir este criativo?')) return;
+            await supabaseClient.from('content_pieces').delete().eq('id', pecaId);
+            carregarPecasProjetoModal(projectId);
+            renderizarCalendario();
+            carregarTodasPecas();
         }
 
         async function uploadArquivoCampanha() {
@@ -1230,9 +1243,9 @@
             fileInput.value = '';
             carregarPecasProjetoModal(projectId);
             renderizarCalendario();
+            carregarTodasPecas();
         }
 
-        // DEMAIS FUNÇÕES (Financeiro, Contratos, Planos, Chat)
         async function carregarTodasPecas() {
             const tbody = document.getElementById('pieces-table-body');
             if(!tbody) return;
