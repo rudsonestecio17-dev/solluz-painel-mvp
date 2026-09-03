@@ -937,49 +937,62 @@
         }
 
         async function carregarDetalhesDiaSelecionado() {
-            const titleEl = document.getElementById('selected-date-title');
-            const containerPosts = document.getElementById('day-posts-container');
-            const containerTasks = document.getElementById('day-tasks-container');
+    const titleEl = document.getElementById('selected-date-title');
+    const containerPosts = document.getElementById('day-posts-container');
+    const containerTasks = document.getElementById('day-tasks-container');
 
-            const partes = dataSelecionadaCal.split('-');
-            titleEl.innerHTML = `<span>📅 Itens para o dia ${partes[2]}/${partes[1]}/${partes[0]}</span>`;
+    const partes = dataSelecionadaCal.split('-');
+    titleEl.innerHTML = `<span>📅 Itens para o dia ${partes[2]}/${partes[1]}/${partes[0]}</span>`;
 
-            const { data: pecas } = await supabaseClient.from('content_pieces').select('*, projects(title, clients(name))').eq('scheduled_date', dataSelecionadaCal);
-            if (!pecas || pecas.length === 0) {
-                containerPosts.innerHTML = `<p class="text-xs text-zinc-400">Nenhum post agendado para esta data.</p>`;
-            } else {
-                containerPosts.innerHTML = '';
-                pecas.forEach(p => {
-                    containerPosts.innerHTML += `
-                        <div class="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl flex items-center justify-between text-xs">
-                            <div>
-                                <span class="font-bold text-zinc-900 dark:text-white">${p.title}</span>
-                                <span class="text-zinc-400 block text-[10px]">${p.projects?.title || 'Campanha'} — <strong class="uppercase">${p.piece_type || 'Post'}</strong></span>
-                            </div>
-                            ${p.media_url ? `<a href="${p.media_url}" target="_blank" class="text-indigo-400 font-semibold text-[11px] hover:underline">Ver</a>` : ''}
-                        </div>
-                    `;
-                });
-            }
+    const { data: pecas } = await supabaseClient
+        .from('content_pieces')
+        .select('*, projects(title, clients(name))')
+        .eq('scheduled_date', dataSelecionadaCal);
 
-            const { data: tarefas } = await supabaseClient.from('agenda_tasks').select('*').eq('task_date', dataSelecionadaCal);
-            if (!tarefas || tarefas.length === 0) {
-                containerTasks.innerHTML = `<p class="text-xs text-zinc-400">Nenhuma tarefa para esta data.</p>`;
-            } else {
-                containerTasks.innerHTML = '';
-                tarefas.forEach(t => {
-                    containerTasks.innerHTML += `
-                        <div class="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl flex items-center justify-between text-xs">
-                            <div class="flex items-center gap-2">
-                                <input type="checkbox" ${t.status === 'Concluída' ? 'checked' : ''} onchange="alternarStatusTarefa('${t.id}', this.checked)" class="w-3.5 h-3.5 rounded cursor-pointer">
-                                <span class="font-semibold text-zinc-900 dark:text-white ${t.status === 'Concluída' ? 'line-through text-zinc-400' : ''}">${t.title}</span>
-                            </div>
-                            <button onclick="deletarTarefa('${t.id}')" class="text-rose-500 font-medium text-[11px]">Excluir</button>
-                        </div>
-                    `;
-                });
-            }
-        }
+    if (!pecas || pecas.length === 0) {
+        containerPosts.innerHTML = `<p class="text-xs text-zinc-400">Nenhum post agendado para esta data.</p>`;
+    } else {
+        containerPosts.innerHTML = '';
+        pecas.forEach(p => {
+            const temMidia = p.media_url ? true : false;
+            containerPosts.innerHTML += `
+                <div class="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3 rounded-xl flex items-center justify-between text-xs transition hover:border-zinc-400">
+                    <div class="space-y-1">
+                        <span class="font-bold text-zinc-900 dark:text-white block text-sm">${p.title}</span>
+                        <span class="text-zinc-400 block text-[11px]">Campanha: <strong class="text-zinc-700 dark:text-zinc-300">${p.projects?.title || 'Geral'}</strong> — Formato: <span class="uppercase font-semibold">${p.piece_type || 'Post'}</span></span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        ${temMidia ? `
+                            <a href="${p.media_url}" target="_blank" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-medium text-xs shadow-xs transition flex items-center gap-1.5">
+                                <span>Ver Mídia ↗</span>
+                            </a>
+                        ` : `
+                            <span class="text-[10px] text-zinc-500 bg-zinc-200 dark:bg-zinc-800 px-2 py-1 rounded-lg">Sem arquivo</span>
+                        `}
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    const { data: tarefas } = await supabaseClient.from('agenda_tasks').select('*').eq('task_date', dataSelecionadaCal);
+    if (!tarefas || tarefas.length === 0) {
+        containerTasks.innerHTML = `<p class="text-xs text-zinc-400">Nenhuma tarefa para esta data.</p>`;
+    } else {
+        containerTasks.innerHTML = '';
+        tarefas.forEach(t => {
+            containerTasks.innerHTML += `
+                <div class="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-2.5 rounded-xl flex items-center justify-between text-xs">
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" ${t.status === 'Concluída' ? 'checked' : ''} onchange="alternarStatusTarefa('${t.id}', this.checked)" class="w-3.5 h-3.5 rounded cursor-pointer">
+                        <span class="font-semibold text-zinc-900 dark:text-white ${t.status === 'Concluída' ? 'line-through text-zinc-400' : ''}">${t.title}</span>
+                    </div>
+                    <button onclick="deletarTarefa('${t.id}')" class="text-rose-500 font-medium text-[11px]">Excluir</button>
+                </div>
+            `;
+        });
+    }
+}
 
         async function salvarTarefaAgenda() {
             const title = document.getElementById('task-title').value.trim();
