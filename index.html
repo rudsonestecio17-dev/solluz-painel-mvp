@@ -11,13 +11,82 @@
             darkMode: 'class',
             theme: {
                 extend: {
+                    // Identidade "Livro de Registro": papel envelhecido (claro) / tinta carbono (escuro).
+                    // Reaproveita os nomes zinc/indigo/emerald/amber/rose já usados na interface inteira,
+                    // então a troca de paleta se propaga automaticamente sem reescrever cada elemento.
                     colors: {
-                        dark: {
-                            bg: '#121214',
-                            card: '#1a1a1e',
-                            border: '#27272a',
-                            hover: '#27272a'
+                        zinc: {
+                            50:  '#F7F3E8',
+                            100: '#EFE7D2',
+                            200: '#E1D6B8',
+                            300: '#C7B996',
+                            400: '#998C6E',
+                            500: '#73694F',
+                            600: '#564D38',
+                            700: '#3A342A',
+                            800: '#1E2226',
+                            900: '#14171B',
+                            950: '#0B0D0F'
+                        },
+                        indigo: {
+                            50:  '#EDF2F7',
+                            100: '#D9E4EE',
+                            200: '#B2C7DA',
+                            300: '#83A2BE',
+                            400: '#587D9E',
+                            500: '#2F5678',
+                            600: '#254560',
+                            700: '#1C3448',
+                            800: '#142534',
+                            900: '#0D1922'
+                        },
+                        emerald: {
+                            300: '#A9BF9C',
+                            400: '#87A177',
+                            500: '#5E7A4E',
+                            600: '#4A6140'
+                        },
+                        amber: {
+                            300: '#D9BE85',
+                            400: '#BE9A54',
+                            500: '#9C7A38',
+                            600: '#7D612C'
+                        },
+                        rose: {
+                            300: '#D9A79C',
+                            400: '#C17A6A',
+                            500: '#A24435',
+                            600: '#82372B'
+                        },
+                        // Acento único e deliberado: tinta de carimbo. Usado com moderação.
+                        stamp: {
+                            50:  '#FBEDEA',
+                            100: '#F3D2CB',
+                            300: '#D98A76',
+                            400: '#C25C43',
+                            500: '#A63F27',
+                            600: '#872F1D',
+                            700: '#6B2417'
                         }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Fraunces', 'serif'],
+                        mono: ['"IBM Plex Mono"', 'monospace']
+                    },
+                    borderRadius: {
+                        'xl': '4px',
+                        '2xl': '6px',
+                        '3xl': '10px'
+                    },
+                    boxShadow: {
+                        '2xs': '0 1px 0 rgba(20,17,10,0.05)',
+                        'xs':  '0 1px 0 rgba(20,17,10,0.08)',
+                        'sm':  '1px 1px 0 rgba(20,17,10,0.10)',
+                        'md':  '2px 2px 0 rgba(20,17,10,0.12)',
+                        'lg':  '3px 3px 0 rgba(20,17,10,0.14)',
+                        'xl':  '4px 4px 0 rgba(20,17,10,0.16)',
+                        '2xl': '6px 6px 0 rgba(20,17,10,0.20)'
                     }
                 }
             }
@@ -25,29 +94,67 @@
     </script>
     <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Google Fonts Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Fraunces (títulos/wordmark) + Inter (interface) + IBM Plex Mono (dados/valores) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-display { font-family: 'Fraunces', serif; font-feature-settings: "ss01"; }
+
         .kanban-col { min-height: 580px; transition: all 0.25s ease; }
-        .kanban-col.drag-over { background-color: rgba(39, 39, 42, 0.5); border-color: #52525b; transform: scale(1.01); }
+        .kanban-col.drag-over { background-color: rgba(166, 63, 39, 0.06); border-color: #A63F27; transform: scale(1.01); }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #52525b; }
+        ::-webkit-scrollbar-thumb { background: #C7B996; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb { background: #3A342A; }
+        ::-webkit-scrollbar-thumb:hover { background: #A63F27; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+
+        /* Marca: selo/carimbo oficial, o único elemento de cor forte e recorrente do sistema */
+        .selo-aval {
+            position: relative;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 9999px;
+            border: 1.5px dashed #A63F27;
+            color: #A63F27;
+            transform: rotate(-7deg);
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            background: transparent;
+        }
+        .selo-aval::before {
+            content: '';
+            position: absolute; inset: 3px;
+            border-radius: 9999px;
+            border: 1px solid #A63F27;
+            opacity: 0.55;
+        }
+
+        /* Padrão de guilhoché sutil (estilo papel de segurança / cédula), só na tela de login */
+        .fundo-guilhoche {
+            background-image: repeating-linear-gradient(115deg, rgba(166,63,39,0.06) 0px, rgba(166,63,39,0.06) 1px, transparent 1px, transparent 10px);
+        }
+
+        /* Selo de status "Aprovado" — o carimbo literal do fluxo de trabalho */
+        .badge-carimbo {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 2px 9px 2px 8px;
+            border-radius: 9999px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px; font-weight: 500; letter-spacing: 0.01em;
+            transform: rotate(-2deg);
+        }
     </style>
 </head>
 <body class="bg-zinc-50 dark:bg-[#121214] text-zinc-900 dark:text-zinc-100 antialiased min-h-screen flex h-screen overflow-hidden transition-colors duration-200">
 
     <!-- TELA DE LOGIN / CADASTRO -->
-    <div id="login-screen" class="fixed inset-0 bg-zinc-900/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-8 shadow-2xl space-y-6">
-            <div class="flex flex-col items-center text-center space-y-2">
-                <div class="w-14 h-14 rounded-2xl bg-zinc-900 dark:bg-zinc-800 flex items-center justify-center text-white shadow-lg mb-2">
-                    <span class="w-4 h-4 rounded-full bg-emerald-400 animate-pulse"></span>
-                </div>
-                <h1 id="auth-title" class="font-bold text-xl tracking-tight text-zinc-900 dark:text-white">MEU AVAL</h1>
+    <div id="login-screen" class="fixed inset-0 bg-zinc-900 dark:bg-zinc-950 fundo-guilhoche z-50 flex items-center justify-center p-4">
+        <div class="bg-zinc-50 dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-8 shadow-2xl space-y-6">
+            <div class="flex flex-col items-center text-center space-y-3">
+                <div class="selo-aval w-16 h-16 text-sm mb-1">AVAL</div>
+                <h1 id="auth-title" class="font-display text-2xl tracking-tight text-zinc-900 dark:text-white">Meu Aval</h1>
                 <p id="auth-subtitle" class="text-xs text-zinc-500 dark:text-zinc-400">Faça login para gerenciar suas redes sociais</p>
             </div>
 
@@ -81,12 +188,10 @@
     <aside class="w-72 bg-white dark:bg-[#1a1a1e] border-r border-zinc-200 dark:border-zinc-800/80 flex flex-col justify-between z-30 transition-colors duration-200 shadow-sm">
         <div class="p-6 overflow-y-auto space-y-6">
             <div class="flex items-center space-x-3 px-1">
-                <div class="w-9 h-9 rounded-xl bg-zinc-900 dark:bg-zinc-800 flex items-center justify-center text-white shadow-md">
-                    <span class="w-3 h-3 rounded-full bg-emerald-400"></span>
-                </div>
+                <div class="selo-aval w-10 h-10 text-[9px] shrink-0">AVAL</div>
                 <div>
-                    <h1 class="font-bold text-sm tracking-tight text-zinc-900 dark:text-white">MEU AVAL</h1>
-                    <p class="text-[10px] text-zinc-400 font-medium tracking-wide uppercase">Gestão de Mídia & Social</p>
+                    <h1 class="font-display text-base tracking-tight text-zinc-900 dark:text-white">Meu Aval</h1>
+                    <p class="text-[10px] text-zinc-400 font-medium">Gestão de mídia & social</p>
                 </div>
             </div>
             <nav class="space-y-1">
@@ -108,7 +213,7 @@
 
                 <!-- Grupo Comercial & Gestão -->
                 <div class="pt-5 pb-2 px-1">
-                    <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Comercial & Gestão</span>
+                    <span class="text-[11px] font-medium text-zinc-400">Comercial & gestão</span>
                 </div>
                 <button onclick="mudarAba('comercial')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white transition tab-btn flex items-center gap-3 pl-5" data-tab="comercial">
                     <span class="text-sm">📝</span> Planos & Contratos
@@ -173,7 +278,7 @@
                     <!-- Coluna: Planejamento -->
                     <div id="col-planejamento" class="kanban-col bg-zinc-100/60 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-3 flex flex-col gap-3" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Planejamento')">
                         <div class="flex items-center justify-between px-1">
-                            <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-500">Planejamento</span>
+                            <span class="text-[11px] font-semibold text-zinc-500">Planejamento</span>
                             <span id="count-planejamento" class="text-[10px] font-bold bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 px-2 py-0.5 rounded-full">0</span>
                         </div>
                         <div class="space-y-3 overflow-y-auto flex-1"></div>
@@ -181,7 +286,7 @@
                     <!-- Coluna: Em Execução -->
                     <div id="col-em-execucao" class="kanban-col bg-zinc-100/60 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-3 flex flex-col gap-3" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Em execução')">
                         <div class="flex items-center justify-between px-1">
-                            <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-500">Em Produção</span>
+                            <span class="text-[11px] font-semibold text-zinc-500">Em produção</span>
                             <span id="count-em-execucao" class="text-[10px] font-bold bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 px-2 py-0.5 rounded-full">0</span>
                         </div>
                         <div class="space-y-3 overflow-y-auto flex-1"></div>
@@ -189,7 +294,7 @@
                     <!-- Coluna: Em Validação -->
                     <div id="col-em-validacao" class="kanban-col bg-zinc-100/60 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-3 flex flex-col gap-3" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Em Validação')">
                         <div class="flex items-center justify-between px-1">
-                            <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-500">Em Validação</span>
+                            <span class="text-[11px] font-semibold text-zinc-500">Em validação</span>
                             <span id="count-em-validacao" class="text-[10px] font-bold bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 px-2 py-0.5 rounded-full">0</span>
                         </div>
                         <div class="space-y-3 overflow-y-auto flex-1"></div>
@@ -197,7 +302,7 @@
                     <!-- Coluna: Aprovado -->
                     <div id="col-aprovado" class="kanban-col bg-zinc-100/60 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-3 flex flex-col gap-3" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Aprovado')">
                         <div class="flex items-center justify-between px-1">
-                            <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-500">Aprovado</span>
+                            <span class="text-[11px] font-semibold text-stamp-500 dark:text-stamp-400">Aprovado</span>
                             <span id="count-aprovado" class="text-[10px] font-bold bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 px-2 py-0.5 rounded-full">0</span>
                         </div>
                         <div class="space-y-3 overflow-y-auto flex-1"></div>
@@ -205,7 +310,7 @@
                     <!-- Coluna: Programado -->
                     <div id="col-programado" class="kanban-col bg-zinc-100/60 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-3 flex flex-col gap-3" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Programado')">
                         <div class="flex items-center justify-between px-1">
-                            <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-500">Programado</span>
+                            <span class="text-[11px] font-semibold text-zinc-500">Programado</span>
                             <span id="count-programado" class="text-[10px] font-bold bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 px-2 py-0.5 rounded-full">0</span>
                         </div>
                         <div class="space-y-3 overflow-y-auto flex-1"></div>
@@ -213,7 +318,7 @@
                     <!-- Coluna: Concluído -->
                     <div id="col-concluido" class="kanban-col bg-zinc-100/60 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-3 flex flex-col gap-3" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Concluido')">
                         <div class="flex items-center justify-between px-1">
-                            <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-500">Concluído</span>
+                            <span class="text-[11px] font-semibold text-zinc-500">Concluído</span>
                             <span id="count-concluido" class="text-[10px] font-bold bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 px-2 py-0.5 rounded-full">0</span>
                         </div>
                         <div class="space-y-3 overflow-y-auto flex-1"></div>
@@ -253,13 +358,13 @@
                     </h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="space-y-2">
-                            <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">🎬 Publicações do Dia</span>
+                            <span class="text-xs font-semibold text-indigo-600 dark:text-indigo-400">🎬 Publicações do dia</span>
                             <div id="day-posts-container" class="space-y-2 max-h-48 overflow-y-auto">
                                 <p class="text-xs text-zinc-400 py-4">Nenhum post agendado.</p>
                             </div>
                         </div>
                         <div class="space-y-2">
-                            <span class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">📝 Tarefas do Dia</span>
+                            <span class="text-xs font-semibold text-emerald-600 dark:text-emerald-400">📝 Tarefas do dia</span>
                             <div id="day-tasks-container" class="space-y-2 max-h-48 overflow-y-auto">
                                 <p class="text-xs text-zinc-400 py-4">Nenhuma tarefa.</p>
                             </div>
@@ -338,26 +443,26 @@
                 <!-- Cards de Indicadores (KPIs) -->
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div class="bg-white dark:bg-[#1a1a1e] p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-1 transition-colors">
-                        <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Total Entradas (Receitas)</span>
+                        <span class="text-[11px] font-medium text-zinc-400">Total de entradas (receitas)</span>
                         <h3 id="kpi-recebido" class="text-xl font-bold text-emerald-600 dark:text-emerald-400 tracking-tight">R$ 0,00</h3>
                     </div>
                     <div class="bg-white dark:bg-[#1a1a1e] p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-1 transition-colors">
-                        <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Custos com Funcionários</span>
+                        <span class="text-[11px] font-medium text-zinc-400">Custos com funcionários</span>
                         <h3 id="kpi-funcionarios" class="text-xl font-bold text-amber-600 dark:text-amber-400 tracking-tight">R$ 0,00</h3>
                     </div>
                     <div class="bg-white dark:bg-[#1a1a1e] p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-1 transition-colors">
-                        <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Despesas Operacionais</span>
+                        <span class="text-[11px] font-medium text-zinc-400">Despesas operacionais</span>
                         <h3 id="kpi-despesas" class="text-xl font-bold text-rose-600 dark:text-rose-400 tracking-tight">R$ 0,00</h3>
                     </div>
                     <div class="bg-white dark:bg-[#1a1a1e] p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-1 transition-colors border-l-4 border-l-indigo-500">
-                        <span class="text-[11px] font-bold uppercase tracking-wider text-indigo-500">Lucro Líquido (Balanço)</span>
+                        <span class="text-[11px] font-medium text-indigo-600 dark:text-indigo-400">Lucro líquido (balanço)</span>
                         <h3 id="kpi-lucro" class="text-xl font-bold text-zinc-900 dark:text-white tracking-tight">R$ 0,00</h3>
                     </div>
                 </div>
 
                 <!-- SEÇÃO 1: ENTRADAS -->
                 <div id="container-tabela-entradas" class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xs overflow-hidden transition-colors">
-                    <div class="p-4 border-b border-zinc-100 dark:border-zinc-800 font-bold text-xs uppercase tracking-wider text-zinc-500">Recebimentos de Clientes & Faturas</div>
+                    <div class="p-4 border-b border-zinc-100 dark:border-zinc-800 font-display font-semibold text-sm text-zinc-700 dark:text-zinc-200">Recebimentos de clientes & faturas</div>
                     <table class="w-full text-left text-sm">
                         <thead class="bg-zinc-50 dark:bg-zinc-900/50 border-b border-zinc-200 dark:border-zinc-800 text-zinc-400 font-semibold text-[11px] uppercase tracking-wider">
                             <tr>
@@ -377,7 +482,7 @@
 
                 <!-- SEÇÃO 2: FUNCIONÁRIOS -->
                 <div id="container-tabela-funcionarios" class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xs overflow-hidden transition-colors hidden">
-                    <div class="p-4 border-b border-zinc-100 dark:border-zinc-800 font-bold text-xs uppercase tracking-wider text-zinc-500">Gestão de Salários, Pró-labore & Freelancers</div>
+                    <div class="p-4 border-b border-zinc-100 dark:border-zinc-800 font-display font-semibold text-sm text-zinc-700 dark:text-zinc-200">Gestão de salários, pró-labore & freelancers</div>
                     <table class="w-full text-left text-sm">
                         <thead class="bg-zinc-50 dark:bg-zinc-900/50 border-b border-zinc-200 dark:border-zinc-800 text-zinc-400 font-semibold text-[11px] uppercase tracking-wider">
                             <tr>
@@ -397,7 +502,7 @@
 
                 <!-- SEÇÃO 3: DESPESAS OPERACIONAIS -->
                 <div id="container-tabela-despesas" class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xs overflow-hidden transition-colors hidden">
-                    <div class="p-4 border-b border-zinc-100 dark:border-zinc-800 font-bold text-xs uppercase tracking-wider text-zinc-500">Custos Operacionais & Ferramentas</div>
+                    <div class="p-4 border-b border-zinc-100 dark:border-zinc-800 font-display font-semibold text-sm text-zinc-700 dark:text-zinc-200">Custos operacionais & ferramentas</div>
                     <table class="w-full text-left text-sm">
                         <thead class="bg-zinc-50 dark:bg-zinc-900/50 border-b border-zinc-200 dark:border-zinc-800 text-zinc-400 font-semibold text-[11px] uppercase tracking-wider">
                             <tr>
@@ -749,7 +854,7 @@
 
             <!-- Lista de Criativos Já Cadastrados -->
             <div class="space-y-2">
-                <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">Criativos Vinculados</h4>
+                <h4 class="text-xs font-semibold text-zinc-600 dark:text-zinc-400">Criativos vinculados</h4>
                 <div id="pieces-list-container" class="divide-y divide-zinc-100 dark:divide-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-3 bg-zinc-50 dark:bg-zinc-900/50 max-h-48 overflow-y-auto">
                     <p class="text-zinc-400 text-center py-4 text-xs">Carregando criativos...</p>
                 </div>
@@ -757,7 +862,7 @@
 
             <!-- Seção para Adicionar Novo Criativo -->
             <div class="bg-zinc-50 dark:bg-zinc-900 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 space-y-3">
-                <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">+ Adicionar Novo Criativo</h4>
+                <h4 class="text-xs font-semibold text-zinc-600 dark:text-zinc-400">+ Adicionar novo criativo</h4>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <input type="text" id="piece-title" placeholder="Título (ex: Reels Bastidores 01)" class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
                     <input type="text" id="piece-platform" placeholder="Formato (ex: Instagram / Reels)" class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
@@ -1158,7 +1263,7 @@
                             <td class="p-4 pl-6 font-semibold">${escapeHtml(t.clients?.name || 'Geral')}</td>
                             <td class="p-4">${escapeHtml(t.description)}</td>
                             <td class="p-4">${escapeHtml(t.due_date || '-')}</td>
-                            <td class="p-4 font-bold">R$ ${val.toFixed(2)}</td>
+                            <td class="p-4 font-mono font-semibold">R$ ${val.toFixed(2)}</td>
                             <td class="p-4"><span class="px-2.5 py-0.5 rounded text-[10px] font-bold ${t.status === 'Pago' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/15 text-amber-500'}">${escapeHtml(t.status)}</span></td>
                             <td class="p-4 pr-6 text-right"><button onclick="deletarTransacao('${t.id}')" class="text-rose-500 text-xs">Excluir</button></td>
                         </tr>
@@ -1182,7 +1287,7 @@
                             <td class="p-4 pl-6 font-semibold">${escapeHtml(e.name)}</td>
                             <td class="p-4">${escapeHtml(e.department || '-')}</td>
                             <td class="p-4 uppercase text-[10px] font-bold">${escapeHtml(e.role_type)}</td>
-                            <td class="p-4 font-bold text-amber-600 dark:text-amber-400">R$ ${val.toFixed(2)}</td>
+                            <td class="p-4 font-mono font-semibold text-amber-600 dark:text-amber-400">R$ ${val.toFixed(2)}</td>
                             <td class="p-4">Dia ${escapeHtml(e.due_day || 5)}</td>
                             <td class="p-4 pr-6 text-right"><button onclick="deletarFuncionario('${e.id}')" class="text-rose-500 text-xs">Excluir</button></td>
                         </tr>
@@ -1206,7 +1311,7 @@
                             <td class="p-4 pl-6 font-semibold">${escapeHtml(ex.description)}</td>
                             <td class="p-4">${escapeHtml(ex.category || '-')}</td>
                             <td class="p-4">${escapeHtml(ex.due_date || '-')}</td>
-                            <td class="p-4 font-bold text-rose-600 dark:text-rose-400">R$ ${val.toFixed(2)}</td>
+                            <td class="p-4 font-mono font-semibold text-rose-600 dark:text-rose-400">R$ ${val.toFixed(2)}</td>
                             <td class="p-4"><span class="px-2.5 py-0.5 rounded text-[10px] font-bold ${ex.status === 'Pago' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/15 text-amber-500'}">${escapeHtml(ex.status)}</span></td>
                             <td class="p-4 pr-6 text-right"><button onclick="deletarDespesa('${ex.id}')" class="text-rose-500 text-xs">Excluir</button></td>
                         </tr>
@@ -1735,12 +1840,12 @@
 
             data.forEach(p => {
                 const statusAprovacao = p.approval_status || 'Pendente';
-                let badgeHtml = `<span class="px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-500 rounded-md text-[10px] font-bold">Pendente</span>`;
+                let badgeHtml = `<span class="badge-carimbo border border-zinc-300 dark:border-zinc-700 text-zinc-500">pendente</span>`;
 
                 if (statusAprovacao === 'Aprovado') {
-                    badgeHtml = `<span class="px-2 py-0.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded-md text-[10px] font-bold">Aprovado ✓</span>`;
+                    badgeHtml = `<span class="badge-carimbo border-2 border-stamp-500 text-stamp-500 dark:border-stamp-400 dark:text-stamp-400">✓ aval dado</span>`;
                 } else if (statusAprovacao === 'Ajuste Solicitado') {
-                    badgeHtml = `<span class="px-2 py-0.5 bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 rounded-md text-[10px] font-bold">Ajuste Solicitado ⚠️</span>`;
+                    badgeHtml = `<span class="badge-carimbo border border-rose-400 text-rose-600 dark:text-rose-400">ajuste pedido</span>`;
                     totalAjustesPendentes++;
                 }
 
@@ -1788,7 +1893,7 @@
                         <td class="p-4 pl-6 font-semibold">${escapeHtml(c.clients?.name || 'Geral')}</td>
                         <td class="p-4 font-semibold">${escapeHtml(c.title)}</td>
                         <td class="p-4">${escapeHtml(c.type)}</td>
-                        <td class="p-4 font-bold">R$ ${Number(c.amount || 0).toFixed(2)}</td>
+                        <td class="p-4 font-mono font-semibold">R$ ${Number(c.amount || 0).toFixed(2)}</td>
                         <td class="p-4">${escapeHtml(c.status || 'Ativo')}</td>
                         <td class="p-4 pr-6 text-right"><button onclick="deletarContrato('${c.id}')" class="text-rose-500">Excluir</button></td>
                     </tr>
@@ -1827,7 +1932,7 @@
                 grid.innerHTML += `
                     <div class="bg-white dark:bg-[#1a1a1e] p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-4">
                         <h4 class="font-semibold text-sm">${escapeHtml(p.name)}</h4>
-                        <span class="text-sm font-bold block">R$ ${Number(p.price || 0).toFixed(2)}</span>
+                        <span class="text-sm font-mono font-semibold block">R$ ${Number(p.price || 0).toFixed(2)}</span>
                         <button onclick="deletarPlano('${p.id}')" class="text-xs text-rose-500 font-medium">Excluir</button>
                     </div>
                 `;
