@@ -1297,24 +1297,59 @@
             carregarTodasPecas();
         }
 
-        async function carregarTodasPecas() {
-            const tbody = document.getElementById('pieces-table-body');
-            if(!tbody) return;
-            const { data } = await supabaseClient.from('content_pieces').select('*, projects(title, clients(name))');
-            if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-zinc-400">Nenhuma peça cadastrada.</td></tr>`; return; }
-            tbody.innerHTML = '';
-            data.forEach(p => {
-                tbody.innerHTML += `
-                    <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
-                        <td class="p-4 pl-6 font-semibold">${p.title}</td>
-                        <td class="p-4 uppercase text-[10px] font-bold">${p.piece_type || 'Post'}</td>
-                        <td class="p-4">${p.scheduled_date ? p.scheduled_date.split('-').reverse().join('/') : '-'}</td>
-                        <td class="p-4">${p.status}</td>
-                        <td class="p-4 pr-6 text-right"><button onclick="deletarPecaGlobal('${p.id}')" class="text-rose-500 font-medium">Excluir</button></td>
-                    </tr>
-                `;
-            });
+async function carregarTodasPecas() {
+    const tbody = document.getElementById('pieces-table-body');
+    if(!tbody) return;
+
+    // Busca as peças juntamente com os dados do projeto e da marca
+    const { data, error } = await supabaseClient
+        .from('content_pieces')
+        .select('*, projects(title, clients(name))')
+        .order('scheduled_date', { ascending: false });
+
+    if (error || !data || data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-zinc-400">Nenhuma peça cadastrada.</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = '';
+    let totalAjustesPendentes = 0;
+
+    data.forEach(p => {
+        const statusAprovacao = p.approval_status || 'Pendente';
+        let badgeHtml = `<span class="px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-500 rounded-md text-[10px] font-bold">Pendente</span>`;
+
+        if (statusAprovacao === 'Aprovado') {
+            badgeHtml = `<span class="px-2 py-0.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded-md text-[10px] font-bold">Aprovado ✓</span>`;
+        } else if (statusAprovacao === 'Ajuste Solicitado') {
+            badgeHtml = `<span class="px-2 py-0.5 bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 rounded-md text-[10px] font-bold">Ajuste Solicitado ⚠️</span>`;
+            totalAjustesPendentes++;
         }
+
+        const dataFormatada = p.scheduled_date ? p.scheduled_date.split('-').reverse().join('/') : 'Não definida';
+        const feedbackCliente = p.client_feedback ? `<p class="text-[11px] text-amber-600 dark:text-amber-400 mt-1 italic">"${p.client_feedback}"</p>` : '';
+
+        tbody.innerHTML += `
+            <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
+                <td class="p-4 pl-6">
+                    <span class="font-semibold text-zinc-900 dark:text-white block">${p.title}</span>
+                    <span class="text-zinc-400 text-[11px]">${p.projects?.clients?.name || 'Marca'} — ${p.projects?.title || 'Campanha'}</span>
+                    ${feedbackCliente}
+                </td>
+                <td class="p-4 uppercase text-[10px] font-bold text-zinc-600 dark:text-zinc-400">${p.piece_type || 'Post'}</td>
+                <td class="p-4 text-zinc-600 dark:text-zinc-300">${dataFormatada}</td>
+                <td class="p-4">${badgeHtml}</td>
+                <td class="p-4 pr-6 text-right space-x-2">
+                    ${p.media_url ? `<a href="${p.media_url}" target="_blank" class="text-indigo-600 dark:text-indigo-400 hover:underline text-xs font-semibold">Ver Mídia</a>` : ''}
+                    <button onclick="deletarPecaGlobal('${p.id}')" class="text-rose-500 hover:text-rose-700 font-medium text-xs">Excluir</button>
+                </td>
+            </tr>
+        `;
+    });
+
+    // Opcional: Se quiser atualizar um contador de alertas no menu lateral ou aba se existir
+    console.log(`Total de peças com ajustes solicitados: ${totalAjustesPendentes}`);
+}
 
         async function deletarPecaGlobal(id) {
             await supabaseClient.from('content_pieces').delete().eq('id', id);
