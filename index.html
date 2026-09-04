@@ -158,42 +158,102 @@
         <div class="p-8 flex-1 max-w-7xl w-full mx-auto space-y-6">
 
             <!-- ABA: QUADRO DE PROJETOS -->
-            <section id="aba-projetos" class="tab-content space-y-6">
-                <div class="flex items-center gap-3 bg-white dark:bg-[#1a1a1e] p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs transition-colors">
-                    <label for="filtro-cliente" class="text-xs font-medium text-zinc-500 dark:text-zinc-400">Filtrar por Marca:</label>
-                    <select id="filtro-cliente" onchange="carregarDados()" class="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
-                        <option value="">Todas as Marcas</option>
-                    </select>
-                    <button onclick="carregarDados()" class="text-xs text-zinc-500 hover:text-zinc-900 dark:hover:text-white ml-auto font-medium transition px-3 py-1.5 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800">Atualizar Dados ⟳</button>
-                </div>
+<!-- ABA: FLUXO DE CAIXA & GASTOS -->
+<section id="aba-financeiro" class="tab-content hidden space-y-6">
+    <!-- Topo / Filtros e Ações -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-[#1a1a1e] p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs transition-colors">
+        <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1 bg-zinc-100 dark:bg-zinc-900 p-1 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                <button onclick="mudarSubAbaFinanceiro('entradas')" id="btn-sub-entradas" class="px-3.5 py-1.5 text-xs font-semibold bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-xs rounded-lg transition">Entradas (Clientes)</button>
+                <button onclick="mudarSubAbaFinanceiro('funcionarios')" id="btn-sub-funcionarios" class="px-3.5 py-1.5 text-xs font-semibold text-zinc-600 dark:text-zinc-400 rounded-lg transition">Equipe & Funcionários</button>
+                <button onclick="mudarSubAbaFinanceiro('despesas')" id="btn-sub-despesas" class="px-3.5 py-1.5 text-xs font-semibold text-zinc-600 dark:text-zinc-400 rounded-lg transition">Despesas Operacionais</button>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <button onclick="abrirModalFinanceiro()" id="btn-novo-financeiro" class="px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 rounded-xl shadow-md hover:bg-zinc-800 dark:hover:bg-white transition">+ Nova Entrada / Fatura</button>
+        </div>
+    </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-6 gap-4 min-h-[600px] pb-4">
-                    <div class="bg-zinc-100/70 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 rounded-2xl p-3.5 flex flex-col kanban-col shadow-xs" id="col-planejamento" data-status="Planejamento" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Planejamento')">
-                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 mb-3 px-1 flex items-center justify-between">Planejamento <span id="count-planejamento" class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
-                        <div class="flex-1 space-y-3 overflow-y-auto"></div>
-                    </div>
-                    <div class="bg-zinc-100/70 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 rounded-2xl p-3.5 flex flex-col kanban-col shadow-xs" id="col-em-execucao" data-status="Em execução" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Em execução')">
-                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 mb-3 px-1 flex items-center justify-between">Em Produção <span id="count-em-execucao" class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
-                        <div class="flex-1 space-y-3 overflow-y-auto"></div>
-                    </div>
-                    <div class="bg-zinc-100/70 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 rounded-2xl p-3.5 flex flex-col kanban-col shadow-xs" id="col-em-validacao" data-status="Em Validação" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Em Validação')">
-                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400 mb-3 px-1 flex items-center justify-between">Validação (Zap) <span id="count-em-validacao" class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
-                        <div class="flex-1 space-y-3 overflow-y-auto"></div>
-                    </div>
-                    <div class="bg-zinc-100/70 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 rounded-2xl p-3.5 flex flex-col kanban-col shadow-xs" id="col-aprovado" data-status="Aprovado" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Aprovado')">
-                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400 mb-3 px-1 flex items-center justify-between">Aprovados <span id="count-aprovado" class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
-                        <div class="flex-1 space-y-3 overflow-y-auto"></div>
-                    </div>
-                    <div class="bg-zinc-100/70 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 rounded-2xl p-3.5 flex flex-col kanban-col shadow-xs" id="col-programado" data-status="Programado" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Programado')">
-                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-3 px-1 flex items-center justify-between">Agendados <span id="count-programado" class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
-                        <div class="flex-1 space-y-3 overflow-y-auto"></div>
-                    </div>
-                    <div class="bg-zinc-100/70 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800/80 rounded-2xl p-3.5 flex flex-col kanban-col shadow-xs" id="col-concluido" data-status="Concluido" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Concluido')">
-                        <h3 class="text-[11px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-3 px-1 flex items-center justify-between">Publicados <span id="count-concluido" class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-2 py-0.5 rounded-full text-[10px] font-bold shadow-2xs">0</span></h3>
-                        <div class="flex-1 space-y-3 overflow-y-auto"></div>
-                    </div>
-                </div>
-            </section>
+    <!-- Cards de Indicadores (KPIs do Mês) -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-white dark:bg-[#1a1a1e] p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-1 transition-colors">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Total Entradas (Receitas)</span>
+            <h3 id="kpi-recebido" class="text-xl font-bold text-emerald-600 dark:text-emerald-400 tracking-tight">R$ 0,00</h3>
+        </div>
+        <div class="bg-white dark:bg-[#1a1a1e] p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-1 transition-colors">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Custos com Funcionários</span>
+            <h3 id="kpi-funcionarios" class="text-xl font-bold text-amber-600 dark:text-amber-400 tracking-tight">R$ 0,00</h3>
+        </div>
+        <div class="bg-white dark:bg-[#1a1a1e] p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-1 transition-colors">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Despesas Operacionais</span>
+            <h3 id="kpi-despesas" class="text-xl font-bold text-rose-600 dark:text-rose-400 tracking-tight">R$ 0,00</h3>
+        </div>
+        <div class="bg-white dark:bg-[#1a1a1e] p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-1 transition-colors border-l-4 border-l-indigo-500">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-indigo-500">Lucro Líquido (Balanço)</span>
+            <h3 id="kpi-lucro" class="text-xl font-bold text-zinc-900 dark:text-white tracking-tight">R$ 0,00</h3>
+        </div>
+    </div>
+
+    <!-- SEÇÃO 1: ENTRADAS (Tabela) -->
+    <div id="container-tabela-entradas" class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xs overflow-hidden transition-colors">
+        <div class="p-4 border-b border-zinc-100 dark:border-zinc-800 font-bold text-xs uppercase tracking-wider text-zinc-500">Recebimentos de Clientes & Faturas</div>
+        <table class="w-full text-left text-sm">
+            <thead class="bg-zinc-50 dark:bg-zinc-900/50 border-b border-zinc-200 dark:border-zinc-800 text-zinc-400 font-semibold text-[11px] uppercase tracking-wider">
+                <tr>
+                    <th class="p-4 pl-6">Marca / Cliente</th>
+                    <th class="p-4">Descrição</th>
+                    <th class="p-4">Vencimento</th>
+                    <th class="p-4">Valor (R$)</th>
+                    <th class="p-4">Status</th>
+                    <th class="p-4 pr-6 text-right">Ações</th>
+                </tr>
+            </thead>
+            <tbody id="transactions-table-body" class="divide-y divide-zinc-100 dark:divide-zinc-800/60 text-zinc-700 dark:text-zinc-300 text-xs font-medium">
+                <tr><td colspan="6" class="p-8 text-center text-zinc-400">Carregando entradas...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- SEÇÃO 2: FUNCIONÁRIOS (Tabela - Oculta por padrão) -->
+    <div id="container-tabela-funcionarios" class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xs overflow-hidden transition-colors hidden">
+        <div class="p-4 border-b border-zinc-100 dark:border-zinc-800 font-bold text-xs uppercase tracking-wider text-zinc-500">Gestão de Salários, Pró-labore & Freelancers</div>
+        <table class="w-full text-left text-sm">
+            <thead class="bg-zinc-50 dark:bg-zinc-900/50 border-b border-zinc-200 dark:border-zinc-800 text-zinc-400 font-semibold text-[11px] uppercase tracking-wider">
+                <tr>
+                    <th class="p-4 pl-6">Nome / Colaborador</th>
+                    <th class="p-4">Departamento</th>
+                    <th class="p-4">Tipo</th>
+                    <th class="p-4">Valor (R$)</th>
+                    <th class="p-4">Dia Pagto</th>
+                    <th class="p-4 pr-6 text-right">Ações</th>
+                </tr>
+            </thead>
+            <tbody id="employees-table-body" class="divide-y divide-zinc-100 dark:divide-zinc-800/60 text-zinc-700 dark:text-zinc-300 text-xs font-medium">
+                <tr><td colspan="6" class="p-8 text-center text-zinc-400">Carregando equipe...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- SEÇÃO 3: DESPESAS OPERACIONAIS (Tabela - Oculta por padrão) -->
+    <div id="container-tabela-despesas" class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xs overflow-hidden transition-colors hidden">
+        <div class="p-4 border-b border-zinc-100 dark:border-zinc-800 font-bold text-xs uppercase tracking-wider text-zinc-500">Custos Operacionais & Ferramentas</div>
+        <table class="w-full text-left text-sm">
+            <thead class="bg-zinc-50 dark:bg-zinc-900/50 border-b border-zinc-200 dark:border-zinc-800 text-zinc-400 font-semibold text-[11px] uppercase tracking-wider">
+                <tr>
+                    <th class="p-4 pl-6">Descrição</th>
+                    <th class="p-4">Categoria</th>
+                    <th class="p-4">Vencimento</th>
+                    <th class="p-4">Valor (R$)</th>
+                    <th class="p-4">Status</th>
+                    <th class="p-4 pr-6 text-right">Ações</th>
+                </tr>
+            </thead>
+            <tbody id="expenses-table-body" class="divide-y divide-zinc-100 dark:divide-zinc-800/60 text-zinc-700 dark:text-zinc-300 text-xs font-medium">
+                <tr><td colspan="6" class="p-8 text-center text-zinc-400">Carregando despesas...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
 
             <!-- ABA: CALENDÁRIO & AGENDA -->
             <section id="aba-agenda" class="tab-content hidden space-y-6">
@@ -509,6 +569,88 @@
 
     <!-- MODAL: Nova Transação / Fatura -->
     <div id="transaction-modal" class="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+        <div id="employee-modal" class="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
+            <div class="flex justify-between items-center">
+                <h3 class="font-bold text-base text-zinc-900 dark:text-white">Cadastrar Colaborador / Custo de Equipe</h3>
+                <button onclick="closeModal('employee-modal')" class="text-zinc-400 hover:text-white text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center bg-zinc-100 dark:bg-zinc-800">✕</button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Nome do Funcionário / Freelancer</label>
+                    <input type="text" id="emp-name" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="Ex: Editor de Vídeo">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Departamento</label>
+                        <input type="text" id="emp-dept" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="Ex: Produção">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Tipo de Pagamento</label>
+                        <select id="emp-type" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
+                            <option value="Salário">Salário / CLT</option>
+                            <option value="Pró-labore">Pró-labore</option>
+                            <option value="Freelance">Freelance</option>
+                            <option value="Encargos">Encargos</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Valor (R$)</label>
+                        <input type="text" id="emp-amount" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="3500.00">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Dia de Vencimento</label>
+                        <input type="number" id="emp-day" value="5" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeModal('employee-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition">Cancelar</button>
+                <button onclick="salvarFuncionario()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 rounded-xl shadow-md transition">Salvar Colaborador</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Nova Despesa Operacional -->
+    <div id="expense-modal" class="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
+            <div class="flex justify-between items-center">
+                <h3 class="font-bold text-base text-zinc-900 dark:text-white">Cadastrar Despesa Operacional</h3>
+                <button onclick="closeModal('expense-modal')" class="text-zinc-400 hover:text-white text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center bg-zinc-100 dark:bg-zinc-800">✕</button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Descrição da Despesa</label>
+                    <input type="text" id="exp-desc" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="Ex: Adobe Creative Cloud / Hospedagem">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Categoria</label>
+                    <input type="text" id="exp-cat" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="Ex: Tecnologia / Ferramentas">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Valor (R$)</label>
+                        <input type="text" id="exp-amount" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="350.00">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Vencimento</label>
+                        <input type="date" id="exp-date" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeModal('expense-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition">Cancelar</button>
+                <button onclick="salvarDespesa()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 rounded-xl shadow-md transition">Salvar Despesa</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botão Flutuante do Robô (Copiloto) -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <!-- (código do botão do chat existente) -->
+    </div>
         <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
                 <h3 class="font-bold text-base text-zinc-900 dark:text-white">Registrar Recebimento / Fatura</h3>
@@ -915,6 +1057,192 @@
     }
 
     carregarDetalhesDiaSelecionado();
+}
+        let subAbaFinanceiroAtual = 'entradas';
+
+function mudarSubAbaFinanceiro(sub) {
+    subAbaFinanceiroAtual = sub;
+    const btnEntradas = document.getElementById('btn-sub-entradas');
+    const btnFunc = document.getElementById('btn-sub-funcionarios');
+    const btnDespesas = document.getElementById('btn-sub-despesas');
+    const btnNovo = document.getElementById('btn-novo-financeiro');
+
+    const tabEntradas = document.getElementById('container-tabela-entradas');
+    const tabFunc = document.getElementById('container-tabela-funcionarios');
+    const tabDespesas = document.getElementById('container-tabela-despesas');
+
+    // Reseta botões
+    [btnEntradas, btnFunc, btnDespesas].forEach(b => {
+        b.className = "px-3.5 py-1.5 text-xs font-semibold text-zinc-600 dark:text-zinc-400 rounded-lg transition";
+    });
+
+    [tabEntradas, tabFunc, tabDespesas].forEach(t => t.classList.add('hidden'));
+
+    if (sub === 'entradas') {
+        btnEntradas.className = "px-3.5 py-1.5 text-xs font-semibold bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-xs rounded-lg transition";
+        tabEntradas.classList.remove('hidden');
+        btnNovo.innerText = '+ Nova Entrada / Fatura';
+        btnNovo.setAttribute('onclick', "openModal('transaction-modal')");
+    } else if (sub === 'funcionarios') {
+        btnFunc.className = "px-3.5 py-1.5 text-xs font-semibold bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-xs rounded-lg transition";
+        tabFunc.classList.remove('hidden');
+        btnNovo.innerText = '+ Novo Colaborador';
+        btnNovo.setAttribute('onclick', "openModal('employee-modal')");
+    } else if (sub === 'despesas') {
+        btnDespesas.className = "px-3.5 py-1.5 text-xs font-semibold bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-xs rounded-lg transition";
+        tabDespesas.classList.remove('hidden');
+        btnNovo.innerText = '+ Nova Despesa';
+        btnNovo.setAttribute('onclick', "openModal('expense-modal')");
+    }
+}
+
+function abrirModalFinanceiro() {
+    if (subAbaFinanceiroAtual === 'entradas') openModal('transaction-modal');
+    else if (subAbaFinanceiroAtual === 'funcionarios') openModal('employee-modal');
+    else if (subAbaFinanceiroAtual === 'despesas') openModal('expense-modal');
+}
+
+async function carregarFinanceiroCompleto() {
+    let totalEntradas = 0;
+    let totalFuncionarios = 0;
+    let totalDespesas = 0;
+
+    // 1. Carrega Entradas
+    const tbodyTrans = document.getElementById('transactions-table-body');
+    const { data: transData } = await supabaseClient.from('transactions').select('*, clients(name)');
+    if (transData && transData.length > 0) {
+        tbodyTrans.innerHTML = '';
+        transData.forEach(t => {
+            const val = Number(t.amount);
+            if (t.status === 'Pago') totalEntradas += val;
+            tbodyTrans.innerHTML += `
+                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
+                    <td class="p-4 pl-6 font-semibold">${t.clients?.name || 'Geral'}</td>
+                    <td class="p-4">${t.description}</td>
+                    <td class="p-4">${t.due_date || '-'}</td>
+                    <td class="p-4 font-bold">R$ ${val.toFixed(2)}</td>
+                    <td class="p-4"><span class="px-2.5 py-0.5 rounded text-[10px] font-bold ${t.status === 'Pago' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/15 text-amber-500'}">${t.status}</span></td>
+                    <td class="p-4 pr-6 text-right"><button onclick="deletarTransacao('${t.id}')" class="text-rose-500 text-xs">Excluir</button></td>
+                </tr>
+            `;
+        });
+    } else {
+        tbodyTrans.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-zinc-400">Nenhuma entrada cadastrada.</td></tr>`;
+    }
+
+    // 2. Carrega Funcionários
+    const tbodyEmp = document.getElementById('employees-table-body');
+    const { data: empData } = await supabaseClient.from('employees').select('*');
+    if (empData && empData.length > 0) {
+        tbodyEmp.innerHTML = '';
+        empData.forEach(e => {
+            const val = Number(e.amount);
+            totalFuncionarios += val;
+            tbodyEmp.innerHTML += `
+                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
+                    <td class="p-4 pl-6 font-semibold">${e.name}</td>
+                    <td class="p-4">${e.department || '-'}</td>
+                    <td class="p-4 uppercase text-[10px] font-bold">${e.role_type}</td>
+                    <td class="p-4 font-bold text-amber-600 dark:text-amber-400">R$ ${val.toFixed(2)}</td>
+                    <td class="p-4">Dia ${e.due_day || 5}</td>
+                    <td class="p-4 pr-6 text-right"><button onclick="deletarFuncionario('${e.id}')" class="text-rose-500 text-xs">Excluir</button></td>
+                </tr>
+            `;
+        });
+    } else {
+        tbodyEmp.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-zinc-400">Nenhum funcionário cadastrado.</td></tr>`;
+    }
+
+    // 3. Carrega Despesas Operacionais
+    const tbodyExp = document.getElementById('expenses-table-body');
+    const { data: expData } = await supabaseClient.from('expenses').select('*');
+    if (expData && expData.length > 0) {
+        tbodyExp.innerHTML = '';
+        expData.forEach(ex => {
+            const val = Number(ex.amount);
+            totalDespesas += val;
+            tbodyExp.innerHTML += `
+                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
+                    <td class="p-4 pl-6 font-semibold">${ex.description}</td>
+                    <td class="p-4">${ex.category || '-'}</td>
+                    <td class="p-4">${ex.due_date || '-'}</td>
+                    <td class="p-4 font-bold text-rose-600 dark:text-rose-400">R$ ${val.toFixed(2)}</td>
+                    <td class="p-4"><span class="px-2.5 py-0.5 rounded text-[10px] font-bold ${ex.status === 'Pago' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/15 text-amber-500'}">${ex.status}</span></td>
+                    <td class="p-4 pr-6 text-right"><button onclick="deletarDespesa('${ex.id}')" class="text-rose-500 text-xs">Excluir</button></td>
+                </tr>
+            `;
+        });
+    } else {
+        tbodyExp.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-zinc-400">Nenhuma despesa cadastrada.</td></tr>`;
+    }
+
+    // 4. Atualiza os KPIs e o Lucro Líquido
+    const lucroLiquido = totalEntradas - (totalFuncionarios + totalDespesas);
+    
+    document.getElementById('kpi-recebido').innerText = `R$ ${totalEntradas.toFixed(2)}`;
+    document.getElementById('kpi-funcionarios').innerText = `R$ ${totalFuncionarios.toFixed(2)}`;
+    document.getElementById('kpi-despesas').innerText = `R$ ${totalDespesas.toFixed(2)}`;
+    
+    const kpiLucroEl = document.getElementById('kpi-lucro');
+    kpiLucroEl.innerText = `R$ ${lucroLiquido.toFixed(2)}`;
+    kpiLucroEl.className = `text-xl font-bold tracking-tight ${lucroLiquido >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`;
+}
+
+// Funções de salvamento
+async function salvarFuncionario() {
+    const name = document.getElementById('emp-name').value.trim();
+    const department = document.getElementById('emp-dept').value.trim();
+    const role_type = document.getElementById('emp-type').value;
+    const amount = document.getElementById('emp-amount').value;
+    const due_day = document.getElementById('emp-day').value;
+
+    if (!name || !amount) return alert('Preencha o nome e o valor.');
+    
+    const { error } = await supabaseClient.from('employees').insert([{
+        name, department, role_type, amount: parseFloat(amount.replace(',', '.')), due_day: parseInt(due_day || 5)
+    }]);
+
+    if (error) alert('Erro: ' + error.message);
+    else {
+        closeModal('employee-modal');
+        document.getElementById('emp-name').value = '';
+        document.getElementById('emp-amount').value = '';
+        carregarFinanceiroCompleto();
+    }
+}
+
+async function deletarFuncionario(id) {
+    if(!confirm('Excluir colaborador?')) return;
+    await supabaseClient.from('employees').delete().eq('id', id);
+    carregarFinanceiroCompleto();
+}
+
+async function salvarDespesa() {
+    const description = document.getElementById('exp-desc').value.trim();
+    const category = document.getElementById('exp-cat').value.trim();
+    const amount = document.getElementById('exp-amount').value;
+    const due_date = document.getElementById('exp-date').value;
+
+    if (!description || !amount || !due_date) return alert('Preencha os campos obrigatórios.');
+
+    const { error } = await supabaseClient.from('expenses').insert([{
+        description, category, amount: parseFloat(amount.replace(',', '.')), due_date, status: 'Pendente'
+    }]);
+
+    if (error) alert('Erro: ' + error.message);
+    else {
+        closeModal('expense-modal');
+        document.getElementById('exp-desc').value = '';
+        document.getElementById('exp-amount').value = '';
+        document.getElementById('exp-date').value = '';
+        carregarFinanceiroCompleto();
+    }
+}
+
+async function deletarDespesa(id) {
+    if(!confirm('Excluir despesa?')) return;
+    await supabaseClient.from('expenses').delete().eq('id', id);
+    carregarFinanceiroCompleto();
 }
         function mudarMesCalendario(direcao) {
             mesAtualCal += direcao;
