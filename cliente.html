@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal do Cliente — Acompanhamento de Campanhas</title>
+    <title>Portal do Cliente — Aprovação de Campanhas</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -19,32 +19,24 @@
         <!-- Cabeçalho da Marca -->
         <div class="bg-[#1a1a1e] border border-zinc-800 rounded-3xl p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-xl">
             <div class="space-y-1">
-                <span class="text-xs uppercase tracking-widest text-zinc-400 font-bold">Portal Exclusivo da Marca</span>
+                <span class="text-xs uppercase tracking-widest text-indigo-400 font-bold">Portal de Aprovação</span>
                 <h1 id="client-title" class="text-2xl font-bold tracking-tight text-white">Carregando marca...</h1>
             </div>
-            <div id="client-badge" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-zinc-800 text-zinc-300 border border-zinc-700">
-                Acesso Seguro
+            <div class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-zinc-800 text-zinc-300 border border-zinc-700">
+                Solluz Agency
             </div>
         </div>
 
-        <!-- Seção: Calendário / Publicações Agendadas -->
+        <!-- Seção: Criativos e Peças para Validação -->
         <div class="bg-[#1a1a1e] border border-zinc-800 rounded-3xl p-6 md:p-8 space-y-6 shadow-xl">
-            <h3 class="font-bold text-sm tracking-wide uppercase text-indigo-400">📅 Próximas Publicações & Calendário</h3>
-            <div id="client-posts-container" class="space-y-3">
-                <p class="text-xs text-zinc-400">Carregando cronograma de posts...</p>
-            </div>
-        </div>
-
-        <!-- Seção: Criativos Prontos para Baixar -->
-        <div class="bg-[#1a1a1e] border border-zinc-800 rounded-3xl p-6 md:p-8 space-y-6 shadow-xl">
-            <h3 class="font-bold text-sm tracking-wide uppercase text-emerald-400">🎬 Criativos e Arquivos Prontos</h3>
-            <div id="client-files-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <p class="text-xs text-zinc-400 col-span-2">Nenhum arquivo disponível no momento.</p>
+            <h3 class="font-bold text-sm tracking-wide uppercase text-emerald-400">🎬 Peças para Análise & Aprovação</h3>
+            <div id="client-pieces-container" class="space-y-4">
+                <p class="text-xs text-zinc-400">Carregando criativos...</p>
             </div>
         </div>
     </div>
 
-    <!-- Script de Carregamento dos Dados do Cliente -->
+    <!-- Script de Carregamento e Interação -->
     <script>
         const SUPABASE_URL = 'https://wiktemdsjwhvzmpnbxmg.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_Uod7U-Su7MYBcwjWb4dr7w_dzeg2TfY';
@@ -56,11 +48,11 @@
 
             if (!token) {
                 document.getElementById('client-title').innerText = 'Acesso Negado';
-                document.getElementById('client-posts-container').innerHTML = `<p class="text-xs text-rose-400">Token de acesso não informado na URL.</p>`;
+                document.getElementById('client-pieces-container').innerHTML = `<p class="text-xs text-rose-400">Token de acesso não informado na URL.</p>`;
                 return;
             }
 
-            // 1. Busca a marca pelo token de acesso
+            // 1. Busca a marca pelo token
             const { data: clientData, error: clientErr } = await supabaseClient
                 .from('clients')
                 .select('*')
@@ -74,64 +66,121 @@
 
             document.getElementById('client-title').innerText = clientData.name;
 
-            // 2. Busca os projetos/campanhas desta marca
+            // 2. Busca projetos da marca
             const { data: projects } = await supabaseClient
                 .from('projects')
                 .select('id, title')
                 .eq('client_id', clientData.id);
 
-            if (!projects || projects.length === 0) return;
+            if (!projects || projects.length === 0) {
+                document.getElementById('client-pieces-container').innerHTML = `<p class="text-xs text-zinc-400">Nenhum projeto encontrado para esta marca.</p>`;
+                return;
+            }
+            
             const projectIds = projects.map(p => p.id);
 
-            // 3. Busca as peças de conteúdo vinculadas aos projetos da marca
+            // 3. Busca as peças de conteúdo
             const { data: pieces } = await supabaseClient
                 .from('content_pieces')
                 .select('*, projects(title)')
                 .in('project_id', projectIds)
                 .order('scheduled_date', { ascending: true });
 
-            const postsContainer = document.getElementById('client-posts-container');
-            const filesContainer = document.getElementById('client-files-container');
+            const container = document.getElementById('client-pieces-container');
 
             if (pieces && pieces.length > 0) {
-                postsContainer.innerHTML = '';
-                filesContainer.innerHTML = '';
-
+                container.innerHTML = '';
                 pieces.forEach(p => {
                     const dataFormatada = p.scheduled_date ? p.scheduled_date.split('-').reverse().join('/') : 'A definir';
+                    const statusAprovacao = p.approval_status || 'Pendente';
                     
-                    // Renderiza na lista de posts
-                    postsContainer.innerHTML += `
-                        <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-2xl flex items-center justify-between text-xs">
-                            <div class="space-y-1">
-                                <span class="font-bold text-white text-sm">${p.title}</span>
-                                <span class="text-zinc-400 block">Campanha: ${p.projects?.title || 'Geral'} | Formato: <strong class="uppercase text-zinc-300">${p.piece_type || 'Post'}</strong></span>
+                    let badgeStatus = `<span class="px-2.5 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-bold rounded-lg uppercase">Pendente de Análise</span>`;
+                    if (statusAprovacao === 'Aprovado') {
+                        badgeStatus = `<span class="px-2.5 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold rounded-lg uppercase">Aprovado ✓</span>`;
+                    } else if (statusAprovacao === 'Ajuste Solicitado') {
+                        badgeStatus = `<span class="px-2.5 py-1 bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[10px] font-bold rounded-lg uppercase">Ajuste Solicitado ⚠️</span>`;
+                    }
+
+                    container.innerHTML += `
+                        <div class="bg-zinc-900 border border-zinc-800 p-5 rounded-2xl space-y-4">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                                <div>
+                                    <h4 class="font-bold text-white text-sm">${p.title}</h4>
+                                    <p class="text-zinc-400 text-xs">Campanha: ${p.projects?.title || 'Geral'} | Data: ${dataFormatada} | Formato: <strong class="uppercase text-zinc-300">${p.piece_type || 'Post'}</strong></p>
+                                </div>
+                                ${badgeStatus}
                             </div>
-                            <span class="px-3 py-1 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-semibold rounded-xl">${dataFormatada}</span>
+
+                            ${p.media_url ? `
+                                <div class="pt-1">
+                                    <a href="${p.media_url}" target="_blank" class="inline-flex items-center gap-1.5 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold rounded-xl transition shadow-xs">
+                                        <span>Visualizar / Baixar Mídia ↗</span>
+                                    </a>
+                                </div>
+                            ` : ''}
+
+                            <!-- Área de Ação e Feedback -->
+                            <div class="pt-3 border-t border-zinc-800/80 space-y-3">
+                                <div class="flex flex-wrap gap-2">
+                                    <button onclick="enviarAprovacao('${p.id}', 'Aprovado')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl transition shadow-md">
+                                        Aprovar Peça
+                                    </button>
+                                    <button onclick="toggleBoxAjuste('${p.id}')" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold rounded-xl transition">
+                                        Solicitar Ajuste / Comentar
+                                    </button>
+                                </div>
+
+                                <!-- Caixa Oculta para Comentário de Ajuste -->
+                                <div id="box-ajuste-${p.id}" class="hidden space-y-2 pt-2">
+                                    <textarea id="feedback-${p.id}" rows="2" placeholder="Descreva o que precisa ser ajustado nesta peça..." class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-xs text-zinc-200 focus:outline-none font-medium">${p.client_feedback || ''}</textarea>
+                                    <button onclick="enviarAjuste('${p.id}')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl transition">
+                                        Enviar Feedback para a Agência
+                                    </button>
+                                </div>
+                                ${p.client_feedback ? `<p class="text-[11px] text-zinc-400 bg-zinc-950 p-3 rounded-xl border border-zinc-800"><strong class="text-zinc-300">Seu comentário:</strong> ${p.client_feedback}</p>` : ''}
+                            </div>
                         </div>
                     `;
-
-                    // Se tiver mídia, exibe no card de criativos para download/visualização
-                    if (p.media_url) {
-                        filesContainer.innerHTML += `
-                            <div class="bg-zinc-900 border border-zinc-800 p-4 rounded-2xl flex flex-col justify-between space-y-3">
-                                <div>
-                                    <span class="font-bold text-white text-xs block">${p.title}</span>
-                                    <span class="text-zinc-400 text-[10px]">Formato: ${p.piece_type || 'Mídia'}</span>
-                                </div>
-                                <a href="${p.media_url}" target="_blank" class="w-full py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-center text-xs font-semibold rounded-xl transition">
-                                    Visualizar / Baixar Arquivo ↗
-                                </a>
-                            </div>
-                        `;
-                    }
                 });
-
-                if (filesContainer.innerHTML === '') {
-                    filesContainer.innerHTML = `<p class="text-xs text-zinc-400 col-span-2">Nenhum arquivo de mídia anexado ainda.</p>`;
-                }
             } else {
-                postsContainer.innerHTML = `<p class="text-xs text-zinc-400">Nenhum post agendado no momento.</p>`;
+                container.innerHTML = `<p class="text-xs text-zinc-400">Nenhuma peça cadastrada para validação no momento.</p>`;
+            }
+        }
+
+        function toggleBoxAjuste(pieceId) {
+            const box = document.getElementById(`box-ajuste-${pieceId}`);
+            box.classList.toggle('hidden');
+        }
+
+        async function enviarAprovacao(pieceId, status) {
+            if(!confirm('Deseja realmente aprovar esta peça de conteúdo?')) return;
+            const { error } = await supabaseClient
+                .from('content_pieces')
+                .update({ approval_status: status, client_feedback: 'Aprovado pelo cliente.' })
+                .eq('id', pieceId);
+
+            if (error) {
+                alert('Erro ao atualizar: ' + error.message);
+            } else {
+                alert('Peça aprovada com sucesso! A agência foi notificada.');
+                carregarPortalCliente();
+            }
+        }
+
+        async function enviarAjuste(pieceId) {
+            const feedbackText = document.getElementById(`feedback-${pieceId}`).value.trim();
+            if(!feedbackText) return alert('Escreva o feedback antes de enviar.');
+
+            const { error } = await supabaseClient
+                .from('content_pieces')
+                .update({ approval_status: 'Ajuste Solicitado', client_feedback: feedbackText })
+                .eq('id', pieceId);
+
+            if (error) {
+                alert('Erro ao enviar feedback: ' + error.message);
+            } else {
+                alert('Feedback enviado com sucesso para a agência!');
+                carregarPortalCliente();
             }
         }
 
