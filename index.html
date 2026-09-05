@@ -61,8 +61,8 @@
                         }
                     },
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        display: ['Fredoka', 'sans-serif'],
+                        sans: ['"DM Sans"', 'sans-serif'],
+                        display: ['"DM Sans"', 'sans-serif'],
                         mono: ['"IBM Plex Mono"', 'monospace']
                     },
                     borderRadius: {
@@ -85,12 +85,12 @@
     </script>
     <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Google Fonts: Fredoka (wordmark/headlines) + Inter (interface) + IBM Plex Mono (valores) -->
+    <!-- Google Fonts: DM Sans (fonte única, interface + wordmark) + IBM Plex Mono (valores) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800;9..40,900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .font-display { font-family: 'Fredoka', sans-serif; }
+        body { font-family: 'DM Sans', sans-serif; }
+        .font-display { font-family: 'DM Sans', sans-serif; }
 
         .kanban-col { min-height: 580px; transition: all 0.25s ease; }
         .kanban-col.drag-over { background-color: rgba(55, 212, 90, 0.08); border-color: #37D45A; transform: scale(1.01); }
@@ -106,7 +106,7 @@
             border-radius: 9999px;
             background: linear-gradient(155deg, #1C8636, #37D45A);
             color: #0E0E0C;
-            font-family: 'Fredoka', sans-serif;
+            font-family: 'DM Sans', sans-serif;
             font-weight: 700;
         }
 
@@ -146,7 +146,7 @@
 
     <!-- TELA DE LOGIN / CADASTRO -->
     <div id="login-screen" class="fixed inset-0 bg-zinc-950 z-50 flex items-center justify-center p-4 md:p-10 overflow-y-auto">
-        <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-6 items-center py-10">
+        <div class="w-full max-w-6xl grid grid-cols-1 md:grid-cols-[1.15fr_0.85fr] gap-10 md:gap-8 items-center py-10">
 
             <!-- Coluna esquerda: marca -->
             <div class="relative flex flex-col items-start px-2 md:px-6">
@@ -157,12 +157,12 @@
                     <span class="pill-icone text-white text-sm">↘</span> Bem-vindo!
                 </span>
 
-                <h1 class="relative font-display text-6xl sm:text-7xl leading-[0.95] tracking-tight">
+                <h1 class="relative font-display font-black text-[5.2rem] leading-[0.85] tracking-tight sm:text-[7rem] md:text-[8rem]">
                     <span class="block text-zinc-100">meu</span>
                     <span class="block text-emerald-400">aval</span>
                 </h1>
 
-                <p class="relative text-sm text-zinc-400 mt-6 max-w-xs">Gerencie campanhas, aprovações e o financeiro da sua agência em um só lugar.</p>
+                <p class="relative text-sm text-zinc-400 mt-8 max-w-xs">Gerencie campanhas, aprovações e o financeiro da sua agência em um só lugar.</p>
             </div>
 
             <!-- Coluna direita: card de acesso -->
@@ -196,6 +196,54 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- TELA INICIAL: "Vamos começar por onde?" -->
+    <div id="welcome-screen" class="fixed inset-0 z-40 hidden flex-col">
+        <div class="flex-[1.1] bg-zinc-100 flex items-center justify-center relative overflow-hidden px-6 py-14 sm:py-0">
+            <div class="absolute -left-16 top-1/2 -translate-y-1/2 w-56 h-56 sm:w-72 sm:h-72 rounded-full opacity-90" style="background: radial-gradient(circle at 35% 30%, #5FE07C, #1C8636 70%);"></div>
+            <div class="absolute -right-16 top-1/2 -translate-y-1/2 w-56 h-56 sm:w-72 sm:h-72 rounded-full opacity-90" style="background: radial-gradient(circle at 35% 30%, #5FE07C, #1C8636 70%);"></div>
+            <h2 class="relative font-display font-bold text-3xl sm:text-5xl text-center leading-tight text-zinc-900">
+                Vamos<br><span class="text-emerald-500">começar por onde?</span>
+            </h2>
+        </div>
+        <div class="flex-[1.4] bg-zinc-950 flex flex-col items-center justify-center relative px-6 py-10">
+            <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-7 gap-x-6 gap-y-10 max-w-4xl">
+                <button onclick="entrarNoSistema('projetos')" class="flex flex-col items-center gap-3 text-white group">
+                    <svg class="w-9 h-9 shrink-0 text-white group-hover:text-emerald-400 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="14" height="16" rx="2"/><path stroke-linecap="round" d="M9 3.5h6M9 11h6M9 15h4"/></svg>
+                    <span class="text-xs font-medium border-b-2 border-white/30 group-hover:border-emerald-400 pb-1.5 transition">Quadro de projetos</span>
+                </button>
+                <button onclick="entrarNoSistema('agenda')" class="flex flex-col items-center gap-3 text-white group">
+                    <svg class="w-9 h-9 shrink-0 text-white group-hover:text-emerald-400 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="5" width="16" height="15" rx="2"/><path stroke-linecap="round" d="M4 9.5h16M8 3v4M16 3v4"/></svg>
+                    <span class="text-xs font-medium border-b-2 border-white/30 group-hover:border-emerald-400 pb-1.5 transition">Agenda</span>
+                </button>
+                <button onclick="entrarNoSistema('conteudo')" class="flex flex-col items-center gap-3 text-white group">
+                    <svg class="w-9 h-9 shrink-0 text-white group-hover:text-emerald-400 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10l1.3-4.3L18 8.3l-.8 2.7M3 10h18v9a1 1 0 01-1 1H4a1 1 0 01-1-1v-9z"/><path stroke-linecap="round" d="M7.5 6l1.8 3.6M13 5l1.8 3.6"/></svg>
+                    <span class="text-xs font-medium border-b-2 border-white/30 group-hover:border-emerald-400 pb-1.5 transition">Criativo</span>
+                </button>
+                <button onclick="entrarNoSistema('clientes')" class="flex flex-col items-center gap-3 text-white group">
+                    <svg class="w-9 h-9 shrink-0 text-white group-hover:text-emerald-400 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="3.2"/><path stroke-linecap="round" d="M5 20c1-3.6 4-5.6 7-5.6s6 2 7 5.6"/></svg>
+                    <span class="text-xs font-medium border-b-2 border-white/30 group-hover:border-emerald-400 pb-1.5 transition">Clientes</span>
+                </button>
+                <button onclick="entrarNoSistema('financeiro')" class="flex flex-col items-center gap-3 text-white group">
+                    <svg class="w-9 h-9 shrink-0 text-white group-hover:text-emerald-400 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="3" width="12" height="18" rx="1.5"/><path stroke-linecap="round" d="M12 7v10M14.1 9.2c0-1-1-1.7-2.1-1.7S9.8 8 9.8 9s1 1.4 2.1 1.6 2.2.7 2.2 1.8-1 1.7-2.2 1.7-2.1-.6-2.1-1.6"/></svg>
+                    <span class="text-xs font-medium border-b-2 border-white/30 group-hover:border-emerald-400 pb-1.5 transition">Financeiro</span>
+                </button>
+                <button onclick="entrarNoSistema('comercial')" class="flex flex-col items-center gap-3 text-white group">
+                    <svg class="w-9 h-9 shrink-0 text-white group-hover:text-emerald-400 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7 3h6.5L18 7.5V20a1 1 0 01-1 1H7a1 1 0 01-1-1V4a1 1 0 011-1z"/><path stroke-linecap="round" d="M9 12h6M9 16c1.5-1 3-1 4.5 0"/></svg>
+                    <span class="text-xs font-medium border-b-2 border-white/30 group-hover:border-emerald-400 pb-1.5 transition">Contratos</span>
+                </button>
+                <button onclick="entrarNoSistema('planos')" class="flex flex-col items-center gap-3 text-white group">
+                    <svg class="w-9 h-9 shrink-0 text-white group-hover:text-emerald-400 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M11 3l8 8a2 2 0 010 2.8l-5.2 5.2a2 2 0 01-2.8 0l-8-8V4a1 1 0 011-1h7z"/><circle cx="8.3" cy="8.3" r="1.3" fill="currentColor" stroke="none"/></svg>
+                    <span class="text-xs font-medium border-b-2 border-white/30 group-hover:border-emerald-400 pb-1.5 transition">Planos</span>
+                </button>
+            </div>
+
+            <svg class="absolute bottom-6 left-6 w-6 h-6 text-white/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12V6a1.5 1.5 0 013 0v5m0-3a1.5 1.5 0 013 0v3m0-1.5a1.5 1.5 0 013 0V13a6 6 0 01-6 6h-1a6 6 0 01-5-2.7L4.8 14a1.4 1.4 0 012.2-1.7L9 14"/></svg>
+            <button onclick="toggleChat()" class="absolute bottom-6 right-6 w-6 h-6 text-white/40 hover:text-emerald-400 transition">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M21 11.5a8.5 8.5 0 01-8.5 8.5H12l-4 2 .5-3.3A8.5 8.5 0 1121 11.5z"/></svg>
+            </button>
         </div>
     </div>
 
@@ -1044,6 +1092,7 @@
             if (session) {
                 if (loginScreen) loginScreen.style.display = 'none';
                 inicializarSistema();
+                mostrarTelaInicial();
             } else {
                 if (loginScreen) loginScreen.style.display = 'flex';
             }
@@ -1096,6 +1145,7 @@
                 if (error) { errorDiv.innerText = 'Credenciais inválidas.'; errorDiv.classList.remove('hidden'); return; }
                 document.getElementById('login-screen').style.display = 'none';
                 inicializarSistema();
+                mostrarTelaInicial();
             }
         }
 
@@ -1111,6 +1161,17 @@
             carregarPlanos();
             carregarTodasPecas();
             renderizarCalendario();
+        }
+
+        function mostrarTelaInicial() {
+            const el = document.getElementById('welcome-screen');
+            if (el) el.style.display = 'flex';
+        }
+
+        function entrarNoSistema(aba) {
+            const el = document.getElementById('welcome-screen');
+            if (el) el.style.display = 'none';
+            mudarAba(aba);
         }
 
         function mudarAba(abaId) {
