@@ -11,82 +11,73 @@
             darkMode: 'class',
             theme: {
                 extend: {
-                    // Identidade "Livro de Registro": papel envelhecido (claro) / tinta carbono (escuro).
+                    // Identidade "Meu Aval": fundo quase-preto + verde vibrante como cor de marca.
                     // Reaproveita os nomes zinc/indigo/emerald/amber/rose já usados na interface inteira,
                     // então a troca de paleta se propaga automaticamente sem reescrever cada elemento.
                     colors: {
                         zinc: {
-                            50:  '#F7F3E8',
-                            100: '#EFE7D2',
-                            200: '#E1D6B8',
-                            300: '#C7B996',
-                            400: '#998C6E',
-                            500: '#73694F',
-                            600: '#564D38',
-                            700: '#3A342A',
-                            800: '#1E2226',
-                            900: '#14171B',
-                            950: '#0B0D0F'
+                            50:  '#EDEDEA',
+                            100: '#E1E1DC',
+                            200: '#CFCFC8',
+                            300: '#AEAEA4',
+                            400: '#83837A',
+                            500: '#5C5C55',
+                            600: '#3D3D38',
+                            700: '#262622',
+                            800: '#1A1A15',
+                            900: '#0E0E0C',
+                            950: '#080807'
                         },
                         indigo: {
-                            50:  '#EDF2F7',
-                            100: '#D9E4EE',
-                            200: '#B2C7DA',
-                            300: '#83A2BE',
-                            400: '#587D9E',
-                            500: '#2F5678',
-                            600: '#254560',
-                            700: '#1C3448',
-                            800: '#142534',
-                            900: '#0D1922'
+                            50:  '#EAF4FB',
+                            100: '#CFE7F6',
+                            200: '#9FCFED',
+                            300: '#6BB4E0',
+                            400: '#4499CE',
+                            500: '#2E7EB0',
+                            600: '#25638C',
+                            700: '#1D4C6C',
+                            800: '#163A52',
+                            900: '#102A3B'
                         },
                         emerald: {
-                            300: '#A9BF9C',
-                            400: '#87A177',
-                            500: '#5E7A4E',
-                            600: '#4A6140'
+                            300: '#8CEBA2',
+                            400: '#5FE07C',
+                            500: '#37D45A',
+                            600: '#26AE45',
+                            700: '#1C8636'
                         },
                         amber: {
-                            300: '#D9BE85',
-                            400: '#BE9A54',
-                            500: '#9C7A38',
-                            600: '#7D612C'
+                            300: '#F4D98A',
+                            400: '#EFC55B',
+                            500: '#D9A82E',
+                            600: '#B08322'
                         },
                         rose: {
-                            300: '#D9A79C',
-                            400: '#C17A6A',
-                            500: '#A24435',
-                            600: '#82372B'
-                        },
-                        // Acento único e deliberado: tinta de carimbo. Usado com moderação.
-                        stamp: {
-                            50:  '#FBEDEA',
-                            100: '#F3D2CB',
-                            300: '#D98A76',
-                            400: '#C25C43',
-                            500: '#A63F27',
-                            600: '#872F1D',
-                            700: '#6B2417'
+                            300: '#F3A99C',
+                            400: '#EC7C6A',
+                            500: '#DE4E3A',
+                            600: '#B93B2A'
                         }
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
-                        display: ['Fraunces', 'serif'],
+                        display: ['Fredoka', 'sans-serif'],
                         mono: ['"IBM Plex Mono"', 'monospace']
                     },
                     borderRadius: {
-                        'xl': '4px',
-                        '2xl': '6px',
-                        '3xl': '10px'
+                        'xl': '14px',
+                        '2xl': '20px',
+                        '3xl': '28px'
                     },
                     boxShadow: {
-                        '2xs': '0 1px 0 rgba(20,17,10,0.05)',
-                        'xs':  '0 1px 0 rgba(20,17,10,0.08)',
-                        'sm':  '1px 1px 0 rgba(20,17,10,0.10)',
-                        'md':  '2px 2px 0 rgba(20,17,10,0.12)',
-                        'lg':  '3px 3px 0 rgba(20,17,10,0.14)',
-                        'xl':  '4px 4px 0 rgba(20,17,10,0.16)',
-                        '2xl': '6px 6px 0 rgba(20,17,10,0.20)'
+                        '2xs': '0 1px 2px rgba(0,0,0,0.20)',
+                        'xs':  '0 2px 6px rgba(0,0,0,0.20)',
+                        'sm':  '0 3px 10px rgba(0,0,0,0.22)',
+                        'md':  '0 6px 18px rgba(0,0,0,0.26)',
+                        'lg':  '0 10px 26px rgba(0,0,0,0.30)',
+                        'xl':  '0 16px 36px rgba(0,0,0,0.34)',
+                        '2xl': '0 24px 48px rgba(0,0,0,0.38)'
                     }
                 }
             }
@@ -94,156 +85,188 @@
     </script>
     <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Google Fonts: Fraunces (títulos/wordmark) + Inter (interface) + IBM Plex Mono (dados/valores) -->
+    <!-- Google Fonts: Fredoka (wordmark/headlines) + Inter (interface) + IBM Plex Mono (valores) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        h1, h2, h3, .font-display { font-family: 'Fraunces', serif; font-feature-settings: "ss01"; }
+        .font-display { font-family: 'Fredoka', sans-serif; }
 
         .kanban-col { min-height: 580px; transition: all 0.25s ease; }
-        .kanban-col.drag-over { background-color: rgba(166, 63, 39, 0.06); border-color: #A63F27; transform: scale(1.01); }
+        .kanban-col.drag-over { background-color: rgba(55, 212, 90, 0.08); border-color: #37D45A; transform: scale(1.01); }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #C7B996; border-radius: 4px; }
-        .dark ::-webkit-scrollbar-thumb { background: #3A342A; }
-        ::-webkit-scrollbar-thumb:hover { background: #A63F27; }
+        ::-webkit-scrollbar-thumb { background: #3D3D38; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #37D45A; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
 
-        /* Marca: selo/carimbo oficial, o único elemento de cor forte e recorrente do sistema */
-        .selo-aval {
-            position: relative;
+        /* Emblema circular da marca (versão compacta, usado na sidebar) */
+        .emblema-aval {
             display: flex; align-items: center; justify-content: center;
             border-radius: 9999px;
-            border: 1.5px dashed #A63F27;
-            color: #A63F27;
-            transform: rotate(-7deg);
-            font-family: 'Fraunces', serif;
-            font-weight: 600;
-            letter-spacing: 0.02em;
-            background: transparent;
+            background: linear-gradient(155deg, #1C8636, #37D45A);
+            color: #0E0E0C;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
         }
-        .selo-aval::before {
-            content: '';
-            position: absolute; inset: 3px;
+
+        /* Selo/pill de boas-vindas (bloco "↘ Bem-vindo!" da referência) */
+        .pill-verde {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 8px 16px 8px 8px;
             border-radius: 9999px;
-            border: 1px solid #A63F27;
-            opacity: 0.55;
+            background: linear-gradient(155deg, #1C8636, #37D45A);
+            color: #fff;
+            font-size: 13px; font-weight: 500;
+        }
+        .pill-verde .pill-icone {
+            width: 26px; height: 26px; border-radius: 9999px;
+            background: rgba(255,255,255,0.22);
+            display: flex; align-items: center; justify-content: center;
         }
 
-        /* Padrão de guilhoché sutil (estilo papel de segurança / cédula), só na tela de login */
-        .fundo-guilhoche {
-            background-image: repeating-linear-gradient(115deg, rgba(166,63,39,0.06) 0px, rgba(166,63,39,0.06) 1px, transparent 1px, transparent 10px);
+        /* Manchas decorativas verdes, usadas com moderação (hero do login) */
+        .mancha-verde {
+            position: absolute; border-radius: 9999px;
+            background: radial-gradient(circle at 35% 30%, #5FE07C, #1C8636 70%);
+            filter: blur(2px);
+            opacity: 0.9;
         }
 
-        /* Selo de status "Aprovado" — o carimbo literal do fluxo de trabalho */
-        .badge-carimbo {
+        /* Badge de status "Aprovado / Pendente / Ajuste" — pill sólida, sem enfeite */
+        .badge-status {
             display: inline-flex; align-items: center; gap: 4px;
-            padding: 2px 9px 2px 8px;
+            padding: 3px 10px;
             border-radius: 9999px;
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 10px; font-weight: 500; letter-spacing: 0.01em;
-            transform: rotate(-2deg);
+            font-size: 10px; font-weight: 600; letter-spacing: 0.01em;
         }
     </style>
 </head>
-<body class="bg-zinc-50 dark:bg-[#121214] text-zinc-900 dark:text-zinc-100 antialiased min-h-screen flex h-screen overflow-hidden transition-colors duration-200">
+<body class="bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 antialiased min-h-screen flex h-screen overflow-hidden transition-colors duration-200">
 
     <!-- TELA DE LOGIN / CADASTRO -->
-    <div id="login-screen" class="fixed inset-0 bg-zinc-900 dark:bg-zinc-950 fundo-guilhoche z-50 flex items-center justify-center p-4">
-        <div class="bg-zinc-50 dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-8 shadow-2xl space-y-6">
-            <div class="flex flex-col items-center text-center space-y-3">
-                <div class="selo-aval w-16 h-16 text-sm mb-1">AVAL</div>
-                <h1 id="auth-title" class="font-display text-2xl tracking-tight text-zinc-900 dark:text-white">Meu Aval</h1>
-                <p id="auth-subtitle" class="text-xs text-zinc-500 dark:text-zinc-400">Faça login para gerenciar suas redes sociais</p>
+    <div id="login-screen" class="fixed inset-0 bg-zinc-950 z-50 flex items-center justify-center p-4 md:p-10 overflow-y-auto">
+        <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-6 items-center py-10">
+
+            <!-- Coluna esquerda: marca -->
+            <div class="relative flex flex-col items-start px-2 md:px-6">
+                <div class="mancha-verde w-64 h-64 -top-10 -left-16 opacity-20 hidden md:block"></div>
+                <div class="mancha-verde w-40 h-40 bottom-0 left-1/3 opacity-10 hidden md:block"></div>
+
+                <span class="pill-verde mb-8 relative">
+                    <span class="pill-icone text-white text-sm">↘</span> Bem-vindo!
+                </span>
+
+                <h1 class="relative font-display text-6xl sm:text-7xl leading-[0.95] tracking-tight">
+                    <span class="block text-zinc-100">meu</span>
+                    <span class="block text-emerald-400">aval</span>
+                </h1>
+
+                <p class="relative text-sm text-zinc-400 mt-6 max-w-xs">Gerencie campanhas, aprovações e o financeiro da sua agência em um só lugar.</p>
             </div>
 
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">E-mail</label>
-                    <input type="email" id="login-email" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="seu@email.com">
+            <!-- Coluna direita: card de acesso -->
+            <div class="rounded-3xl p-8 shadow-2xl space-y-5" style="background: linear-gradient(160deg, #1C8636, #124A22 70%);">
+                <div class="text-center space-y-1">
+                    <h2 id="auth-title" class="font-display text-lg text-white leading-snug">Faça login para gerenciar sua agência</h2>
+                    <p id="auth-subtitle" class="text-xs text-emerald-100/70">Acesse com seu e-mail e senha.</p>
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Senha</label>
-                    <input type="password" id="login-password" onkeypress="if(event.key === 'Enter') executarAcaoAuth()" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="••••••••">
-                </div>
-                <div id="login-error" class="text-rose-500 text-xs font-medium text-center hidden"></div>
-                <div id="login-success" class="text-emerald-500 text-xs font-medium text-center hidden"></div>
-            </div>
 
-            <div class="space-y-3">
-                <button id="auth-btn" onclick="executarAcaoAuth()" class="w-full py-3 text-xs font-semibold text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white rounded-xl shadow-lg transition active:scale-95">
-                    Entrar no Sistema
-                </button>
-                <div class="text-center pt-2">
-                    <button id="toggle-auth-mode" onclick="alternarModoAuth()" class="text-xs text-zinc-500 hover:text-zinc-900 dark:hover:text-white font-medium transition">
-                        Não tem uma conta? <span class="underline font-semibold">Criar cadastro</span>
+                <div class="space-y-4 pt-2">
+                    <div>
+                        <label class="block text-xs font-semibold text-emerald-100 mb-1.5">E-mail</label>
+                        <input type="email" id="login-email" class="w-full bg-black/25 border border-white/10 rounded-2xl px-4 py-3 text-sm text-white placeholder-emerald-100/40 focus:outline-none focus:border-white/30 font-medium" placeholder="seu@email.com">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-emerald-100 mb-1.5">Senha</label>
+                        <input type="password" id="login-password" onkeypress="if(event.key === 'Enter') executarAcaoAuth()" class="w-full bg-black/25 border border-white/10 rounded-2xl px-4 py-3 text-sm text-white placeholder-emerald-100/40 focus:outline-none focus:border-white/30 font-medium" placeholder="••••••••">
+                    </div>
+                    <div id="login-error" class="text-rose-200 bg-rose-900/30 rounded-xl py-2 text-xs font-medium text-center hidden"></div>
+                    <div id="login-success" class="text-emerald-100 bg-emerald-900/30 rounded-xl py-2 text-xs font-medium text-center hidden"></div>
+                </div>
+
+                <div class="space-y-3 pt-1">
+                    <button id="auth-btn" onclick="executarAcaoAuth()" class="w-full py-3.5 text-sm font-bold text-emerald-600 bg-white hover:bg-emerald-50 rounded-2xl shadow-lg transition active:scale-95">
+                        Entrar
                     </button>
+                    <div class="text-center pt-1">
+                        <button id="toggle-auth-mode" onclick="alternarModoAuth()" class="text-xs text-emerald-100/80 hover:text-white font-medium transition">
+                            Não tem uma conta? <span class="underline font-semibold">Criar cadastro</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- MENU LATERAL / ABAS -->
-    <aside class="w-72 bg-white dark:bg-[#1a1a1e] border-r border-zinc-200 dark:border-zinc-800/80 flex flex-col justify-between z-30 transition-colors duration-200 shadow-sm">
+    <aside class="w-72 bg-zinc-950 flex flex-col justify-between z-30 transition-colors duration-200 shadow-lg">
         <div class="p-6 overflow-y-auto space-y-6">
             <div class="flex items-center space-x-3 px-1">
-                <div class="selo-aval w-10 h-10 text-[9px] shrink-0">AVAL</div>
+                <div class="emblema-aval w-10 h-10 text-sm shrink-0">A</div>
                 <div>
-                    <h1 class="font-display text-base tracking-tight text-zinc-900 dark:text-white">Meu Aval</h1>
-                    <p class="text-[10px] text-zinc-400 font-medium">Gestão de mídia & social</p>
+                    <h1 class="font-display text-base tracking-tight text-white">meu <span class="text-emerald-400">aval</span></h1>
+                    <p class="text-[10px] text-zinc-500 font-medium">Gestão de mídia & social</p>
                 </div>
             </div>
             <nav class="space-y-1">
-                <button onclick="mudarAba('projetos')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium bg-zinc-900 dark:bg-zinc-800 text-white transition tab-btn flex items-center gap-3 shadow-sm" data-tab="projetos">
-                    <span class="text-sm">📋</span> Quadro de Projetos
+                <button onclick="mudarAba('projetos')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium bg-emerald-500/15 text-emerald-400 transition tab-btn flex items-center gap-3" data-tab="projetos">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="5" width="14" height="16" rx="2"/><path stroke-linecap="round" d="M9 3.5h6M9 11h6M9 15h4"/></svg>
+                    Quadro de projetos
                 </button>
-                <button onclick="mudarAba('agenda')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white transition tab-btn flex items-center gap-3" data-tab="agenda">
-                    <span class="text-sm">📅</span> Calendário & Agenda
+                <button onclick="mudarAba('agenda')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-400 hover:bg-white/5 hover:text-white transition tab-btn flex items-center gap-3" data-tab="agenda">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="5" width="16" height="15" rx="2"/><path stroke-linecap="round" d="M4 9.5h16M8 3v4M16 3v4"/></svg>
+                    Agenda
                 </button>
-                <button onclick="mudarAba('conteudo')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white transition tab-btn flex items-center gap-3" data-tab="conteudo">
-                    <span class="text-sm">🎬</span> Peças & Criativos
+                <button onclick="mudarAba('conteudo')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-400 hover:bg-white/5 hover:text-white transition tab-btn flex items-center gap-3" data-tab="conteudo">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10l1.3-4.3L18 8.3l-.8 2.7M3 10h18v9a1 1 0 01-1 1H4a1 1 0 01-1-1v-9z"/><path stroke-linecap="round" d="M7.5 6l1.8 3.6M13 5l1.8 3.6"/></svg>
+                    Criativos
                 </button>
-                <button onclick="mudarAba('clientes')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white transition tab-btn flex items-center gap-3" data-tab="clientes">
-                    <span class="text-sm">🏢</span> Marcas & Clientes
+                <button onclick="mudarAba('clientes')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-400 hover:bg-white/5 hover:text-white transition tab-btn flex items-center gap-3" data-tab="clientes">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="3.2"/><path stroke-linecap="round" d="M5 20c1-3.6 4-5.6 7-5.6s6 2 7 5.6"/></svg>
+                    Clientes
                 </button>
-                <button onclick="mudarAba('financeiro')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white transition tab-btn flex items-center gap-3" data-tab="financeiro">
-                    <span class="text-sm">💰</span> Fluxo de Caixa
+                <button onclick="mudarAba('financeiro')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-400 hover:bg-white/5 hover:text-white transition tab-btn flex items-center gap-3" data-tab="financeiro">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="3" width="12" height="18" rx="1.5"/><path stroke-linecap="round" d="M12 7v10M14.1 9.2c0-1-1-1.7-2.1-1.7S9.8 8 9.8 9s1 1.4 2.1 1.6 2.2.7 2.2 1.8-1 1.7-2.2 1.7-2.1-.6-2.1-1.6"/></svg>
+                    Financeiro
                 </button>
 
                 <!-- Grupo Comercial & Gestão -->
                 <div class="pt-5 pb-2 px-1">
-                    <span class="text-[11px] font-medium text-zinc-400">Comercial & gestão</span>
+                    <span class="text-[11px] font-medium text-zinc-600">Comercial & gestão</span>
                 </div>
-                <button onclick="mudarAba('comercial')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white transition tab-btn flex items-center gap-3 pl-5" data-tab="comercial">
-                    <span class="text-sm">📝</span> Planos & Contratos
+                <button onclick="mudarAba('comercial')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-400 hover:bg-white/5 hover:text-white transition tab-btn flex items-center gap-3 pl-5" data-tab="comercial">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M7 3h6.5L18 7.5V20a1 1 0 01-1 1H7a1 1 0 01-1-1V4a1 1 0 011-1z"/><path stroke-linecap="round" d="M9 12h6M9 16c1.5-1 3-1 4.5 0"/></svg>
+                    Contratos
                 </button>
-                <button onclick="mudarAba('planos')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white transition tab-btn flex items-center gap-3 pl-5" data-tab="planos">
-                    <span class="text-sm">🏷️</span> Gestão de Pacotes
+                <button onclick="mudarAba('planos')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-400 hover:bg-white/5 hover:text-white transition tab-btn flex items-center gap-3 pl-5" data-tab="planos">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M11 3l8 8a2 2 0 010 2.8l-5.2 5.2a2 2 0 01-2.8 0l-8-8V4a1 1 0 011-1h7z"/><circle cx="8.3" cy="8.3" r="1.3" fill="currentColor" stroke="none"/></svg>
+                    Planos
                 </button>
 
                 <div class="pt-4"></div>
-                <button onclick="mudarAba('configuracoes')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white transition tab-btn flex items-center gap-3" data-tab="configuracoes">
-                    <span class="text-sm">🔧</span> Configurações
+                <button onclick="mudarAba('configuracoes')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-400 hover:bg-white/5 hover:text-white transition tab-btn flex items-center gap-3" data-tab="configuracoes">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path stroke-linecap="round" d="M19.4 13a7.4 7.4 0 000-2l2-1.6-2-3.4-2.4.7a7.6 7.6 0 00-1.7-1L14.8 3h-3.6l-.5 2.7a7.6 7.6 0 00-1.7 1l-2.4-.7-2 3.4L6.6 11a7.4 7.4 0 000 2l-2 1.6 2 3.4 2.4-.7a7.6 7.6 0 001.7 1l.5 2.7h3.6l.5-2.7a7.6 7.6 0 001.7-1l2.4.7 2-3.4-2-1.6z"/></svg>
+                    Configurações
                 </button>
             </nav>
         </div>
-        <div class="p-4 mx-4 mb-4 rounded-2xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex flex-col gap-2.5 text-xs">
+        <div class="p-4 mx-4 mb-4 rounded-2xl bg-white/5 border border-white/5 flex flex-col gap-2.5 text-xs">
             <div class="flex items-center justify-between">
                 <span class="text-zinc-500 font-medium">Status DB:</span>
-                <span id="db-status" class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">Conectando...</span>
+                <span id="db-status" class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-white/10 text-zinc-300">Conectando...</span>
             </div>
-            <button onclick="realizarLogout()" class="w-full mt-1 py-2 bg-zinc-200 dark:bg-zinc-800 hover:bg-rose-100 hover:text-rose-700 dark:hover:bg-rose-950 dark:hover:text-rose-300 text-zinc-700 dark:text-zinc-300 font-semibold rounded-xl transition text-[11px]">Sair da Conta</button>
+            <button onclick="realizarLogout()" class="w-full mt-1 py-2 bg-white/5 hover:bg-rose-500/15 hover:text-rose-300 text-zinc-300 font-semibold rounded-xl transition text-[11px]">Sair da conta</button>
         </div>
     </aside>
 
     <!-- CONTEÚDO PRINCIPAL -->
-    <main class="flex-1 flex flex-col overflow-y-auto bg-zinc-50 dark:bg-[#121214]">
+    <main class="flex-1 flex flex-col overflow-y-auto bg-zinc-50 dark:bg-zinc-900">
 
         <!-- Header Polido -->
-        <header class="border-b border-zinc-200 dark:border-zinc-800/80 bg-white/80 dark:bg-[#1a1a1e]/80 backdrop-blur-md sticky top-0 z-20 px-8 h-18 flex items-center justify-between transition-colors duration-200 shadow-xs">
+        <header class="border-b border-zinc-200 dark:border-zinc-800/80 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md sticky top-0 z-20 px-8 h-18 flex items-center justify-between transition-colors duration-200 shadow-xs">
             <div>
-                <h2 id="titulo-aba" class="font-bold text-base tracking-tight text-zinc-900 dark:text-white">Quadro de Projetos</h2>
+                <h2 id="titulo-aba" class="font-display text-lg tracking-tight text-zinc-900 dark:text-white">Quadro de projetos</h2>
                 <p class="text-xs text-zinc-500 dark:text-zinc-400">Gerencie campanhas, prazos e aprovações de conteúdo com agilidade.</p>
             </div>
             <div class="flex items-center gap-3">
@@ -253,7 +276,7 @@
                 <button onclick="openModal('client-modal')" class="inline-flex items-center justify-center px-4 py-2.5 text-xs font-medium text-zinc-700 dark:text-zinc-200 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-xs hover:bg-zinc-50 dark:hover:bg-zinc-700 transition active:scale-95">
                     + Nova Marca
                 </button>
-                <button onclick="openModal('project-modal')" class="inline-flex items-center justify-center px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 rounded-xl shadow-md hover:bg-zinc-800 dark:hover:bg-white transition active:scale-95">
+                <button onclick="openModal('project-modal')" class="inline-flex items-center justify-center px-4 py-2.5 text-xs font-medium text-white bg-emerald-500 rounded-xl shadow-md hover:bg-emerald-600 transition active:scale-95">
                     + Nova Campanha
                 </button>
             </div>
@@ -264,7 +287,7 @@
 
             <!-- ABA: QUADRO DE PROJETOS (Kanban) -->
             <section id="aba-projetos" class="tab-content space-y-6">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-[#1a1a1e] p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs transition-colors">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-zinc-800 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs transition-colors">
                     <div>
                         <h3 class="font-semibold text-sm text-zinc-900 dark:text-white">Quadro de Projetos</h3>
                         <p class="text-xs text-zinc-500 dark:text-zinc-400">Arraste os cards entre as colunas para atualizar o status da campanha.</p>
@@ -302,7 +325,7 @@
                     <!-- Coluna: Aprovado -->
                     <div id="col-aprovado" class="kanban-col bg-zinc-100/60 dark:bg-zinc-900/40 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-3 flex flex-col gap-3" ondragover="permitirDrop(event)" ondragleave="removerDestaque(event)" ondrop="soltarCard(event, 'Aprovado')">
                         <div class="flex items-center justify-between px-1">
-                            <span class="text-[11px] font-semibold text-stamp-500 dark:text-stamp-400">Aprovado</span>
+                            <span class="text-[11px] font-semibold text-emerald-500 dark:text-emerald-400">Aprovado</span>
                             <span id="count-aprovado" class="text-[10px] font-bold bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 px-2 py-0.5 rounded-full">0</span>
                         </div>
                         <div class="space-y-3 overflow-y-auto flex-1"></div>
@@ -328,7 +351,7 @@
 
             <!-- ABA: CALENDÁRIO & AGENDA -->
             <section id="aba-agenda" class="tab-content hidden space-y-6">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white dark:bg-[#1a1a1e] p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs transition-colors">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white dark:bg-zinc-800 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs transition-colors">
                     <div class="flex items-center gap-4">
                         <div>
                             <h3 id="calendar-month-title" class="font-bold text-base text-zinc-900 dark:text-white">Carregando calendário...</h3>
@@ -339,12 +362,12 @@
                         <button onclick="mudarMesCalendario(-1)" class="px-3.5 py-2 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs font-semibold hover:bg-zinc-200 dark:hover:bg-zinc-800 transition">◀ Mês Anterior</button>
                         <button onclick="irMesAtual()" class="px-3.5 py-2 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs font-semibold hover:bg-zinc-200 dark:hover:bg-zinc-800 transition">Hoje</button>
                         <button onclick="mudarMesCalendario(1)" class="px-3.5 py-2 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs font-semibold hover:bg-zinc-200 dark:hover:bg-zinc-800 transition">Próximo Mês ▶</button>
-                        <button onclick="openModal('task-modal')" class="ml-2 px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 rounded-xl shadow-md hover:bg-zinc-800 dark:hover:bg-white transition">+ Nova Tarefa</button>
+                        <button onclick="openModal('task-modal')" class="ml-2 px-4 py-2.5 text-xs font-medium text-white bg-emerald-500 rounded-xl shadow-md hover:bg-emerald-600 transition">+ Nova Tarefa</button>
                     </div>
                 </div>
 
                 <!-- Grid Visual do Calendário -->
-                <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-xs space-y-4">
+                <div class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-xs space-y-4">
                     <div class="calendar-grid text-center font-bold text-xs uppercase tracking-wider text-zinc-400 pb-2 border-b border-zinc-100 dark:border-zinc-800">
                         <div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div>
                     </div>
@@ -352,7 +375,7 @@
                 </div>
 
                 <!-- Detalhes do Dia Selecionado -->
-                <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-xs space-y-4">
+                <div class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-xs space-y-4">
                     <h4 id="selected-date-title" class="font-bold text-sm text-zinc-900 dark:text-white flex items-center justify-between">
                         <span>Selecione um dia no calendário acima</span>
                     </h4>
@@ -375,13 +398,13 @@
 
             <!-- ABA: PEÇAS DE CONTEÚDO -->
             <section id="aba-conteudo" class="tab-content hidden space-y-6">
-                <div class="flex justify-between items-center bg-white dark:bg-[#1a1a1e] p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs transition-colors">
+                <div class="flex justify-between items-center bg-white dark:bg-zinc-800 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs transition-colors">
                     <div>
                         <h3 class="font-semibold text-sm text-zinc-900 dark:text-white">Peças & Criativos (Fluxo de Aprovação)</h3>
                         <p class="text-xs text-zinc-500 dark:text-zinc-400">Monitore todos os criativos cadastrados para validação no WhatsApp.</p>
                     </div>
                 </div>
-                <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xs overflow-hidden transition-colors">
+                <div class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xs overflow-hidden transition-colors">
                     <table class="w-full text-left text-sm">
                         <thead class="bg-zinc-50 dark:bg-zinc-900/50 border-b border-zinc-200 dark:border-zinc-800 text-zinc-400 font-semibold text-[11px] uppercase tracking-wider">
                             <tr>
@@ -401,14 +424,14 @@
 
             <!-- ABA: CLIENTES -->
             <section id="aba-clientes" class="tab-content hidden space-y-6">
-                <div class="flex justify-between items-center bg-white dark:bg-[#1a1a1e] p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs transition-colors">
+                <div class="flex justify-between items-center bg-white dark:bg-zinc-800 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs transition-colors">
                     <div>
                         <h3 class="font-semibold text-sm text-zinc-900 dark:text-white">Marcas & Clientes</h3>
                         <p class="text-xs text-zinc-500 dark:text-zinc-400">Gerencie perfis de marcas, contas e identidades visuais associadas.</p>
                     </div>
-                    <button onclick="openModal('client-modal')" class="px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 rounded-xl shadow-md hover:bg-zinc-800 dark:hover:bg-white transition">+ Nova Marca</button>
+                    <button onclick="openModal('client-modal')" class="px-4 py-2.5 text-xs font-medium text-white bg-emerald-500 rounded-xl shadow-md hover:bg-emerald-600 transition">+ Nova Marca</button>
                 </div>
-                <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xs overflow-hidden transition-colors">
+                <div class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xs overflow-hidden transition-colors">
                     <table class="w-full text-left text-sm">
                         <thead class="bg-zinc-50 dark:bg-zinc-900/50 border-b border-zinc-200 dark:border-zinc-800 text-zinc-400 font-semibold text-[11px] uppercase tracking-wider">
                             <tr>
@@ -427,7 +450,7 @@
             <!-- ABA: FLUXO DE CAIXA & GASTOS (versão única, com sub-abas) -->
             <section id="aba-financeiro" class="tab-content hidden space-y-6">
                 <!-- Topo / Filtros e Ações -->
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-[#1a1a1e] p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs transition-colors">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-zinc-800 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs transition-colors">
                     <div class="flex items-center gap-2">
                         <div class="flex items-center gap-1 bg-zinc-100 dark:bg-zinc-900 p-1 rounded-xl border border-zinc-200 dark:border-zinc-800">
                             <button onclick="mudarSubAbaFinanceiro('entradas')" id="btn-sub-entradas" class="px-3.5 py-1.5 text-xs font-semibold bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-xs rounded-lg transition">Entradas (Clientes)</button>
@@ -436,32 +459,32 @@
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
-                        <button onclick="abrirModalFinanceiro()" id="btn-novo-financeiro" class="px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 rounded-xl shadow-md hover:bg-zinc-800 dark:hover:bg-white transition">+ Nova Entrada / Fatura</button>
+                        <button onclick="abrirModalFinanceiro()" id="btn-novo-financeiro" class="px-4 py-2.5 text-xs font-medium text-white bg-emerald-500 rounded-xl shadow-md hover:bg-emerald-600 transition">+ Nova Entrada / Fatura</button>
                     </div>
                 </div>
 
                 <!-- Cards de Indicadores (KPIs) -->
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div class="bg-white dark:bg-[#1a1a1e] p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-1 transition-colors">
+                    <div class="bg-white dark:bg-zinc-800 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-1 transition-colors">
                         <span class="text-[11px] font-medium text-zinc-400">Total de entradas (receitas)</span>
                         <h3 id="kpi-recebido" class="text-xl font-bold text-emerald-600 dark:text-emerald-400 tracking-tight">R$ 0,00</h3>
                     </div>
-                    <div class="bg-white dark:bg-[#1a1a1e] p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-1 transition-colors">
+                    <div class="bg-white dark:bg-zinc-800 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-1 transition-colors">
                         <span class="text-[11px] font-medium text-zinc-400">Custos com funcionários</span>
                         <h3 id="kpi-funcionarios" class="text-xl font-bold text-amber-600 dark:text-amber-400 tracking-tight">R$ 0,00</h3>
                     </div>
-                    <div class="bg-white dark:bg-[#1a1a1e] p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-1 transition-colors">
+                    <div class="bg-white dark:bg-zinc-800 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-1 transition-colors">
                         <span class="text-[11px] font-medium text-zinc-400">Despesas operacionais</span>
                         <h3 id="kpi-despesas" class="text-xl font-bold text-rose-600 dark:text-rose-400 tracking-tight">R$ 0,00</h3>
                     </div>
-                    <div class="bg-white dark:bg-[#1a1a1e] p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-1 transition-colors border-l-4 border-l-indigo-500">
+                    <div class="bg-white dark:bg-zinc-800 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-1 transition-colors border-l-4 border-l-indigo-500">
                         <span class="text-[11px] font-medium text-indigo-600 dark:text-indigo-400">Lucro líquido (balanço)</span>
                         <h3 id="kpi-lucro" class="text-xl font-bold text-zinc-900 dark:text-white tracking-tight">R$ 0,00</h3>
                     </div>
                 </div>
 
                 <!-- SEÇÃO 1: ENTRADAS -->
-                <div id="container-tabela-entradas" class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xs overflow-hidden transition-colors">
+                <div id="container-tabela-entradas" class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xs overflow-hidden transition-colors">
                     <div class="p-4 border-b border-zinc-100 dark:border-zinc-800 font-display font-semibold text-sm text-zinc-700 dark:text-zinc-200">Recebimentos de clientes & faturas</div>
                     <table class="w-full text-left text-sm">
                         <thead class="bg-zinc-50 dark:bg-zinc-900/50 border-b border-zinc-200 dark:border-zinc-800 text-zinc-400 font-semibold text-[11px] uppercase tracking-wider">
@@ -481,7 +504,7 @@
                 </div>
 
                 <!-- SEÇÃO 2: FUNCIONÁRIOS -->
-                <div id="container-tabela-funcionarios" class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xs overflow-hidden transition-colors hidden">
+                <div id="container-tabela-funcionarios" class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xs overflow-hidden transition-colors hidden">
                     <div class="p-4 border-b border-zinc-100 dark:border-zinc-800 font-display font-semibold text-sm text-zinc-700 dark:text-zinc-200">Gestão de salários, pró-labore & freelancers</div>
                     <table class="w-full text-left text-sm">
                         <thead class="bg-zinc-50 dark:bg-zinc-900/50 border-b border-zinc-200 dark:border-zinc-800 text-zinc-400 font-semibold text-[11px] uppercase tracking-wider">
@@ -501,7 +524,7 @@
                 </div>
 
                 <!-- SEÇÃO 3: DESPESAS OPERACIONAIS -->
-                <div id="container-tabela-despesas" class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xs overflow-hidden transition-colors hidden">
+                <div id="container-tabela-despesas" class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xs overflow-hidden transition-colors hidden">
                     <div class="p-4 border-b border-zinc-100 dark:border-zinc-800 font-display font-semibold text-sm text-zinc-700 dark:text-zinc-200">Custos operacionais & ferramentas</div>
                     <table class="w-full text-left text-sm">
                         <thead class="bg-zinc-50 dark:bg-zinc-900/50 border-b border-zinc-200 dark:border-zinc-800 text-zinc-400 font-semibold text-[11px] uppercase tracking-wider">
@@ -523,14 +546,14 @@
 
             <!-- ABA: COMERCIAL / CONTRATOS -->
             <section id="aba-comercial" class="tab-content hidden space-y-6">
-                <div class="flex justify-between items-center bg-white dark:bg-[#1a1a1e] p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs transition-colors">
+                <div class="flex justify-between items-center bg-white dark:bg-zinc-800 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs transition-colors">
                     <div>
                         <h3 class="font-semibold text-sm text-zinc-900 dark:text-white">Planos & Contratos de Social Media</h3>
                         <p class="text-xs text-zinc-500 dark:text-zinc-400">Gerencie retainer mensal, pacotes de posts e acordos comerciais ativos.</p>
                     </div>
-                    <button onclick="openModal('contract-modal')" class="px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 rounded-xl shadow-md hover:bg-zinc-800 dark:hover:bg-white transition">+ Novo Contrato</button>
+                    <button onclick="openModal('contract-modal')" class="px-4 py-2.5 text-xs font-medium text-white bg-emerald-500 rounded-xl shadow-md hover:bg-emerald-600 transition">+ Novo Contrato</button>
                 </div>
-                <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xs overflow-hidden transition-colors">
+                <div class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xs overflow-hidden transition-colors">
                     <table class="w-full text-left text-sm">
                         <thead class="bg-zinc-50 dark:bg-zinc-900/50 border-b border-zinc-200 dark:border-zinc-800 text-zinc-400 font-semibold text-[11px] uppercase tracking-wider">
                             <tr>
@@ -551,12 +574,12 @@
 
             <!-- ABA: PLANOS & ASSINATURAS -->
             <section id="aba-planos" class="tab-content hidden space-y-6">
-                <div class="flex justify-between items-center bg-white dark:bg-[#1a1a1e] p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs transition-colors">
+                <div class="flex justify-between items-center bg-white dark:bg-zinc-800 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs transition-colors">
                     <div>
                         <h3 class="font-semibold text-sm text-zinc-900 dark:text-white">Gestão de Pacotes de Serviços</h3>
                         <p class="text-xs text-zinc-500 dark:text-zinc-400">Configure modelos de pacotes de redes sociais para reutilizar nos contratos.</p>
                     </div>
-                    <button onclick="openModal('plan-modal')" class="px-4 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 rounded-xl shadow-md hover:bg-zinc-800 dark:hover:bg-white transition">+ Novo Pacote</button>
+                    <button onclick="openModal('plan-modal')" class="px-4 py-2.5 text-xs font-medium text-white bg-emerald-500 rounded-xl shadow-md hover:bg-emerald-600 transition">+ Novo Pacote</button>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="grid-planos">
                     <p class="text-xs text-zinc-400 col-span-3 text-center py-8">Carregando pacotes...</p>
@@ -565,7 +588,7 @@
 
             <!-- ABA: CONFIGURAÇÕES -->
             <section id="aba-configuracoes" class="tab-content hidden space-y-6">
-                <div class="bg-white dark:bg-[#1a1a1e] p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-2 transition-colors">
+                <div class="bg-white dark:bg-zinc-800 p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-2 transition-colors">
                     <h3 class="font-semibold text-sm text-zinc-900 dark:text-white">Configurações do Sistema</h3>
                     <p class="text-xs text-zinc-500 dark:text-zinc-400">Ajustes gerais da aplicação, chaves de API e conexões com Supabase.</p>
                 </div>
@@ -576,7 +599,7 @@
 
     <!-- MODAL: Agendamento Rápido ao Mover para Programado -->
     <div id="schedule-modal" class="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-sm p-6 shadow-2xl space-y-4">
+        <div class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-sm p-6 shadow-2xl space-y-4">
             <div class="flex justify-between items-center">
                 <h3 class="font-bold text-sm text-zinc-900 dark:text-white">📅 Programar Data de Postagem</h3>
                 <button onclick="fecharModalAgendamento()" class="text-zinc-400 hover:text-white text-xs font-bold w-7 h-7 rounded-full flex items-center justify-center bg-zinc-100 dark:bg-zinc-800">✕</button>
@@ -595,7 +618,7 @@
 
     <!-- MODAL: Nova Tarefa na Agenda -->
     <div id="task-modal" class="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
+        <div class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
                 <h3 class="font-bold text-base text-zinc-900 dark:text-white">Nova Tarefa ou Lembrete</h3>
                 <button onclick="closeModal('task-modal')" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">✕</button>
@@ -612,14 +635,14 @@
             </div>
             <div class="flex justify-end gap-2 pt-2">
                 <button onclick="closeModal('task-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition">Cancelar</button>
-                <button onclick="salvarTarefaAgenda()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white rounded-xl shadow-md transition">Salvar Tarefa</button>
+                <button onclick="salvarTarefaAgenda()" class="px-5 py-2.5 text-xs font-medium text-white bg-emerald-500 hover:bg-emerald-600 rounded-xl shadow-md transition">Salvar Tarefa</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL: Novo Cliente -->
     <div id="client-modal" class="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
+        <div class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
                 <h3 class="font-bold text-base text-zinc-900 dark:text-white">Cadastrar Nova Marca / Cliente</h3>
                 <button onclick="closeModal('client-modal')" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">✕</button>
@@ -643,14 +666,14 @@
             </div>
             <div class="flex justify-end gap-2 pt-2">
                 <button onclick="closeModal('client-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition">Cancelar</button>
-                <button onclick="salvarCliente()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white rounded-xl shadow-md transition">Salvar Marca</button>
+                <button onclick="salvarCliente()" class="px-5 py-2.5 text-xs font-medium text-white bg-emerald-500 hover:bg-emerald-600 rounded-xl shadow-md transition">Salvar Marca</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL: Novo Contrato / Serviço -->
     <div id="contract-modal" class="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
+        <div class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
                 <h3 class="font-bold text-base text-zinc-900 dark:text-white">Novo Contrato ou Serviço</h3>
                 <button onclick="closeModal('contract-modal')" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">✕</button>
@@ -679,14 +702,14 @@
             </div>
             <div class="flex justify-end gap-2 pt-2">
                 <button onclick="closeModal('contract-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition">Cancelar</button>
-                <button onclick="salvarContrato()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white rounded-xl shadow-md transition">Salvar Contrato</button>
+                <button onclick="salvarContrato()" class="px-5 py-2.5 text-xs font-medium text-white bg-emerald-500 hover:bg-emerald-600 rounded-xl shadow-md transition">Salvar Contrato</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL: Nova Transação / Fatura (employee-modal MOVIDO para fora daqui) -->
     <div id="transaction-modal" class="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
+        <div class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
                 <h3 class="font-bold text-base text-zinc-900 dark:text-white">Registrar Recebimento / Fatura</h3>
                 <button onclick="closeModal('transaction-modal')" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">✕</button>
@@ -715,14 +738,14 @@
             </div>
             <div class="flex justify-end gap-2 pt-2">
                 <button onclick="closeModal('transaction-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition">Cancelar</button>
-                <button onclick="salvarTransacao()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white rounded-xl shadow-md transition">Salvar Fatura</button>
+                <button onclick="salvarTransacao()" class="px-5 py-2.5 text-xs font-medium text-white bg-emerald-500 hover:bg-emerald-600 rounded-xl shadow-md transition">Salvar Fatura</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL: Novo Colaborador / Funcionário (agora independente) -->
     <div id="employee-modal" class="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
+        <div class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
                 <h3 class="font-bold text-base text-zinc-900 dark:text-white">Cadastrar Colaborador / Custo de Equipe</h3>
                 <button onclick="closeModal('employee-modal')" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">✕</button>
@@ -760,14 +783,14 @@
             </div>
             <div class="flex justify-end gap-2 pt-2">
                 <button onclick="closeModal('employee-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition">Cancelar</button>
-                <button onclick="salvarFuncionario()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 rounded-xl shadow-md transition">Salvar Colaborador</button>
+                <button onclick="salvarFuncionario()" class="px-5 py-2.5 text-xs font-medium text-white bg-emerald-500 rounded-xl shadow-md transition">Salvar Colaborador</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL: Nova Despesa Operacional -->
     <div id="expense-modal" class="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
+        <div class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
                 <h3 class="font-bold text-base text-zinc-900 dark:text-white">Cadastrar Despesa Operacional</h3>
                 <button onclick="closeModal('expense-modal')" class="text-zinc-400 hover:text-white text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center bg-zinc-100 dark:bg-zinc-800">✕</button>
@@ -794,14 +817,14 @@
             </div>
             <div class="flex justify-end gap-2 pt-2">
                 <button onclick="closeModal('expense-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition">Cancelar</button>
-                <button onclick="salvarDespesa()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 rounded-xl shadow-md transition">Salvar Despesa</button>
+                <button onclick="salvarDespesa()" class="px-5 py-2.5 text-xs font-medium text-white bg-emerald-500 rounded-xl shadow-md transition">Salvar Despesa</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL: Nova Campanha / Projeto -->
     <div id="project-modal" class="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
+        <div class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
                 <h3 class="font-bold text-base text-zinc-900 dark:text-white">Cadastrar Nova Campanha / Projeto</h3>
                 <button onclick="closeModal('project-modal')" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">✕</button>
@@ -835,14 +858,14 @@
             </div>
             <div class="flex justify-end gap-2 pt-2">
                 <button onclick="closeModal('project-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition">Cancelar</button>
-                <button onclick="salvarProjeto()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white rounded-xl shadow-md transition">Criar Campanha</button>
+                <button onclick="salvarProjeto()" class="px-5 py-2.5 text-xs font-medium text-white bg-emerald-500 hover:bg-emerald-600 rounded-xl shadow-md transition">Criar Campanha</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL: Gerenciar Criativos -->
     <div id="files-modal" class="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-xl p-6 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
+        <div class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-xl p-6 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center">
                 <div>
                     <h3 class="font-bold text-base text-zinc-900 dark:text-white">Gerenciar Criativos da Campanha</h3>
@@ -864,27 +887,27 @@
             <div class="bg-zinc-50 dark:bg-zinc-900 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 space-y-3">
                 <h4 class="text-xs font-semibold text-zinc-600 dark:text-zinc-400">+ Adicionar novo criativo</h4>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <input type="text" id="piece-title" placeholder="Título (ex: Reels Bastidores 01)" class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
-                    <input type="text" id="piece-platform" placeholder="Formato (ex: Instagram / Reels)" class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
+                    <input type="text" id="piece-title" placeholder="Título (ex: Reels Bastidores 01)" class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
+                    <input type="text" id="piece-platform" placeholder="Formato (ex: Instagram / Reels)" class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                         <label class="block text-[10px] font-bold text-zinc-400 mb-1">Data de Publicação</label>
-                        <input type="date" id="piece-scheduled-date" class="w-full bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
+                        <input type="date" id="piece-scheduled-date" class="w-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-zinc-400 mb-1">Arquivo (Opcional)</label>
                         <input type="file" id="piece-file" class="w-full text-xs text-zinc-500 file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-[11px] file:font-medium file:bg-zinc-900 dark:file:bg-zinc-100 file:text-white dark:file:text-zinc-900 cursor-pointer">
                     </div>
                 </div>
-                <button onclick="uploadArquivoCampanha()" class="w-full py-2.5 bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white text-white text-xs font-medium rounded-xl transition shadow-md">Salvar e Vincular Criativo</button>
+                <button onclick="uploadArquivoCampanha()" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-medium rounded-xl transition shadow-md">Salvar e Vincular Criativo</button>
             </div>
         </div>
     </div>
 
     <!-- MODAL: Novo Pacote -->
     <div id="plan-modal" class="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
+        <div class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
             <div class="flex justify-between items-center">
                 <h3 class="font-bold text-base text-zinc-900 dark:text-white">Cadastrar Novo Pacote de Serviços</h3>
                 <button onclick="closeModal('plan-modal')" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">✕</button>
@@ -901,14 +924,14 @@
             </div>
             <div class="flex justify-end gap-2 pt-2">
                 <button onclick="closeModal('plan-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition">Cancelar</button>
-                <button onclick="salvarPlano()" class="px-5 py-2.5 text-xs font-medium text-white bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white rounded-xl shadow-md transition">Salvar Pacote</button>
+                <button onclick="salvarPlano()" class="px-5 py-2.5 text-xs font-medium text-white bg-emerald-500 hover:bg-emerald-600 rounded-xl shadow-md transition">Salvar Pacote</button>
             </div>
         </div>
     </div>
 
     <!-- Botão Flutuante do Robô (Copiloto) — bloco duplicado vazio removido -->
     <div class="fixed bottom-6 right-6 z-50">
-        <button onclick="toggleChat()" class="w-14 h-14 bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white text-white rounded-2xl shadow-xl flex items-center justify-center transition transform hover:scale-105 active:scale-95 focus:outline-none">
+        <button onclick="toggleChat()" class="w-14 h-14 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl shadow-xl flex items-center justify-center transition transform hover:scale-105 active:scale-95 focus:outline-none">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-1.072 1.922L6.75 11.85m7.5-8.746v5.714a2.25 2.25 0 001.072 1.922l1.928 1.11M12 15.75v3.75m-4.5-9h9M7.5 12h9a2.25 2.25 0 012.25 2.25v4.5A2.25 2.25 0 0116.5 21h-9a2.25 2.25 0 01-2.25-2.25v-4.5A2.25 2.25 0 017.5 12z" />
             </svg>
@@ -916,7 +939,7 @@
     </div>
 
     <!-- Janela Pop-up do Chat / Copiloto -->
-    <div id="chat-window" class="fixed bottom-24 right-6 w-96 bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-2xl z-50 hidden flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+    <div id="chat-window" class="fixed bottom-24 right-6 w-96 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-2xl z-50 hidden flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
         <div class="bg-zinc-900 dark:bg-zinc-800 text-white px-5 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-2.5">
                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
@@ -925,13 +948,13 @@
             <button onclick="toggleChat()" class="text-zinc-400 hover:text-white text-sm">✕</button>
         </div>
         <div id="chat-messages" class="p-4 h-80 overflow-y-auto space-y-3 text-xs bg-zinc-50 dark:bg-zinc-900/50 flex flex-col">
-            <div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 p-3.5 rounded-2xl max-w-[85%] self-start shadow-2xs font-medium">
+            <div class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 p-3.5 rounded-2xl max-w-[85%] self-start shadow-2xs font-medium">
                 Olá! Sou o Copiloto do seu painel. Como posso ajudar nas campanhas hoje?
             </div>
         </div>
-        <div class="p-3 bg-white dark:bg-[#1a1a1e] border-t border-zinc-200 dark:border-zinc-800 flex gap-2">
+        <div class="p-3 bg-white dark:bg-zinc-800 border-t border-zinc-200 dark:border-zinc-800 flex gap-2">
             <input type="text" id="chat-input" placeholder="Pergunte algo à IA..." onkeypress="if(event.key === 'Enter') sendMessage()" class="flex-1 bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
-            <button onclick="sendMessage()" class="bg-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white text-white px-4 py-2.5 rounded-xl text-xs font-medium transition shadow-sm">Enviar</button>
+            <button onclick="sendMessage()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2.5 rounded-xl text-xs font-medium transition shadow-sm">Enviar</button>
         </div>
     </div>
 
@@ -1001,7 +1024,7 @@
         try {
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             document.getElementById('db-status').innerText = 'Conectado';
-            document.getElementById('db-status').className = 'px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-semibold';
+            document.getElementById('db-status').className = 'px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-semibold';
             verificarSessao();
 
             // Reage automaticamente a logout/expiração de sessão em qualquer aba aberta
@@ -1012,7 +1035,7 @@
             });
         } catch (e) {
             document.getElementById('db-status').innerText = 'Erro';
-            document.getElementById('db-status').className = 'px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-600 border border-rose-500/20 font-semibold';
+            document.getElementById('db-status').className = 'px-2.5 py-0.5 rounded-full bg-rose-500/15 text-rose-300 font-semibold';
         }
 
         async function verificarSessao() {
@@ -1036,14 +1059,14 @@
             document.getElementById('login-success').classList.add('hidden');
 
             if (modoCadastro) {
-                title.innerText = 'CRIAR CONTA';
-                subtitle.innerText = 'Cadastre-se para acessar o painel';
-                btn.innerText = 'Cadastrar Conta';
+                title.innerText = 'Criar sua conta';
+                subtitle.innerText = 'Cadastre-se para acessar o painel.';
+                btn.innerText = 'Cadastrar';
                 toggleBtn.innerHTML = 'Já tem uma conta? <span class="underline font-semibold">Fazer login</span>';
             } else {
-                title.innerText = 'MEU AVAL';
-                subtitle.innerText = 'Faça login para gerenciar suas redes sociais';
-                btn.innerText = 'Entrar no Sistema';
+                title.innerText = 'Faça login para gerenciar sua agência';
+                subtitle.innerText = 'Acesse com seu e-mail e senha.';
+                btn.innerText = 'Entrar';
                 toggleBtn.innerHTML = 'Não tem uma conta? <span class="underline font-semibold">Criar cadastro</span>';
             }
         }
@@ -1093,26 +1116,26 @@
         function mudarAba(abaId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => {
-                el.classList.remove('bg-zinc-900', 'dark:bg-zinc-800', 'text-white', 'shadow-sm');
-                el.classList.add('text-zinc-600', 'dark:text-zinc-400', 'hover:bg-zinc-100', 'dark:hover:bg-zinc-800/50', 'hover:text-zinc-900', 'dark:hover:text-white');
+                el.classList.remove('bg-emerald-500/15', 'text-emerald-400');
+                el.classList.add('text-zinc-400', 'hover:bg-white/5', 'hover:text-white');
             });
 
             document.getElementById(`aba-${abaId}`).classList.remove('hidden');
             const btnAtivo = document.querySelector(`[data-tab="${abaId}"]`);
             if(btnAtivo) {
-                btnAtivo.classList.add('bg-zinc-900', 'dark:bg-zinc-800', 'text-white', 'shadow-sm');
-                btnAtivo.classList.remove('text-zinc-600', 'dark:text-zinc-400', 'hover:bg-zinc-100', 'dark:hover:bg-zinc-800/50', 'hover:text-zinc-900', 'dark:hover:text-white');
+                btnAtivo.classList.add('bg-emerald-500/15', 'text-emerald-400');
+                btnAtivo.classList.remove('text-zinc-400', 'hover:bg-white/5', 'hover:text-white');
             }
 
             const titulos = {
-                'projetos': 'Quadro de Projetos',
-                'agenda': 'Calendário de Publicações & Agenda',
-                'conteudo': 'Peças & Criativos (WhatsApp & Validação)',
-                'clientes': 'Marcas & Clientes Cadastrados',
-                'financeiro': 'Controle de Faturamento e Fluxo de Caixa',
-                'comercial': 'Planos & Contratos Ativos',
-                'planos': 'Administrativo - Gestão de Pacotes',
-                'configuracoes': 'Configurações do Sistema'
+                'projetos': 'Quadro de projetos',
+                'agenda': 'Calendário e agenda',
+                'conteudo': 'Peças & criativos',
+                'clientes': 'Marcas & clientes',
+                'financeiro': 'Fluxo de caixa',
+                'comercial': 'Planos & contratos',
+                'planos': 'Gestão de pacotes',
+                'configuracoes': 'Configurações'
             };
             document.getElementById('titulo-aba').innerText = titulos[abaId] || 'Meu Aval';
             if(abaId === 'projetos') carregarDados();
@@ -1187,7 +1210,7 @@
                 if(isHoje && !isSelecionado) bordaClasse = 'border-2 border-emerald-500';
 
                 grid.innerHTML += `
-                    <div onclick="selecionarDiaCalendario('${dataIso}')" class="bg-white dark:bg-[#1a1a1e] rounded-xl p-2.5 min-h-[90px] flex flex-col justify-between cursor-pointer hover:border-zinc-400 dark:hover:border-zinc-600 transition ${bordaClasse}">
+                    <div onclick="selecionarDiaCalendario('${dataIso}')" class="bg-white dark:bg-zinc-800 rounded-xl p-2.5 min-h-[90px] flex flex-col justify-between cursor-pointer hover:border-zinc-400 dark:hover:border-zinc-600 transition ${bordaClasse}">
                         <div class="flex items-center justify-between">
                             <span class="font-bold text-xs ${isHoje ? 'bg-emerald-500 text-white w-5 h-5 rounded-full flex items-center justify-center' : 'text-zinc-700 dark:text-zinc-300'}">${dia}</span>
                         </div>
@@ -1590,7 +1613,7 @@
                 if (targetContainer) {
                     if (targetContainer.innerHTML.includes('Vazio')) targetContainer.innerHTML = '';
                     targetContainer.innerHTML += `
-                        <div draggable="true" ondragstart="iniciarArraste(event, '${proj.id}')" class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 shadow-xs space-y-3 hover:border-zinc-300 dark:hover:border-zinc-700 transition cursor-grab active:cursor-grabbing" style="border-left: 4px solid ${escapeHtml(clienteCor)};">
+                        <div draggable="true" ondragstart="iniciarArraste(event, '${proj.id}')" class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 shadow-xs space-y-3 hover:border-zinc-300 dark:hover:border-zinc-700 transition cursor-grab active:cursor-grabbing" style="border-left: 4px solid ${escapeHtml(clienteCor)};">
                             <div class="flex justify-between items-start gap-2">
                                 <span class="font-semibold text-zinc-900 dark:text-white text-xs tracking-tight">${escapeHtml(proj.title)}</span>
                                 <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full text-zinc-600 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shrink-0">${escapeHtml(clienteNome)}</span>
@@ -1840,12 +1863,12 @@
 
             data.forEach(p => {
                 const statusAprovacao = p.approval_status || 'Pendente';
-                let badgeHtml = `<span class="badge-carimbo border border-zinc-300 dark:border-zinc-700 text-zinc-500">pendente</span>`;
+                let badgeHtml = `<span class="badge-status bg-white/5 text-zinc-400 dark:bg-white/5">Pendente</span>`;
 
                 if (statusAprovacao === 'Aprovado') {
-                    badgeHtml = `<span class="badge-carimbo border-2 border-stamp-500 text-stamp-500 dark:border-stamp-400 dark:text-stamp-400">✓ aval dado</span>`;
+                    badgeHtml = `<span class="badge-status bg-emerald-500/15 text-emerald-500 dark:text-emerald-400">✓ Aprovado</span>`;
                 } else if (statusAprovacao === 'Ajuste Solicitado') {
-                    badgeHtml = `<span class="badge-carimbo border border-rose-400 text-rose-600 dark:text-rose-400">ajuste pedido</span>`;
+                    badgeHtml = `<span class="badge-status bg-rose-500/15 text-rose-500 dark:text-rose-400">Ajuste solicitado</span>`;
                     totalAjustesPendentes++;
                 }
 
@@ -1930,7 +1953,7 @@
             grid.innerHTML = '';
             data.forEach(p => {
                 grid.innerHTML += `
-                    <div class="bg-white dark:bg-[#1a1a1e] p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-4">
+                    <div class="bg-white dark:bg-zinc-800 p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-4">
                         <h4 class="font-semibold text-sm">${escapeHtml(p.name)}</h4>
                         <span class="text-sm font-mono font-semibold block">R$ ${Number(p.price || 0).toFixed(2)}</span>
                         <button onclick="deletarPlano('${p.id}')" class="text-xs text-rose-500 font-medium">Excluir</button>
@@ -1967,7 +1990,7 @@
             const messages = document.getElementById('chat-messages');
             const text = input.value.trim();
             if (!text) return;
-            messages.innerHTML += `<div class="bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 p-3.5 rounded-2xl max-w-[85%] self-end font-medium">${escapeHtml(text)}</div>`;
+            messages.innerHTML += `<div class="bg-emerald-500 text-white p-3.5 rounded-2xl max-w-[85%] self-end font-medium">${escapeHtml(text)}</div>`;
             input.value = '';
             messages.scrollTop = messages.scrollHeight;
             try {
@@ -1978,7 +2001,7 @@
                 });
                 const data = await response.json();
                 if (data.reply) {
-                    messages.innerHTML += `<div class="bg-white dark:bg-[#1a1a1e] border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 p-3.5 rounded-2xl max-w-[85%] self-start font-medium">${escapeHtml(data.reply)}</div>`;
+                    messages.innerHTML += `<div class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 p-3.5 rounded-2xl max-w-[85%] self-start font-medium">${escapeHtml(data.reply)}</div>`;
                     chatHistory.push({ role: 'user', text }, { role: 'assistant', text: data.reply });
                     carregarDados(); renderizarCalendario(); carregarTodasPecas();
                 }
