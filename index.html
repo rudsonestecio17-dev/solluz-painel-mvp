@@ -283,6 +283,10 @@
                 <div class="pt-5 pb-2 px-1">
                     <span class="text-[11px] font-medium text-zinc-600">Comercial & gestão</span>
                 </div>
+                <button onclick="mudarAba('prospeccao')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-400 hover:bg-white/5 hover:text-white transition tab-btn flex items-center gap-3 pl-5" data-tab="prospeccao">
+                    <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4h16l-6 8v6l-4 2v-8L4 4z"/></svg>
+                    Prospecção
+                </button>
                 <button onclick="mudarAba('comercial')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium text-zinc-400 hover:bg-white/5 hover:text-white transition tab-btn flex items-center gap-3 pl-5" data-tab="comercial">
                     <svg class="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M7 3h6.5L18 7.5V20a1 1 0 01-1 1H7a1 1 0 01-1-1V4a1 1 0 011-1z"/><path stroke-linecap="round" d="M9 12h6M9 16c1.5-1 3-1 4.5 0"/></svg>
                     Contratos
@@ -495,6 +499,34 @@
                 </div>
             </section>
 
+            <!-- ABA: PROSPECÇÃO & ORÇAMENTOS (setor comercial) -->
+            <section id="aba-prospeccao" class="tab-content hidden space-y-6">
+                <div class="flex justify-between items-center bg-white dark:bg-zinc-800 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs transition-colors">
+                    <div>
+                        <h3 class="font-semibold text-sm text-zinc-900 dark:text-white">Prospecção & orçamentos</h3>
+                        <p class="text-xs text-zinc-500 dark:text-zinc-400">Cadastre prospects, envie orçamentos e aprove para gerar automaticamente contrato, boleto ou projeto.</p>
+                    </div>
+                    <button onclick="openModal('lead-modal')" class="px-4 py-2.5 text-xs font-medium text-white bg-emerald-500 hover:bg-emerald-600 rounded-xl shadow-md transition">+ Nova prospecção</button>
+                </div>
+                <div class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xs overflow-hidden transition-colors">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-zinc-50 dark:bg-zinc-900/50 border-b border-zinc-200 dark:border-zinc-800 text-zinc-400 font-semibold text-[11px] uppercase tracking-wider">
+                            <tr>
+                                <th class="p-4 pl-6">Prospect / cliente</th>
+                                <th class="p-4">Serviço</th>
+                                <th class="p-4">Tipo</th>
+                                <th class="p-4">Valor (R$)</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4 pr-6 text-right">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leads-table-body" class="divide-y divide-zinc-100 dark:divide-zinc-800/60 text-zinc-700 dark:text-zinc-300 text-xs font-medium">
+                            <tr><td colspan="6" class="p-8 text-center text-zinc-400">Carregando prospecções...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
             <!-- ABA: FLUXO DE CAIXA & GASTOS (versão única, com sub-abas) -->
             <section id="aba-financeiro" class="tab-content hidden space-y-6">
                 <!-- Topo / Filtros e Ações -->
@@ -512,10 +544,14 @@
                 </div>
 
                 <!-- Cards de Indicadores (KPIs) -->
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                     <div class="bg-white dark:bg-zinc-800 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-1 transition-colors">
-                        <span class="text-[11px] font-medium text-zinc-400">Total de entradas (receitas)</span>
+                        <span class="text-[11px] font-medium text-zinc-400">Recebido (pago)</span>
                         <h3 id="kpi-recebido" class="text-xl font-bold text-emerald-600 dark:text-emerald-400 tracking-tight">R$ 0,00</h3>
+                    </div>
+                    <div class="bg-white dark:bg-zinc-800 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-1 transition-colors">
+                        <span class="text-[11px] font-medium text-zinc-400">A receber (pendente)</span>
+                        <h3 id="kpi-a-receber" class="text-xl font-bold text-amber-600 dark:text-amber-400 tracking-tight">R$ 0,00</h3>
                     </div>
                     <div class="bg-white dark:bg-zinc-800 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-1 transition-colors">
                         <span class="text-[11px] font-medium text-zinc-400">Custos com funcionários</span>
@@ -526,7 +562,7 @@
                         <h3 id="kpi-despesas" class="text-xl font-bold text-rose-600 dark:text-rose-400 tracking-tight">R$ 0,00</h3>
                     </div>
                     <div class="bg-white dark:bg-zinc-800 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-1 transition-colors border-l-4 border-l-indigo-500">
-                        <span class="text-[11px] font-medium text-indigo-600 dark:text-indigo-400">Lucro líquido (balanço)</span>
+                        <span class="text-[11px] font-medium text-indigo-600 dark:text-indigo-400">Lucro líquido (caixa)</span>
                         <h3 id="kpi-lucro" class="text-xl font-bold text-zinc-900 dark:text-white tracking-tight">R$ 0,00</h3>
                     </div>
                 </div>
@@ -715,6 +751,48 @@
             <div class="flex justify-end gap-2 pt-2">
                 <button onclick="closeModal('client-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition">Cancelar</button>
                 <button onclick="salvarCliente()" class="px-5 py-2.5 text-xs font-medium text-white bg-emerald-500 hover:bg-emerald-600 rounded-xl shadow-md transition">Salvar Marca</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Nova Prospecção / Orçamento -->
+    <div id="lead-modal" class="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 rounded-3xl w-full max-w-md p-6 shadow-2xl space-y-5">
+            <div class="flex justify-between items-center">
+                <h3 class="font-bold text-base text-zinc-900 dark:text-white">Nova prospecção / orçamento</h3>
+                <button onclick="closeModal('lead-modal')" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">✕</button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Nome do prospect / empresa</label>
+                    <input type="text" id="lead-name" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="Ex: Loja Exemplo Ltda">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Descrição do serviço / orçamento</label>
+                    <textarea id="lead-desc" rows="2" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="Ex: Social Media completo, 3 posts/semana"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Tipo</label>
+                        <select id="lead-type" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium">
+                            <option value="pontual">Serviço pontual</option>
+                            <option value="recorrente">Plano recorrente</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Valor (R$)</label>
+                        <input type="text" id="lead-value" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="1500.00">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1.5">Contato (opcional)</label>
+                    <input type="text" id="lead-contact" class="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none font-medium" placeholder="Telefone ou e-mail">
+                </div>
+                <p class="text-[11px] text-zinc-400 leading-relaxed">Ao aprovar, um <strong>plano recorrente</strong> vira um contrato ativo. Um <strong>serviço pontual</strong> gera o boleto no financeiro e cria o card no quadro de projetos automaticamente.</p>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeModal('lead-modal')" class="px-4 py-2.5 text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition">Cancelar</button>
+                <button onclick="salvarProspeccao()" class="px-5 py-2.5 text-xs font-medium text-white bg-emerald-500 hover:bg-emerald-600 rounded-xl shadow-md transition">Salvar</button>
             </div>
         </div>
     </div>
@@ -1156,6 +1234,7 @@
 
         async function inicializarSistema() {
             carregarDados();
+            carregarProspeccao();
             carregarContratos();
             carregarFinanceiroCompleto();
             carregarPlanos();
@@ -1193,6 +1272,7 @@
                 'agenda': 'Calendário e agenda',
                 'conteudo': 'Peças & criativos',
                 'clientes': 'Marcas & clientes',
+                'prospeccao': 'Prospecção & orçamentos',
                 'financeiro': 'Fluxo de caixa',
                 'comercial': 'Planos & contratos',
                 'planos': 'Gestão de pacotes',
@@ -1202,6 +1282,7 @@
             if(abaId === 'projetos') carregarDados();
             if(abaId === 'conteudo') carregarTodasPecas();
             if(abaId === 'agenda') renderizarCalendario();
+            if(abaId === 'prospeccao') carregarProspeccao();
             if(abaId === 'comercial') carregarContratos();
             if(abaId === 'planos') carregarPlanos();
             if(abaId === 'financeiro') carregarFinanceiroCompleto();
@@ -1330,8 +1411,10 @@
 
         async function carregarFinanceiroCompleto() {
             let totalEntradas = 0;
+            let totalAReceber = 0;
             let totalFuncionarios = 0;
             let totalDespesas = 0;
+            const hojeIso = new Date().toISOString().split('T')[0];
 
             // 1. Entradas
             const tbodyTrans = document.getElementById('transactions-table-body');
@@ -1341,14 +1424,25 @@
                 tbodyTrans.innerHTML = '';
                 transData.forEach(t => {
                     const val = Number(t.amount) || 0;
-                    if (t.status === 'Pago') totalEntradas += val;
+                    if (t.status === 'Pago') {
+                        totalEntradas += val;
+                    } else {
+                        totalAReceber += val;
+                    }
+                    const atrasado = t.status !== 'Pago' && t.due_date && t.due_date < hojeIso;
+                    let statusLabel = escapeHtml(t.status);
+                    let statusClasse = 'bg-amber-500/15 text-amber-500';
+                    if (t.status === 'Pago') { statusClasse = 'bg-emerald-500/10 text-emerald-500'; }
+                    else if (atrasado) { statusClasse = 'bg-rose-500/15 text-rose-500'; statusLabel = 'Atrasado'; }
                     tbodyTrans.innerHTML += `
                         <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
                             <td class="p-4 pl-6 font-semibold">${escapeHtml(t.clients?.name || 'Geral')}</td>
                             <td class="p-4">${escapeHtml(t.description)}</td>
-                            <td class="p-4">${escapeHtml(t.due_date || '-')}</td>
+                            <td class="p-4 font-mono">${escapeHtml(t.due_date || '-')}</td>
                             <td class="p-4 font-mono font-semibold">R$ ${val.toFixed(2)}</td>
-                            <td class="p-4"><span class="px-2.5 py-0.5 rounded text-[10px] font-bold ${t.status === 'Pago' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/15 text-amber-500'}">${escapeHtml(t.status)}</span></td>
+                            <td class="p-4">
+                                <button onclick="alternarStatusTransacao('${t.id}', '${t.status}')" title="Clique para alternar entre pago/pendente" class="px-2.5 py-0.5 rounded text-[10px] font-bold cursor-pointer hover:opacity-80 transition ${statusClasse}">${statusLabel}</button>
+                            </td>
                             <td class="p-4 pr-6 text-right"><button onclick="deletarTransacao('${t.id}')" class="text-rose-500 text-xs">Excluir</button></td>
                         </tr>
                     `;
@@ -1394,9 +1488,11 @@
                         <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
                             <td class="p-4 pl-6 font-semibold">${escapeHtml(ex.description)}</td>
                             <td class="p-4">${escapeHtml(ex.category || '-')}</td>
-                            <td class="p-4">${escapeHtml(ex.due_date || '-')}</td>
+                            <td class="p-4 font-mono">${escapeHtml(ex.due_date || '-')}</td>
                             <td class="p-4 font-mono font-semibold text-rose-600 dark:text-rose-400">R$ ${val.toFixed(2)}</td>
-                            <td class="p-4"><span class="px-2.5 py-0.5 rounded text-[10px] font-bold ${ex.status === 'Pago' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/15 text-amber-500'}">${escapeHtml(ex.status)}</span></td>
+                            <td class="p-4">
+                                <button onclick="alternarStatusDespesa('${ex.id}', '${ex.status}')" title="Clique para alternar entre pago/pendente" class="px-2.5 py-0.5 rounded text-[10px] font-bold cursor-pointer hover:opacity-80 transition ${ex.status === 'Pago' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/15 text-amber-500'}">${escapeHtml(ex.status)}</button>
+                            </td>
                             <td class="p-4 pr-6 text-right"><button onclick="deletarDespesa('${ex.id}')" class="text-rose-500 text-xs">Excluir</button></td>
                         </tr>
                     `;
@@ -1405,16 +1501,31 @@
                 tbodyExp.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-zinc-400">Nenhuma despesa cadastrada.</td></tr>`;
             }
 
-            // 4. KPIs e Lucro Líquido
+            // 4. KPIs e Lucro Líquido (regime de caixa: só considera o que já foi efetivamente pago)
             const lucroLiquido = totalEntradas - (totalFuncionarios + totalDespesas);
 
             document.getElementById('kpi-recebido').innerText = `R$ ${totalEntradas.toFixed(2)}`;
+            document.getElementById('kpi-a-receber').innerText = `R$ ${totalAReceber.toFixed(2)}`;
             document.getElementById('kpi-funcionarios').innerText = `R$ ${totalFuncionarios.toFixed(2)}`;
             document.getElementById('kpi-despesas').innerText = `R$ ${totalDespesas.toFixed(2)}`;
 
             const kpiLucroEl = document.getElementById('kpi-lucro');
             kpiLucroEl.innerText = `R$ ${lucroLiquido.toFixed(2)}`;
             kpiLucroEl.className = `text-xl font-bold tracking-tight ${lucroLiquido >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`;
+        }
+
+        async function alternarStatusTransacao(id, statusAtual) {
+            const novoStatus = statusAtual === 'Pago' ? 'Pendente' : 'Pago';
+            const { error } = await supabaseClient.from('transactions').update({ status: novoStatus }).eq('id', id);
+            if (error) { alert('Erro: ' + error.message); return; }
+            carregarFinanceiroCompleto();
+        }
+
+        async function alternarStatusDespesa(id, statusAtual) {
+            const novoStatus = statusAtual === 'Pago' ? 'Pendente' : 'Pago';
+            const { error } = await supabaseClient.from('expenses').update({ status: novoStatus }).eq('id', id);
+            if (error) { alert('Erro: ' + error.message); return; }
+            carregarFinanceiroCompleto();
         }
 
         async function salvarFuncionario() {
@@ -1962,6 +2073,179 @@
             if (error) alert('Erro: ' + error.message);
             carregarTodasPecas();
             renderizarCalendario();
+        }
+
+        // ---------- PROSPECÇÃO & ORÇAMENTOS (setor comercial) ----------
+        async function carregarProspeccao() {
+            const tbody = document.getElementById('leads-table-body');
+            if (!tbody) return;
+            const { data, error } = await supabaseClient.from('commercial_leads').select('*').order('created_at', { ascending: false });
+            if (error) {
+                console.error('Erro ao carregar prospecções:', error.message);
+                tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-zinc-400">Não foi possível carregar (verifique se a tabela "commercial_leads" existe no Supabase).</td></tr>`;
+                return;
+            }
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-zinc-400">Nenhuma prospecção cadastrada.</td></tr>`;
+                return;
+            }
+
+            const statusEstilo = {
+                'Prospecção': 'bg-white/5 text-zinc-400',
+                'Orçamento Enviado': 'bg-indigo-500/15 text-indigo-500 dark:text-indigo-400',
+                'Aprovado': 'bg-emerald-500/15 text-emerald-500 dark:text-emerald-400',
+                'Recusado': 'bg-rose-500/15 text-rose-500 dark:text-rose-400'
+            };
+
+            tbody.innerHTML = '';
+            data.forEach(l => {
+                const val = Number(l.value) || 0;
+                const tipoLabel = l.service_type === 'recorrente' ? 'Plano recorrente' : 'Serviço pontual';
+                const badgeClasse = statusEstilo[l.status] || statusEstilo['Prospecção'];
+
+                let acoes = '';
+                if (l.status === 'Prospecção') {
+                    acoes += `<button onclick="enviarOrcamentoLead('${l.id}')" class="text-indigo-500 dark:text-indigo-400 font-semibold mr-3">Enviar orçamento</button>`;
+                } else if (l.status === 'Orçamento Enviado') {
+                    acoes += `<button onclick="aprovarProspeccao('${l.id}')" class="text-emerald-500 font-semibold mr-3">Aprovar</button>`;
+                    acoes += `<button onclick="recusarProspeccao('${l.id}')" class="text-rose-500 font-semibold mr-3">Recusar</button>`;
+                } else if (l.status === 'Recusado') {
+                    acoes += `<button onclick="reabrirProspeccao('${l.id}')" class="text-zinc-500 dark:text-zinc-400 font-semibold mr-3">Reabrir</button>`;
+                }
+                acoes += `<button onclick="deletarProspeccao('${l.id}')" class="text-rose-500 font-medium">Excluir</button>`;
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition">
+                        <td class="p-4 pl-6">
+                            <span class="font-semibold text-zinc-900 dark:text-white block">${escapeHtml(l.name)}</span>
+                            ${l.contact ? `<span class="text-zinc-400 text-[11px]">${escapeHtml(l.contact)}</span>` : ''}
+                        </td>
+                        <td class="p-4 text-zinc-500 dark:text-zinc-400">${escapeHtml(l.description || '-')}</td>
+                        <td class="p-4">${escapeHtml(tipoLabel)}</td>
+                        <td class="p-4 font-mono font-semibold">R$ ${val.toFixed(2)}</td>
+                        <td class="p-4"><span class="badge-status ${badgeClasse}">${escapeHtml(l.status)}</span></td>
+                        <td class="p-4 pr-6 text-right whitespace-nowrap">${acoes}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        async function salvarProspeccao() {
+            const name = document.getElementById('lead-name').value.trim();
+            const description = document.getElementById('lead-desc').value.trim();
+            const service_type = document.getElementById('lead-type').value;
+            const value = document.getElementById('lead-value').value;
+            const contact = document.getElementById('lead-contact').value.trim();
+            if (!name || !value) return alert('Preencha ao menos o nome e o valor.');
+
+            const { error } = await supabaseClient.from('commercial_leads').insert([{
+                name, description, service_type, value: parseValorBR(value), contact, status: 'Prospecção'
+            }]);
+            if (error) { alert('Erro: ' + error.message); return; }
+            closeModal('lead-modal');
+            document.getElementById('lead-name').value = '';
+            document.getElementById('lead-desc').value = '';
+            document.getElementById('lead-value').value = '';
+            document.getElementById('lead-contact').value = '';
+            carregarProspeccao();
+        }
+
+        async function enviarOrcamentoLead(id) {
+            const { error } = await supabaseClient.from('commercial_leads').update({ status: 'Orçamento Enviado' }).eq('id', id);
+            if (error) alert('Erro: ' + error.message);
+            carregarProspeccao();
+        }
+
+        async function recusarProspeccao(id) {
+            if (!confirm('Marcar este orçamento como recusado?')) return;
+            const { error } = await supabaseClient.from('commercial_leads').update({ status: 'Recusado' }).eq('id', id);
+            if (error) alert('Erro: ' + error.message);
+            carregarProspeccao();
+        }
+
+        async function reabrirProspeccao(id) {
+            const { error } = await supabaseClient.from('commercial_leads').update({ status: 'Prospecção' }).eq('id', id);
+            if (error) alert('Erro: ' + error.message);
+            carregarProspeccao();
+        }
+
+        async function deletarProspeccao(id) {
+            if (!confirm('Excluir esta prospecção?')) return;
+            const { error } = await supabaseClient.from('commercial_leads').delete().eq('id', id);
+            if (error) alert('Erro: ' + error.message);
+            carregarProspeccao();
+        }
+
+        // Aprovação: garante o cliente (cria se necessário) e segue o fluxo certo
+        // conforme o tipo definido no orçamento -> plano recorrente vira contrato ativo;
+        // serviço pontual gera o boleto no financeiro E o card no quadro de projetos.
+        async function aprovarProspeccao(id) {
+            const { data: lead, error: errLead } = await supabaseClient.from('commercial_leads').select('*').eq('id', id).single();
+            if (errLead || !lead) { alert('Erro ao carregar a prospecção: ' + (errLead?.message || '')); return; }
+
+            if (!confirm(`Aprovar "${lead.name}"? Isso vai gerar automaticamente ${lead.service_type === 'recorrente' ? 'um contrato ativo' : 'um boleto e um card no quadro de projetos'}.`)) return;
+
+            // 1. Garante o cliente (reaproveita se já existir com o mesmo nome)
+            let clientId = lead.client_id || null;
+            if (!clientId) {
+                const { data: clienteExistente } = await supabaseClient
+                    .from('clients').select('id').ilike('name', lead.name).limit(1).maybeSingle();
+                if (clienteExistente) {
+                    clientId = clienteExistente.id;
+                } else {
+                    const cores = ['#37D45A', '#2F5678', '#A63F27', '#9C7A38', '#5E7A4E'];
+                    const corAleatoria = cores[Math.floor(Math.random() * cores.length)];
+                    const { data: novoCliente, error: errCliente } = await supabaseClient
+                        .from('clients').insert([{ name: lead.name, color: corAleatoria }]).select().single();
+                    if (errCliente) { alert('Erro ao criar cliente: ' + errCliente.message); return; }
+                    clientId = novoCliente.id;
+                }
+            }
+
+            // 2. Segue o fluxo conforme o tipo do orçamento
+            if (lead.service_type === 'recorrente') {
+                const { error: errContrato } = await supabaseClient.from('contracts').insert([{
+                    client_id: clientId,
+                    title: lead.description || `Plano - ${lead.name}`,
+                    type: 'Plano',
+                    amount: Number(lead.value) || 0,
+                    start_date: new Date().toISOString().split('T')[0],
+                    status: 'Ativo'
+                }]);
+                if (errContrato) { alert('Erro ao criar contrato: ' + errContrato.message); return; }
+            } else {
+                const vencimento = new Date();
+                vencimento.setDate(vencimento.getDate() + 7);
+                const { error: errFatura } = await supabaseClient.from('transactions').insert([{
+                    client_id: clientId,
+                    description: lead.description || `Serviço - ${lead.name}`,
+                    amount: Number(lead.value) || 0,
+                    due_date: vencimento.toISOString().split('T')[0],
+                    status: 'Pendente'
+                }]);
+                if (errFatura) { alert('Erro ao gerar boleto: ' + errFatura.message); return; }
+
+                const { error: errProjeto } = await supabaseClient.from('projects').insert([{
+                    client_id: clientId,
+                    title: lead.name,
+                    description: lead.description || '',
+                    status: 'Planejamento'
+                }]);
+                if (errProjeto) { alert('Erro ao criar projeto no quadro: ' + errProjeto.message); return; }
+            }
+
+            // 3. Marca a prospecção como aprovada e atualiza todas as telas relacionadas
+            await supabaseClient.from('commercial_leads').update({ status: 'Aprovado', client_id: clientId }).eq('id', id);
+
+            alert(lead.service_type === 'recorrente'
+                ? 'Aprovado! Contrato ativo criado em Contratos.'
+                : 'Aprovado! Boleto gerado no Financeiro e card criado no Quadro de projetos.');
+
+            carregarProspeccao();
+            carregarDados();
+            carregarContratos();
+            carregarFinanceiroCompleto();
+            carregarSelectClientes();
         }
 
         async function carregarContratos() {
